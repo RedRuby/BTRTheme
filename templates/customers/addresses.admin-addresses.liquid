@@ -1,0 +1,104 @@
+
+
+<div class="grid account-wrapper">
+  
+  <header class="section-header">
+    <h1 class="w3-medium w3-bold text-dark-blue w3-uppercase section-header--left" style="padding-left:30px;">{{ 'customer.addresses.title' | t }}</h1>
+    <div class="section-header--right small--text-right" style="padding-left:30px;">
+      <a href="#" class="btn btn--secondary w3-small" onclick="Shopify.CustomerAddress.toggleNewForm(); return false;"><i class="fa fa-plus fa-lg"></i>&nbsp; {{ 'customer.addresses.add_new' | t | }}</a>
+    </div>
+  </header>
+
+  <hr class="hr--small border-liter-blue" style="margin-bottom:0px; margin-left:30px;">
+
+  <div class="grid-item one-whole medium-down--one-whole">
+    
+    {% include 'magnificPopup-add-address' %}
+	
+    {% paginate customer.addresses by 5 %}
+    
+
+      {% for address in customer.addresses %}
+        <div class="grid">
+          <div class="grid-item large--one-third">
+            <h3 class="">
+              {{ address.first_name | capitalize }} {{ address.last_name | capitalize }}
+              {% if address == customer.default_address %}<em>({{ 'customer.addresses.default' | t }})</em>{% endif %}
+            </h3>
+            <p class="">{{ address.company }}</p>
+          </div>
+
+          <div class="grid-item large--one-third">
+            <p>
+              {{ address.street }}<br>
+              {{ address.city | capitalize }}<br>
+              {% if address.province_code %}
+                {{ address.province_code | upcase }} 
+              {% endif %}
+              {{ address.zip | upcase }}<br>
+              {{ address.country }}<br>
+              {{ address.phone }}
+            </p>
+          </div>
+        
+          <div class="grid-item large--one-third text-right">
+            <p>
+              {{ 'customer.addresses.edit' | t | prepend:'<button type="button" class="btn btn--secondary w3-small"><i class="fa fa-pencil fa-lg"></i>&nbsp; ' | append:'</button>' | edit_customer_address_link: address.id }} |
+              {{ 'customer.addresses.delete' | t | prepend:'<button type="button" class="btn btn--secondary w3-small"><i class="fa fa-trash fa-lg"></i>&nbsp; ' | append:'</button>' | delete_customer_address_link: address.id }}
+            </p>
+          </div>
+
+          {% include 'magnificPopup-edit-address' %}
+
+          <script>
+            // Setup province selector on each customer address
+            new Shopify.CountryProvinceSelector('address_country_{{ address.id }}', 'address_province_{{ address.id }}', {
+              hideElement: 'address_province_container_{{ address.id }}'}
+            );
+          </script>
+
+          <hr class="hr--small border-dark-blue" style="margin:0px;margin-left:30px;">
+        </div>
+      {% endfor %}
+      
+
+      {% if paginate.pages > 1 %}
+      <div class="text-center">
+        <br><br>
+        {% include 'pagination-custom' %}
+      </div>
+      {% endif %}
+
+    {% endpaginate %}
+  </div>
+
+</div>
+
+
+<script>
+  // Initialize observers on address selectors
+  new Shopify.CountryProvinceSelector('address_country_new', 'address_province_new', {
+    hideElement: 'address_province_container_new'
+  });
+
+  // Contents of customer_area.js (global asset)
+  Shopify.CustomerAddress = {
+    toggleForm: function(id) {
+      var editEl = document.getElementById('edit_address_'+id);
+      editEl.style.display = editEl.style.display == 'none' ? '' : 'none';
+      return false;
+    },
+
+    toggleNewForm: function() {
+      var el = document.getElementById('add_address');
+      el.style.display = el.style.display == 'none' ? '' : 'none';
+      return false;
+    },
+
+    destroy: function(id, confirm_msg) {
+      if (confirm({{ 'customer.addresses.delete_confirm' | t | json }} || confirm_msg)) {
+        Shopify.postLink('/account/addresses/'+id, {'parameters': {'_method': 'delete', 'return_to': '{{ request.path }}?view={{ template.suffix }}'}});
+      }
+    }
+  }
+</script>

@@ -1,0 +1,411 @@
+{% include "definitions", def_tag: true, def_role_find: true, def_meta_keys: true %}
+
+{% if cart.item_count > 0 %}
+  <form id="cart__form" action="/cart" method="post" class="cart-form" novalidate1 onsubmit="if(window.checkout_submit) validateCartItems(event, true);">
+
+    <h1 class="h2 w3-bold text-dark-blue">{{ 'cart.general.title' | t }}</h1>
+
+    {% for item in cart.items %}
+    <div class="cart-row" data-line="{{ forloop.index }}">
+      <div class="grid">
+        
+        {% assign collection_handle = item.properties['__collection'] %}
+        
+        {% if collection_handle %}
+        	{% assign item_url = item.url | within: collections[collection_handle] %}
+        {% else %}
+        	{% assign item_url = item.url %}
+        {% endif %}
+
+        <div class="grid-item large--seven-twelfths">
+          <div class="grid">
+
+            <div class="grid-item one-third large--one-quarter">
+              <a href="{{ item_url }}" class="cart-image" style="width:100px; height:100px; position:relative;">
+                <img src="{{ item | img_url: '150x' }}" style="height:calc(100% - 20px); width:auto;" class="middleX" alt="{{ item.title | escape }}">
+              </a>
+            </div>
+
+            <div class="grid-item two-thirds large--three-quarters">
+              <a href="{{ item_url }}" class="text-dark-blue">
+                <b>{{ item.product.title }}</b>
+              </a>
+              {% unless item.variant.title contains 'Default' %}
+                <br>
+                <small>{% if item.product.options.size == 1 %}{{ item.product.options.first }}: {% endif %}{{ item.variant.title }}</small>
+              {% endunless %}
+
+              {% if settings.product_quantity_message and item.variant.inventory_management and item.variant.inventory_quantity <= 0 and item.variant.incoming %}
+                {% assign date = item.variant.next_incoming_date | date: format: 'month_day_year' %}
+                <p><small>{{ 'products.product.will_not_ship_until' | t: date: date }}</small></p>
+              {% endif %}
+
+              {% assign property_size = item.properties | size %}
+              {% if property_size > 0 %}
+                {% for p in item.properties %}
+                  {% if forloop.first %}<br>{% endif %}
+                  {% assign first_character_in_key = p.first | truncate: 1, '' %}
+                  {% unless p.last == blank or first_character_in_key == '_' %}
+                    {{ p.first }}:
+
+                    {% if p.last contains '/uploads/' %}
+                      <a href="{{ p.last }}">{{ p.last | split: '/' | last }}</a>
+                    {% else %}
+                      {{ p.last }} {% comment %}| replace: "Annual","Company Attire" | replace: "Seasonal","Seasonal & Accessories" | replace: "Field Tees","Field T-Shirts" }}{% endcomment %}
+                    {% endif %}
+
+                    <br>
+                  {% endunless %}
+                {% endfor %}
+              {% endif %}
+            </div>
+
+          </div>
+        </div>
+
+        <div class="grid-item large--five-twelfths medium--two-thirds push--medium--one-third">
+          <div class="grid">
+            <div class="grid-item one-half medium-down--one-third text-right">
+              <input type="number" name="updates[]" id="updates_{{ item.key }}" data-id="{{ item.key }}" value="{{ item.quantity }}" min="0" {% if item.properties['Product Type'] == field_tees_tag1 or item.properties['Product Type'] == client_gift_tag or customer_role == "Role:VP" %}class="line-qty w3-opacity {{ 'prod_' | append: item.product.id }}" disabled readonly{% else %}class="line-qty"{% endif %} autocomplete="off" data-line="{{ forloop.index }}">
+            </div>
+
+            <div class="grid-item one-third medium-down--one-third medium-down--text-left text-right">
+              {% if item.original_line_price != item.line_price %}
+                <small class="cart-item--original-price"><s>{{ item.original_price | money }}</s></small>
+              {% endif %}
+              <span class="h2">
+                {% include 'price' with item.price %}
+              </span>
+            </div>
+
+            <div class="grid-item one-sixth medium-down--one-third text-right">
+              <a {% if item.properties['Product Type'] == field_tees_tag1 %}id="{{ 'prod_' | append: item.product.id }}"{% endif %} href="/cart/change?line={{ forloop.index }}&amp;quantity=0" data-line="{{ forloop.index }}" class="icon-fallback-text btn-secondary remove">
+                <span class="icon icon-x" aria-hidden="true"></span>
+                <span class="fallback-text">{{ 'cart.general.remove' | t }}</span>
+              </a>
+            </div>
+
+            <div class="grid-item one-whole text-right small--text-left">
+              {% for discount in item.discounts %}
+                <small class="cart-item--discount">{{ discount.title }}</small>
+              {% endfor %}
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    {% endfor %}
+
+    <div class="cart-row">
+      <div class="grid">
+
+        {% if settings.cart_notes_enable %}
+          <div class="grid-item large--one-third medium--one-half">
+            <label for="cartSpecialInstructions">{{ 'cart.general.note' | t }}</label>
+            <textarea name="note" class="input-full" required="required" id="cartSpecialInstructions" maxlength="100">{{ cart.note }}</textarea>
+          </div>
+        {% endif %}
+
+        <div class="grid-item text-right {% if settings.cart_notes_enable %}large--two-thirds medium--one-half{% endif %}">
+
+          <div class="cart-subtotal">
+            {{ 'cart.general.subtotal' | t }}
+            <span class="h1 cart-subtotal--price">
+              {% include 'price' with cart.total_price %}
+            </span>
+            {% if cart.total_discounts > 0 %}
+             {% assign savings = cart.total_discounts | money %}
+             <small class="cart-subtotal--savings">{{ 'cart.general.savings_html' | t: price: savings }}</small>
+            {% endif %}
+          </div>
+
+          <p class="cart-subtotal__note"><em>{{ 'cart.general.taxes_extra' | t }}</em></p>
+          
+          {% assign cart_product_types = cart.items | map:"properties" | map: 'Product Type' | uniq | join:"," | replace:"&amp;","&" | split:"," %}
+          
+          {% assign FieldTees_allowance = customer.metafields.allowance[FieldTees_key] | default: 0 | plus: 0 %}
+          
+          <select name="attributes[pay_by]" {% if cart_product_types contains field_tees_tag and cart_product_types.size == 1 and FieldTees_allowance > 0 %}class="w3-right pay_by_selector hide"{% else %}class="w3-right pay_by_selector" required="required"{% endif %} >
+            <option value="" selected disabled>Select Payment Method</option>
+            {% if cart_product_types contains field_tees_tag and cart_product_types.size == 1 and FieldTees_allowance > 0 %}
+              <option value="Allowance-9326755900" selected>Pay By Allowance</option>
+            {% endif %}
+            
+            {% if cart_product_types contains yos_gift_tag %}
+              <option value="YOSGIFT-6873743420">Pay By YOS GIFT CODE</option>
+            {% elsif cart_product_types contains client_gift_tag %}
+              <option value="CLIENTGIFT-6873743420">Pay By CLIENT GIFT CODE</option>
+            {% elsif cart_product_types contains employee_reward_tag %}
+              <option value="EMPLOYEEREWARD-6873743420">Pay By EMPLOYEE REWARDS CODE</option>
+            {% elsif cart_product_types contains annual_apparel_tag or cart_product_types contains seasonal_apparel_tag or cart_product_types contains mkt_gift_tag %}
+              {% assign annual_allowance = customer.metafields.allowance[annual_key] | default: 0 | plus: 0 %}
+              {% assign seasonal_allowance = customer.metafields.allowance[seasonal_key] | default: 0 | plus: 0 %}
+              {% assign mktGift_allowance = customer.metafields.allowance[mktGift_key] | default: 0 | plus: 0 %}
+              {% assign total_allowance = annual_allowance | plus: seasonal_allowance | plus: mktGift_allowance %}
+            
+              {% if total_allowance > 0 %}
+            	{% if customer_role == "Role:SS" %}
+                  {% unless cart_product_types contains mkt_gift_tag or cart_product_types contains seasonal_apparel_tag %}
+                    <option value="Allowance-9326755900">Pay By Allowance</option>
+                  {% endunless %}
+            	{% elsif customer_role == "Role:PM" %}
+                  {% unless cart_product_types contains mkt_gift_tag %}
+                    <option value="Allowance-9326755900">Pay By Allowance</option>
+                  {% endunless %}
+            	{% else %}
+            		<option value="Allowance-9326755900">Pay By Allowance</option>
+            	{% endif %}
+              {% endif %}
+              <option value="CC-6873743420">Pay By Personal Credit/Debit Card</option>
+            {% elsif cart_product_types contains other_product_tag or true %}
+              <option value="CC-6873743420">Pay By Personal Credit/Debit Card</option>
+            {% endif %}
+          </select>
+          
+          {% if total_allowance > 0 and cart_product_types contains annual_apparel_tag or cart_product_types contains seasonal_apparel_tag %}
+          <div class="hide">
+          <label>Allowance Balance:</label>
+          <label>Accessories and Seasonal:</label><span>{{ seasonal_allowance }}</span>
+          <label>Company Attire:</label><span>{{ annual_allowance }}</span>
+          </div>
+          {% endif %}
+          
+          <span class="w3-clear"><br></span>
+
+          <input type="submit" name="update" class="btn-secondary update-cart" value="{{ 'cart.general.update' | t }}" onclick="window.checkout_submit = false; $('.pay_by_selector, .line-qty').removeAttr('required disabled');">
+
+          <input type="submit" name="checkout" class="btn" value="{{ 'cart.general.checkout' | t }}" onclick="window.checkout_submit = true;">
+<!--           <button type="submit" name="checkout" class="btn" onclick="window.checkout_submit = true;">
+            {{ 'cart.general.checkout' | t }}
+          </button> -->
+
+          {% if additional_checkout_buttons %}
+            <div class="additional-checkout-buttons">{{ content_for_additional_checkout_buttons }}</div>
+          {% endif %}
+
+        </div>
+
+      </div>
+    </div>
+
+  </form>
+
+{% else %}
+
+  <div id="EmptyCart text-center" style="text-align:center !important;">
+    <br><br>
+    <h1 class="h1 w3-bold text-dark-blue">{{ 'cart.general.title' | t }}</h1>
+    <p class="cart--empty-message">{{ 'cart.general.empty' | t }}</p>
+    <p class="cart--continue-message"><a href="/" class=""><button type="button" class="btn btn--secondary w3-small w3-uppercase"><i class="fa fa-cart fa-md"></i>&nbsp; Continue Browsing</button></a></p>
+    <p class="cart--cookie-message">{{ 'cart.general.cookies_required' | t }}</p>
+  </div>
+
+{% endif %}
+
+<script>
+  
+  {% if cart.item_count > 0 %}
+  
+  Object.defineProperty(Array.prototype, "forEachDone", {
+      enumerable: false,
+      value: function(task, cb){
+          var counter = 0;
+          this.forEach(function(item, index, array){
+              task(item, index, array);
+              if(array.length === ++counter){
+                  if(cb) cb();
+              }
+          });
+      }
+  });
+  
+  var checkout_submit = false;
+  
+  window.redirect_checkout = false;
+  
+  window.qtyOldData = $('#cart__form [name="updates[]"]').serializeArray().map(function(x){ return x.value; }).join(','); 
+  
+  var cart_hash = JSON.stringify({{ cart | json }}.items);
+  
+  var cart_json = "", qtyNewData = "";
+  
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+//           console.log('Pay By attributes blanked');
+     }
+  };
+  xmlHttp.open( "POST", "https://" + window.location.hostname + "/cart?attributes[pay_by]=", false ); // false for synchronous request
+  xmlHttp.send( null );
+  
+  if (typeof(Storage) !== "undefined") {
+    sessionStorage.pa_by_{{ customer.id }} = undefined;
+  }
+  
+//   $(".cart-form").on('submit', validateCartItems());
+  
+  $(document).ready(function(){
+  	$('a.remove').on('click', function(){
+      $this = $(this);
+      if(event.button == 0){
+          event.preventDefault();
+          $.when(data = $.getJSON('/cart.json')).done(function(){ 
+            if(cart_hash === JSON.stringify(data.responseJSON.items)){
+              if($this.attr('id') != undefined){ 
+                $('.'+$this.attr('id')).val('0');
+                $('.update-cart').trigger('click')[0].click();
+              }else
+                location.assign($this.attr('href')); 
+            }else{
+              alert('Refreshing the cart, it is not updated!!');
+              location.reload();
+            }
+          });
+          return false;
+      }
+    });
+  });
+  
+  function validateCartItems(e, index){
+    var cycle = index;
+    
+    try{ e.preventDefault(); 
+        if($('#cartSpecialInstructions').val().length == 0){ 
+          alert("Project Name/Job Number is required.."); 
+          return false; 
+        }else if($('select[name="attributes[pay_by]"]').val().length == 0){ 
+          alert("Payment Method is required.."); 
+          return false; 
+        }
+      }catch(e){  }
+//     event.stopPropagation();
+    
+    if(!checkout_submit && false){
+      $('.cart-form').off('submit').submit();
+    }else{
+      freez();
+      $.when(data = $.getJSON('/cart.json')).done(function(){ 
+          cart_json = JSON.stringify(data.responseJSON.items);
+          qtyNewData = $('#cart__form [name="updates[]"]').serializeArray().map(function(x){ return x.value; }).join(',');
+          var result_fieldTees_type = data.responseJSON.items.filter(function( obj ) {
+            if(obj.properties != undefined) return obj.properties['Product Type'] == '{{ field_tees_tag }}';
+          }).map(x => x.quantity);
+        
+          if(result_fieldTees_type.length > 0){
+            result_fieldTees_type = result_fieldTees_type.reduce(function(total, num){ return total+num; })
+          }
+        
+          if(typeof result_fieldTees_type == "number" && result_fieldTees_type < 12){ 
+            alert("{{ field_tees_tag }} minimum order Quantity is 12."); 
+            window.redirect_checkout = false; 
+            return true; 
+          }else
+            window.redirect_checkout = true;
+          
+      }).done(function(){ 
+        
+          if(data.responseJSON.item_count > 0 && cart_hash === cart_json && qtyNewData == window.qtyOldData && window.redirect_checkout){
+            
+            data = {
+              customer_email: '{{ customer.email }}',
+              payment_method: $('.pay_by_selector').val(),
+              line_items: data.responseJSON.items
+            };
+            
+            console.log(data);
+
+            $.ajax({
+              url: "/apps/api/customer/set_validation.json",
+              type:'POST',
+              dataType: "json",
+              data: data,
+              success: function( data ) { console.log(JSON.stringify(data)); defreez();
+                if(data.status == "200"){
+//                   show_message4(data.message,true);
+                  if (typeof(Storage) !== "undefined") {
+                    sessionStorage.pa_by_{{ customer.id }} = $('.pay_by_selector').val();
+                  }
+                  window.checkout_submit = false;
+                  
+                  $('.cart-form').prepend('<input type="hidden" name="checkout" value="true" />').off('submit').submit();
+                }else if(data.status == "400"){
+//                   console.log(JSON.stringify(data));
+                  {% if cart_product_types contains yos_gift_tag or cart_product_types contains employee_reward_tag %}
+                    show_message4("Gift payable amount is "+data[Object.keys(data)[2]]+", cart total exceeding by "+data[Object.keys(data)[3]],false);
+                  {% elsif cart_product_types contains client_gift_tag %}
+                      show_message4({%- comment -%}"Only 1 product purchse is allowed for Client Gift"{%- endcomment -%}data.message,false);
+                  {% elsif cart_product_types contains annual_apparel_tag or cart_product_types contains seasonal_apparel_tag or cart_product_types contains field_tees_tag or cart_product_types contains mkt_gift_tag %}
+                    var err_msg = [], result = data.result.filter(function( obj ) {
+                      if(obj.status != undefined) return obj.status == '400';
+                    });
+                  	
+                    if(result){
+                      result.forEachDone(function(el){
+                      	err_msg.push(el.product_type+" balance is "+el.balance+", exceeding by "+el.exceeding);
+                      }, function(){
+                        show_message4(err_msg.join(". "),false);
+                      });
+                    }else
+                      show_message4('Some error occured while validating car items..',false);
+                  {% endif %}
+                }else{ 
+                  console.log(JSON.stringify(data)); 
+                  console.log('Some error occured while validating car items..');
+                  show_message4('Some error occured while validating car items..',false);
+                  {% comment %}
+                  {% if cart_product_types contains yos_gift_tag or cart_product_types contains employee_reward_tag %}
+                    show_message4("Gift payable amount is "+data[Object.keys(data)[2]]+", cart total exceeding by "+data[Object.keys(data)[3]],false);
+                  {% elsif cart_product_types contains client_gift_tag %}
+                      show_message4({%- comment -%}"Only 1 product purchse is allowed for Client Gift"{%- endcomment -%}data.message,false);
+                  {% elsif cart_product_types contains field_tees_tag and cart_product_types.size == 1 %}
+                  	show_message4("Field T-Shirts Allowance balance quantity is "+data[Object.keys(data)[2]]+", exceeding by "+data[Object.keys(data)[3]],false);
+                  {% elsif cart_product_types contains annual_apparel_tag or cart_product_types contains seasonal_apparel_tag or cart_product_types contains mkt_gift_tag %}
+                    if(Object.keys(data)[3].indexOf('quantity') != -1)   
+                   	  show_message4("Field T-Shirts Allowance balance quantity is "+data[Object.keys(data)[2]]+", exceeding by "+data[Object.keys(data)[3]],false);
+                    else if(Object.keys(data).length == 6)
+                      show_message4("Available Accessories and Seasonal Allowance balance is "+data[Object.keys(data)[2]]+", exceeding by "+data[Object.keys(data)[4]]+" and Company Attire Allowance balance is "+data[Object.keys(data)[3]]+", exceeding by "+data[Object.keys(data)[5]],false);
+                    else if(Object.keys(data)[2].indexOf('seasonal') != -1)
+                  	  show_message4("Available Accessories and Seasonal Allowance balance is "+data[Object.keys(data)[2]]+", cart total exceeding by "+data[Object.keys(data)[3]],false);
+                  	else
+                      show_message4("Available Company Attire Allowance balance is "+data[Object.keys(data)[2]]+", cart total exceeding by "+data[Object.keys(data)[3]],false);
+                  {% endif %}
+                  {% endcomment %}
+                }
+              },
+              error: function( data ) {
+                console.log(JSON.stringify(data)); 
+                console.log('Some error occured..');
+                show_message4('Some error occured..',false);
+              }
+            });
+          }else if(!window.redirect_checkout){
+          	defreez();
+          }else if(qtyNewData != window.qtyOldData){
+            alert('Please Update your cart, before proceeding to checkout!!');
+            if($('[type="submit"][name="checkout"]').hasClass('btn'))
+              $('[type="submit"][name="checkout"], [type="submit"][name="update"]').toggleClass('btn btn-secondary');
+            defreez();
+          }else if(cart_json != cart_hash){
+            if(cart_json === cart_hash && cycle){
+            	validateCartItems();
+            }else{
+              alert('Refreshing the cart, it is not updated!!');
+              location.reload();
+            }
+          }else{
+          	location.reload();
+          }
+      });
+    }
+  }
+  {% else %}
+  
+  	 if (typeof(Storage) !== "undefined") {
+      sessionStorage.pa_by_{{ customer.id }} = undefined;
+    }
+  
+  {% endif %}
+</script>

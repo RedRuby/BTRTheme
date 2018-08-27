@@ -1,0 +1,11 @@
+{% comment %}
+  The contents of the collection.liquid template can be found in /sections/collection-template.liquid
+{% endcomment %}
+
+{% if collection.all_products_count > 0 %}
+  {% include "definitions", def_tag: true, product_tags: collection.products.first.tags, def_tag_find: true, def_role_find: true %}
+
+  {% include "cart-product-alert" %}
+{% endif %}
+
+{% section 'collection-template' %}

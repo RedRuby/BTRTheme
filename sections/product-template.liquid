@@ -1,0 +1,738 @@
+<div id="ProductSection" data-section-id="{{ section.id }}" data-section-type="product-template" data-zoom-toggle="zoom-in" data-zoom-enabled="{{ section.settings.product_image_zoom_enable }}" data-related-enabled="{{ section.settings.product_related_enable }}" data-social-sharing="{{ section.settings.social_sharing }}" data-show-compare-at-price="{{ section.settings.product_show_compare_at_price }}" data-stock="{{ section.settings.product_quantity_message }}" data-incoming-transfer="{{ section.settings.product_incoming_message }}" data-ajax-cart-method="{{ settings.ajax_cart_method }}">
+
+{% case section.settings.add_to_cart_button_size %}
+  {% when 'small' %}
+    {% assign btn_class = 'btn' %}
+  {% when 'medium' %}
+    {% assign btn_class = 'btn btn--wide' %}
+  {% when 'large' %}
+    {% assign btn_class = 'btn btn--full btn--large' %}
+{% endcase %}
+
+{% if section.settings.add_to_cart_button_size == 'large' %}
+  <style>
+    .selector-wrapper select, .product-variants select {
+      max-width: 100%;
+    }
+  </style>
+{% endif %}
+
+{% if section.settings.product_quantity_enable == false %}
+  <style>
+    .selector-wrapper select, .product-variants select {
+      margin-bottom: 13px;
+    }
+  </style>
+{% endif %}
+  
+{% include "definitions", def_tag: true, def_tag_find: true, def_role_find: true, def_meta_keys: true %}
+
+<div class="grid" itemscope itemtype="http://schema.org/Product">
+  <meta itemprop="url" content="{{ shop.url }}{{ product.url }}">
+  <meta itemprop="image" content="{{ product.featured_image.src | img_url: 'grande' }}">
+
+  <div class="grid-item large--five-twelfths1 width-45-percent">
+    <div class="grid">
+      <div class="grid-item large--eleven-twelfths text-center">
+        <div class="product-photo-container{%- if product.images.size == 0 -%}0{%- endif -%}" id="productPhotoContainer-{{ section.id }}" style="padding: 30px;">
+          {% assign featured_image = product.selected_or_first_available_variant.featured_image | default: product.featured_image %}
+          {% for image in product.images %}
+            {%- capture img_wrapper_id -%}productPhotoWrapper-{{ section.id }}-{{ image.id }}{%- endcapture -%}
+            {%- assign max_width = 700 -%}
+            {%- assign max_height = 1024 -%}
+
+            {%- include 'image-logic' with width: max_width, height: max_height -%}
+
+            {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+            <div id="{{ img_wrapper_id }}" class="lazyload__image-wrapper{% unless image == featured_image %} hide{% endunless %}" data-image-id="{{ image.id }}" style="max-width1: {{ max_width }}px; max-width: 100%;">
+              <div class="no-js product__image-wrapper" style="padding-top1:{{ 1 | divided_by: image.aspect_ratio | times: 100}}%; padding-top: 100%;">
+                <img id="{{ img_id }}"
+                  {% if forloop.first == true %}
+                  src="{{ featured_image | img_url: '300x300' }}"
+                  {% endif %}
+                  class="lazyload no-js lazypreload middleXY"
+                  data-src="{{ img_url }}"
+                  data-widths="[480, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                  data-aspectratio="{{ image.aspect_ratio }}"
+                  data-sizes="auto"
+                  style="{% if image.aspect_ratio < 1 %}height:100%; width:auto;{% else %}width:100%; height:auto;{% endif %}"
+                  alt="{{ image.alt | escape }}"
+                  {% if section.settings.product_image_zoom_enable %} data-zoom="{{ image | img_url: '1024x1024', scale: 2 }}"{% endif %}>
+              </div>
+            </div>
+            {% if forloop.first == true %}
+              <noscript>
+                <img src="{{ image | img_url: '580x' }}"
+                  srcset="{{ image | img_url: '580x' }} 1x, {{ image | img_url: '580x', scale: 2 }} 2x"
+                  alt="{{ image.alt }}" style="opacity:1;">
+              </noscript>
+            {% endif %}
+          {% endfor %}
+          
+          {%- if product.images.size == 0 -%}
+          
+          	<img src="{{ featured_image | img_url: '580x' }}"
+                  srcset="{{ featured_image | img_url: '580x' }} 1x, {{ featured_image | img_url: '580x', scale: 2 }} 2x"
+                  alt="{{ image.alt }}" style="opacity:1;">
+          {%- endif -%}
+          
+        </div>
+
+        {% if product.images.size > 1 %}
+          <ul class="product-photo-thumbs grid-uniform" id="productThumbs-{{ section.id }}">
+            <script>console.log('{{ product.images | map: "aspect_ratio" | sort | join: "," }}')</script>
+            {% for image in product.images %}
+              <li class="grid-item medium-down--one-quarter large--one-quarter" style="border-radius: 5px;">
+                <a href="{{ image.src | img_url: '1024x1024', scale: 2 }}" class="product-photo-thumb product-photo-thumb-{{ section.id }}" onclick="toggleMe(this);" data-image-id="{{ image.id }}" style="background:url('{{ image.src | img_url: "compact" }}') no-repeat center; background-size: contain; {% unless featured_image == image %} opacity:0.4;{% endunless %}">
+                  <img src="{{ image.src | img_url: 'compact', crop: 'center' }}"  alt="{{ image.alt | escape }}" style="visibility:hidden;">
+                </a>
+              </li>
+            {% endfor %}
+
+          </ul>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-item large--seven-twelfths1 width-55-percent">
+    
+    {% include "cart-product-alert" %}
+
+    <h1 class="h1 text-dark-blue w3-margin-0 w3-bold" itemprop="name">{{ product.title }}</h1>
+
+    {% if section.settings.product_vendor_enable %}
+      <p class="product-meta" itemprop="brand">{{ product.vendor }}</p>
+    {% endif %}
+
+    <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+
+      {% assign variant = product.selected_or_first_available_variant %}
+
+      <meta itemprop="priceCurrency" content="{{ shop.currency }}">
+      <meta itemprop="price" content="{{ variant.price | divided_by: 100.00 }}">
+
+      <ul class="inline-list product-meta {% if section.settings.hide_field_tees_price and is_field_tees %}hide{% endif %}">
+        <li>
+          <span id="productPrice-{{ section.id }}" class="h1" style="font-weight:normal; color: {{ '#0b3457' | color_modify: 'alpha', 0.5 }};">
+            {% comment %}{% include 'price' with variant.price %}{% endcomment %}
+            <span class="">{{ price | money }}</span>
+          </span>
+        </li>
+        {% if product.compare_at_price_max > product.price and section.settings.product_show_saved_amount %}
+        <li>
+          <span id="comparePrice-{{ section.id }}" class="sale-tag large">
+            {% assign compare_price = variant.compare_at_price %}
+            {% assign product_price = variant.price %}
+            {% include 'price-sale' %}
+          </span>
+        </li>
+        {% endif %}
+        {% if section.settings.product_reviews_enable %}
+          <li class="product-meta--review">
+            <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+          </li>
+        {% endif %}
+      </ul>
+
+      <hr id="variantBreak" class="hr--clear hr--small hide">
+      
+      <div class="product-description rte" itemprop="description">
+        {{ product.description | remove_first: "width=" | replace: "<table","<tabla" | replace: "</table>","</tabla>" }}
+      </div>
+      
+      <br>
+      
+      <link itemprop="availability" href="http://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}">
+
+      {% capture "form_class" -%}
+        addToCartForm{% if section.settings.enable_payment_button %} addToCartForm--payment-button{% endif %}
+      {%- endcapture %}
+
+      {%- capture "form_id" -%}addToCartForm-{{ section.id }}{%- endcapture -%}
+      
+      {% if is_field_tees %}
+        {%- capture "on_submit_fun" -%}event.preventDefault(); addFieldTee(this);{%- endcapture -%}
+      {% else %}
+      	{%- capture "on_submit_fun" -%}event.preventDefault(); validateProduct(this);{%- endcapture -%}
+      {% endif %}
+      
+      {% form 'product', product, class:form_class, id:form_id, onsubmit:on_submit_fun %}
+      	<div class="{% if is_field_tees %}hide{% endif %}">
+        <select name="id" required id="productSelect-{{ section.id }}" class="product-variants product-variants-{{ section.id }}">
+          <option value="" disabled="disabled" selected>Select Size</option>
+          {% for variant in product.variants %}
+            {% if variant.available %}
+
+              <option {% if variant == product.selected_or_first_available_variant and false %} selected="selected" {% endif %} data-sku="{{ variant.sku }}" value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money_with_currency }}</option>
+
+            {% else %}
+              <option disabled="disabled">
+                {{ variant.title }} - {{ 'products.product.sold_out' | t }}
+              </option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      
+      {% if section.blocks.size > 0 and is_field_tees != true %}
+        {% for block in section.blocks %}
+          {% if product.tags contains block.settings.title %}
+            <div class="hide1 product-single__quantity hide1">
+              <u><a id="show-mssg" class="lightbox js-toggle-edit-modal" style="" onclick="sizeChartShow();" hrefs="{% assign snippet-title = block.settings.title |handle %}{% assign size-chart-link = block.settings.image | img_url: '650x' %} {% assign size-chart-link1 = block.settings.image1 | img_url: '345x' %}">Size Chart</a></u>
+            </div>
+            <div class="size-chart">
+              {% include 'magnificPopup-size-chart', chart_title: block.settings.title, sizes: block.settings.sizes,body_rows: block.settings.body_rows,info_title: block.settings.info_title,info_content: block.settings.info_content %}
+              {% comment %}{% include 'magnificPopup-size-chart', size-chart-link: size-chart-link, size-chart-link1: size-chart-link1, snippet-title: snippet-title %}{% endcomment %}
+            </div>
+            {% break %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+
+      {% if section.settings.product_quantity_enable and is_client_gift != true  and customer_role != "Role:VP" %}
+          <div class="w3-margin-top margin-bottom">
+          <label for="quantity" class="quantity-selector quantity-selector-{{ section.id }}">{{ 'products.product.quantity' | t }}</label>
+          <input type="number" id="quantity" name="quantity" value="1" min="1" class="quantity-selector" >
+          </div>
+        {% endif %}
+          
+        </div>
+
+        {% if section.settings.product_quantity_message %}
+          <div id="variantQuantity-{{ section.id }}" class="variant-quantity {% if variant.inventory_management and variant.inventory_quantity < 10 and variant.inventory_quantity > 0 %} is-visible{% endif %}">
+              {% include 'svg-definitions' with 'stock-icon' %}
+              {% if variant.inventory_management and variant.inventory_quantity < 10 and variant.inventory_quantity > 0 %}
+                {% assign qty = variant.inventory_quantity %}
+                <span id="variantQuantity-{{ section.id }}__message">{{ 'products.product.only_left' | t: count: qty }}</span>
+              {% endif %}
+          </div>
+        {% endif %}
+
+        {% if section.settings.product_incoming_message %}
+          <div id="variantIncoming-{{ section.id }}" class="variant-quantity {% if variant.inventory_management and variant.inventory_quantity <= 0 and variant.incoming %} is-visible{% endif %}">
+            {% if variant.inventory_management and variant.inventory_quantity == 0 or variant.inventory_quantity < 0 and current_variant.incoming %}
+              {% include 'svg-definitions' with 'stock-icon' %}
+              {% if variant.available %}
+                {% assign date = variant.next_incoming_date | date: "month_day_year" %}
+                <span id="variantIncoming-{{ section.id }}__message">{{ 'products.product.will_not_ship_until' | t: date: date  }}</span>
+              {% else %}
+                {% assign date = variant.next_incoming_date | date: "month_day_year" %}
+                <span id="variantIncoming-{{ section.id }}__message">{{ 'products.product.will_be_in_stock_after' | t: date: date }}</span>
+              {% endif %}
+            {% endif %}
+          </div>
+        {% endif %}
+      
+      	<input type="hidden" name="properties[__collection]" value="{{ collection.handle }}" />
+      
+      	<input type="hidden" name="properties[Product Type]" value="{{ product_type }}" />
+      
+      	{% if is_field_tees %}
+      
+      		{% if customer.metafields.allowance[FieldTees_key] %}
+              {% assign limit_count = customer.metafields.allowance[FieldTees_key] | default: 0 | plus: 0 %}
+              {% if limit_count > 0 %}
+                <h3 class="w3-bold w3-margin-bottom">Allowance: {{ customer.metafields.allowance[FieldTees_key] }}<span style="font-weight:normal !impormal;"> Field T-Shirts</span></h3>
+              {% else %}
+      			<h4 class="w3-bold w3-margin-bottom w3-text-red"><span style="font-weight:normal !impormal;">Sorry, your free Field T-Shirt purchase limit exceeded.</span></h4>
+              {% endif %}
+            {% endif %}
+      
+      		<div class="grid">
+              <div class="grid-item large--one-half small--one-whole">
+                <label for="num_of_labourers" style="white-space:nowrap;">How many laborers on your job?</label>
+                <div style="position:relative;">
+                  <input id="num_of_labourers" type="tel" name="properties[Number of labourers]" {% if limit_count == 0 %}disabled{% else %}autofocus{% endif %} required="required" oninput="this.value = this.value.match(/[\d]+/); if(this.value.match(/[\d]+/))$('.ok').show(); else $('.ok').hide();" onchange="calcTeeQty(this);" autocomplete="off" placeholder="Enter number" />
+                  <button type="button" class="btn ok" style="height:auto;display:none;right:10px;top:10px;max-width:40px !important;position:absolute;padding-left:0;padding-right:0;" onclick="$(this).hide();">ok</button>
+                </div>
+                
+                {% if section.blocks.size > 0 %}
+                  {% for block in section.blocks %}
+                    {% if product.tags contains block.settings.title %}
+                      <div class="hide1 product-single__quantity hide1">
+                        <u><a id="show-mssg" class="lightbox js-toggle-edit-modal" style="" onclick="sizeChartShow();" hrefs="{% assign snippet-title = block.settings.title |handle %}{% assign size-chart-link = block.settings.image | img_url: '650x' %} {% assign size-chart-link1 = block.settings.image1 | img_url: '345x' %}">Size Chart</a></u>
+                      </div>
+                      <div class="size-chart">
+                        {% include 'magnificPopup-size-chart', chart_title: block.settings.title, sizes: block.settings.sizes,body_rows: block.settings.body_rows,info_title: block.settings.info_title,info_content: block.settings.info_content %}
+                        {% comment %}{% include 'magnificPopup-size-chart', size-chart-link: size-chart-link, size-chart-link1: size-chart-link1, snippet-title: snippet-title %}{% endcomment %}
+                      </div>
+                      {% break %}
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+                
+              </div>
+              <div class="grid-item large--one-half small--one-whole small--text-center">
+                <label for="" class="small--hide w3-small"><br>&nbsp;</label>
+                <h4 class="w3-margin-left text-dark-blue h4" style="font-size: 110%;"><span id="calculated_qty">0</span> T-Shirts Recommended</h4>
+              </div>
+            </div>
+      
+      		{% assign sizes = 'SM,MD,LG,XL,2X,3X' | split:',' %}
+            {% assign product_option1 = product.variants | map:'option1' %}
+      		
+              
+            <div class="size-selector-wrapper w3-opacity-25 w3-margin-top">
+              <label style="display:inline-block; margin:0;" for="">Select Quantities Per Size</label> <small style="display:none; inline-block; color: {{ dark-accent | color_modify: 'alpha', 0.5 }};">MD,LG and XL are available in 12 piece packs.2X and 3X are available in 6 piece packs.</small>
+              <div class="grid">
+                {% assign variant_ids = product.variants | map:'id' %}
+                {% assign index = 0 %}
+                {% for size in sizes %}
+                    {% if product_option1 contains size %}
+                        <div class="grid-item large--one-quarter medium--one-half small--one-third w3-margin-top">
+                          <label for="size-{{ size }}">{{ size }}</label> {% comment %}| replace:'SM','S' | replace:'MD','M' | replace:'LG','L' | replace:'2X','XXL' | replace:'3X','XXXL'{% endcomment %}
+                          <input type="number" id="size-{{ size }}" variant_id="{{ variant_ids[index] }}{% assign index = index | plus: 1 %}" disabled class="size-selector" min="0" value="0"/>
+                          {% comment %}
+                          <select id="size-{{ size }}" variant_id="{{ variant_ids[index] }}{% assign index = index | plus: 1 %}" disabled class="size-selector">
+                            <option value="0" selected>0</option>
+                            {% for i in (1..1) %}
+                              {% if size contains '2X' or size contains '3X' %}
+                                <option value="{{ i | times: 6 }}">{{ i | times: 6 }}</option>
+                              {% else %}
+                                <option value="{{ i | times: 12 }}">{{ i | times: 12 }}</option>
+                              {% endif %}
+                            {% endfor %}
+                          </select>
+                          {% endcomment %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                <div class="grid-item large--one-half small--one-whole w3-margin-top">
+                  <label id="error_msg" class="w3-text-red" for="">&nbsp;</label>
+                  <button type="button" disabled class="btn btn2">TOTAL <b><span id="selected_qty">0</span> T-Shirts</b></button>
+                </div>
+              </div>
+            </div>
+      		<br>
+        {% endif %}
+
+        <div class="payment-buttons payment-buttons--{{ section.settings.add_to_cart_button_size }} field_tees_{{ is_field_tees }}">
+          <button type="submit" name="add" {% if is_field_tees %}disabled{% endif %} id="addToCart-{{ section.id }}" class="{{ btn_class }} btn--add-to-cart{% if section.settings.enable_payment_button %} btn--secondary-accent{% endif %}">
+            {% comment %}<span class="icon icon-cart"></span>{% endcomment %}
+            <span id="addToCartText-{{ section.id }}">{{ 'products.product.add_to_cart' | t }}</span>
+          </button>
+
+          {% if section.settings.enable_payment_button %}
+            {{ form | payment_button }}
+          {% endif %}
+        </div>
+      {% endform %}
+
+      <hr class="{% if section.settings.enable_payment_button %}product-template-hr{% endif %} hide">
+    </div>
+
+    {% if section.settings.social_sharing_products %}
+      {% include 'social-sharing' %}
+    {% endif %}
+
+  </div>
+</div>
+
+{% if section.settings.related_products_enable %}
+  {% assign grid_item_width = 'large--one-fifth medium--one-third small--one-half' %}
+  {% include 'related-products' %}
+{% endif %}
+
+{% if section.settings.product_reviews_enable %}
+  <hr>
+  <div id="shopify-product-reviews" data-id="{{ product.id }}">{{ product.metafields.spr.reviews }}</div>
+{% endif %}
+
+{% unless product == empty %}
+  <script type="application/json" id="ProductJson-{{ section.id }}">
+    {{ product | json }}
+  </script>
+  {% if section.settings.product_quantity_message or section.settings.product_incoming_message %}
+    <script type="application/json" id="VariantJson-{{ section.id }}">
+      [
+        {% for variant in product.variants %}
+          {% capture variant_inventory %}
+            {%- if section.settings.product_incoming_message -%}
+              ,
+              "incoming": {% if variant.incoming == 'null' or variant.next_incoming_date == null %}false{% else %}{{ variant.incoming | default: false | json }}{% endif %},
+              "inventory_policy": {{ variant.inventory_policy | json }},
+              "next_incoming_date": {{ variant.next_incoming_date | date: format: 'month_day_year' | json }}
+            {%- endif -%}
+            {%- if section.settings.product_quantity_message -%}
+              ,
+              "inventory_quantity": {{ variant.inventory_quantity | json }}
+            {%- endif -%}
+          {% endcapture %}
+          {
+            {{ variant_inventory | remove_first: ',' | strip }}
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    </script>
+  {% endif %}
+{% endunless %}
+</div>
+
+<style>
+  .selector-wrapper label{ text-transform:lowercase; }
+  .selector-wrapper label::first-letter{ text-transform:capitalize; }
+</style>
+
+<script>
+  
+  $(window).load(function(){
+    {% if is_field_tees %}
+  	$('button[type="submit"][name="add"]').prop('disabled', 'disabled'); 
+    {% endif %}
+    
+    {% if is_field_tees != true and product.selected_variant.id == blank and product.variants.size > 1 %}
+    $('.single-option-selector').prepend('<option value="" selected="selected" disabled="disabled">Select Size</option>').prop('required','required');
+    {% endif %}
+  });
+  
+  $(document).ready(function(){
+    {% if is_field_tees %}
+    $('button[type="submit"][name="add"]').prop('disabled', 'disabled');
+    {% endif %}
+    
+  }); 
+  
+  function sizeChartShow(){
+  	$('html').css('overflow','hidden');
+    $('.size-chart').find('.mfp-bg, .mfp-wrap').show().removeClass('mfp-hide');
+    $('.size-chart .mfp-preloader').hide(); $('#size-chart, .size-chart .mfp-content').show().removeClass('mfp-hide');
+  }
+  
+  function sizeChartHide(){
+  	$('html').css('overflow','auto');
+    $('.size-chart').find('.mfp-bg, .mfp-wrap, #size-chart, .mfp-content').hide().addClass('mfp-hide');
+    $('.size-chart').find('.mfp-preloader').show();
+  }
+  
+  {% if product.images.size > 1 %}
+      function toggleMe(obj){
+        $(obj).parent().siblings().find("img, a").css("opacity","0.4").end().end().find("img, a").css("opacity","1");
+      }
+  {% endif %}
+  
+  {% if is_field_tees %}
+  
+  function calcTeeQty(el){
+  	if(el.value > 0){ 
+      freez();
+      $.when(data = $.getJSON('/cart.json')).done(function(){ 
+          cart_json = data.responseJSON;
+          var result = cart_json.items.filter(function( obj ) {
+             if(obj.properties != undefined) return obj.properties['Product Type'] == 'Field Tees';
+          }); 
+          console.log(result); 
+          defreez();
+        
+          $('.size-selector').removeAttr('disabled');
+        {% comment %}
+//         .css('cursor','default').each(function(i, dd){
+//             n = Number($(dd).find('option:eq(1)').attr('value')); console.log(n);
+//             j = m = 0;
+//             $(dd).html('');
+//             while(el.value*3 > m){ m = n*j++;
+//               $(dd).append("<option value='"+m+"'>"+m+"</option>");
+//             }
+//           });
+        {% endcomment %}
+        
+          $('.size-selector-wrapper').removeClass('w3-opacity-25'); 
+        
+          $('#calculated_qty').text(el.value*3);
+          
+          total = $('.size-selector').map( function() { return Number(this.value); }).get().reduce(function(a,b){ return a+b; }, 0);
+    
+          if(total > 0)
+            countMatch();
+        
+          $('.ok').hide();
+      });
+      
+//       jQuery.getJSON('/cart.json', function(cart) {
+        
+//       });
+      
+    } else { 
+      $('#calculated_qty, #selected_qty').text('0');
+      $('.size-selector, button[type="submit"][name="add"]').prop('disabled', 'disabled'); 
+      $('.size-selector-wrapper').addClass('w3-opacity'); 
+    }
+  }
+  
+  function countMatch(){
+      total = $('.size-selector').map( function() { return Number(this.value); }).get().reduce(function(a,b){ return a+b; }, 0);
+      $('#selected_qty').text(total);
+    
+      if( (total >= Number($('#calculated_qty').text())) || total > 0 ){
+        $('button[type="submit"][name="add"]').removeAttr('disabled').css('cursor','pointer'); 
+        $('#error_msg').html('&nbsp;').next().removeClass('error');
+      }else{
+      	$('button[type="submit"][name="add"]').prop('disabled', 'disabled'); 
+//         $('#error_msg').html('<small>Minimum Purchase Quantity is '+(Number($('#calculated_qty').text()))+' !</small>').next().addClass('error');
+      }
+      
+  }
+  
+  $('.size-selector').on('change', countMatch);
+  
+  function addFieldTee(form){
+//     event.preventDefault();
+//     event.stopPropagation();
+    $('button[type="submit"][name="add"]').prop('disabled', 'disabled').css('cursor','wait');
+    
+    total = $('.size-selector').map( function() { return Number(this.value); }).get().reduce(function(a,b){ return a+b; }, 0);
+    
+    if(total > 0){
+      $('.size-selector').each(function(index, el){
+        if(el.value > 0){
+          data = {
+                    quantity: el.value,
+                    id: el.getAttribute('variant_id'),
+                    properties: {
+                      'Product Type': '{{ product_type }}',
+                      '__collection': '{{ collection.handle }}',
+  //                     'Field Tees Category': '{{ product.title }}'
+                    }
+          };
+
+          $.ajax({
+            type: 'POST',
+            url: '/cart/add.js', 
+            data: data,
+            async: false
+          });
+        }
+
+      }).promise().done(function(){ location.assign('/cart'); });
+    }else{ 
+       $('#error_msg').html('<small>Selected Qty is 0 !</small>').next().addClass('error');
+    }
+    
+    return false;
+  }
+  {% else %}
+  
+  function validateProduct(form){
+//   	event.preventDefault();
+//     event.stopPropagation();
+    var redirect_to = '/cart';
+    
+    if({% if product.variants > 1 %}true{% else %}$('.single-option-selector').val(){% endif %}){
+      $('button[type="submit"][name="add"]').prop('disabled', 'disabled').css('cursor','wait');
+
+      $.when(data = $.getJSON('/cart.json')).done(function(){ freez();
+          cart_json = data.responseJSON;
+          msg = 'Please remove other cart items';
+
+          var result_this_type = cart_json.items.filter(function( obj ) {
+            if(obj.properties != undefined) return obj.properties['Product Type'] == '{{ product_type }}';
+          });
+                                                             
+          {% if customer_role == 'Role:SS' %}                                                   	                                                 
+          if('{{ product_type }}' == '{{ annual_apparel_tag }}'){
+            var result_not_this_type = cart_json.items.filter(function( obj ) {
+              if(obj.properties != undefined) return obj.properties['Product Type'] != '{{ annual_apparel_tag }}';
+            });
+          }else if('{{ product_type }}' == '{{ seasonal_apparel_tag }}' || '{{ product_type }}' == '{{ field_tees_tag }}' || '{{ product_type }}' == '{{ mkt_gift_tag }}'){
+            var result_not_this_type = cart_json.items.filter(function( obj ) {
+              if(obj.properties != undefined) return obj.properties['Product Type'] != '{{ seasonal_apparel_tag }}' && obj.properties['Product Type'] != '{{ field_tees_tag }}' && obj.properties['Product Type'] != '{{ mkt_gift_tag }}';
+            });
+          }                                                 
+          {% elsif customer_role != 'Role:PM' %}
+          if('{{ product_type }}' == '{{ annual_apparel_tag }}' || '{{ product_type }}' == '{{ seasonal_apparel_tag }}' || '{{ product_type }}' == '{{ field_tees_tag }}' || '{{ product_type }}' == '{{ mkt_gift_tag }}'){
+            var result_not_this_type = cart_json.items.filter(function( obj ) {
+              if(obj.properties != undefined) return obj.properties['Product Type'] != '{{ annual_apparel_tag }}' && obj.properties['Product Type'] != '{{ seasonal_apparel_tag }}' && obj.properties['Product Type'] != '{{ field_tees_tag }}' && obj.properties['Product Type'] != '{{ mkt_gift_tag }}';
+            });
+          }
+          {% elsif customer_role == 'Role:PM' %}                                                   	                                                 
+          if('{{ product_type }}' == '{{ annual_apparel_tag }}' || '{{ product_type }}' == '{{ seasonal_apparel_tag }}' || '{{ product_type }}' == '{{ field_tees_tag }}'){
+            var result_not_this_type = cart_json.items.filter(function( obj ) {
+              if(obj.properties != undefined) return obj.properties['Product Type'] != '{{ annual_apparel_tag }}' && obj.properties['Product Type'] != '{{ seasonal_apparel_tag }}' && obj.properties['Product Type'] != '{{ field_tees_tag }}';
+            });
+          }
+          {% endif %}
+          else if('{{ product_type }}' == '{{ client_gift_tag }}' && {% if employee_has_no_client_gift %}true{% else %}false{% endif %}){
+            var result_not_this_type = msg = "You don't have any Client Gift !";  
+            redirect_to = "/";
+          }                                        
+          else if('{{ product_type }}' == '{{ client_gift_tag }}'){
+            var result_not_this_type = cart_json.items.filter(function( obj ) {
+              if(obj.properties != undefined) return obj.properties['Product Type'] != '{{ product_type }}' || obj.properties['Product Type'] == '{{ client_gift_tag }}';
+            });                                      
+          }
+          else if('{{ product_type }}' == '{{ yos_gift_tag }}' && {% if employee_has_no_yos_gift %}true{% else %}false{% endif %}){
+            var result_not_this_type = msg = "You don't have any Year of Service Gift !";  
+            redirect_to = "/";
+          } 
+          else if('{{ product_type }}' == '{{ yos_gift_tag }}'){
+            var result_not_this_type = cart_json.items.filter(function( obj ) {
+              if(obj.properties != undefined) return obj.properties['Product Type'] != '{{ product_type }}';
+            });                                      
+          }
+          else{
+            var result_not_this_type = cart_json.items.filter(function( obj ) {
+              if(obj.properties != undefined) return obj.properties['Product Type'] != '{{ product_type }}' && obj.properties['Product Type'] != '{{ field_tees_tag }}';
+            });                                      
+          }
+          console.log(result_not_this_type); 
+  //         defreez();
+
+          if(result_not_this_type.length > 0){
+              alert(msg);
+          }else{
+              $.ajax({
+                type: 'POST',
+                url: '/cart/add.js', 
+                data: $(form).serializeArray(),
+                async: false
+              });
+          }
+      }).promise().done(function(){ location.assign(redirect_to); });
+    }else{
+      alert('Please select size..!!');
+    }
+  }
+  {% endif %}
+</script>
+
+{% schema %}
+  {
+    "name": "Product",
+    "class": "product-template-section",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "product_image_zoom_enable",
+        "label": "Enable image zoom"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_quantity_enable",
+        "label": "Show quantity selector"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_quantity_message",
+        "label": "Show remaining quantity message"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_incoming_message",
+        "label": "Show incoming stock transfer message when sold out"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_vendor_enable",
+        "label": "Show product vendor"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_show_saved_amount",
+        "label": "Show saved amount",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_show_compare_at_price",
+        "label": "Show compare at price",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "related_products_enable",
+        "label": "Show related products"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_button",
+        "label": "Show dynamic checkout button",
+        "info": "Lets customers check out directly using a familiar payment method. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "social_sharing_products",
+        "label": "Enable product sharing",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_reviews_enable",
+        "label": "Enable product reviews",
+        "info": "Install the free Shopify [Product Reviews](https:\/\/apps.shopify.com\/product-reviews) app to add product reviews."
+      },
+      {
+        "type": "select",
+        "id": "add_to_cart_button_size",
+        "label": "Variant picker and button size",
+        "default": "small",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "Medium"
+          },
+          {
+            "value": "large",
+            "label": "Large"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "hide_field_tees_price",
+        "label": "Hide Field Tees price",
+        "default": true
+      }
+    ],
+	"blocks": [
+      {
+        "type": "size_charts",
+        "name": "Size Charts",
+        "settings": [
+          {
+            "id": "title",
+            "type": "text",
+            "label": "Chart title(will be used as tag as well, so must be unique)",
+			"info": "Size chart will apply on products having this title as TAG.",
+            "default": "Size Chart"
+          },
+          {
+            "type": "textarea",
+            "id": "sizes",
+            "label": "Size Row",
+            "placeholder": "Size:MD,LG,XL,2XL,3XL",
+			"default": "Size:MD,LG,XL,2XL,3XL",
+			"info": "Size Row, with row name prefix:size1, size2, size3...so on"
+          },
+          {
+            "type": "textarea",
+            "id": "body_rows",
+            "label": "Size Value Rows",
+            "placeholder": "Chest:38-40,42-44,46-48,50-52,54-56\nSleeve:13,14,15,16,17\nNeck:13,14,15,16,17",
+			"default": "Chest:38-40,42-44,46-48,50-52,54-56\nSleeve:13,14,15,16,17\nNeck:13,14,15,16,17",
+			"info": "Size value rows should be strictly in format."
+          },
+          {
+            "id": "info_title",
+            "type": "text",
+            "label": "Guideline Title",
+			"default": "Measurement Guidelines"
+          },
+          {
+            "type": "textarea",
+            "id": "info_content",
+            "label": "Guideline Rows",
+            "placeholder": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+			"default": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+			"info": "Guideline Rows should be strictly in format"
+          }
+		]
+      }
+	]
+  }
+{% endschema %}

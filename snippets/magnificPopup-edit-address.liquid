@@ -1,0 +1,101 @@
+{% form 'customer_address', address %}
+<div id="edit_address_{{ address.id }}" {% unless form.errors %}style="display:none;"{% endunless %}>
+
+<div class="mfp-bg mfp-fade mfp-ready" style="opacity:0.9; background-color:gray;"></div>
+
+<div class="mfp-wrap mfp-auto-cursor mfp-fade mfp-ready text-center" tabindex="-1" style="overflow-x: hidden; overflow-y: auto;">
+  <div class="mfp-container mfp-s-ready mfp-inline-holder">
+    <div class="mfp-content bounceIn animated w3-card-2 w3-margin-top w3-margin-bottom">
+
+      <div id="AddressEditModal" class="white-popup-block">
+        
+
+        <h2 class="text-center w3-bold text-dark-blue">{{ 'customer.addresses.edit_address' | t }}</h2>
+        <br>
+        
+        {% include 'form-errors-custom' %}
+        
+        <input type="hidden" name="checkout_url" value="/collections/all" />
+        
+        <div class="grid">
+
+          <div class="grid-item one-half small--one-whole">
+            <label for="address_first_name_{{ form.id }}">{{ 'customer.addresses.first_name' | t }}</label>
+            <input type="text" id="address_first_name_{{ form.id }}" class="address_form" name="address[first_name]" required="required" value="{{ form.first_name }}">
+          </div>
+
+          <div class="grid-item one-half small--one-whole">
+            <label for="address_last_name_{{ form.id }}">{{ 'customer.addresses.last_name' | t }}</label>
+            <input type="text" id="address_last_name_{{ form.id }}" class="address_form" name="address[last_name]" required="required" value="{{ form.last_name }}">
+          </div>
+          
+          <div class="grid-item one-half small--one-whole">
+            <label for="address_company_{{ form.id }}">{{ 'customer.addresses.company' | t }}</label>
+            <input type="text" id="address_company_{{ form.id }}" class="address_form" name="address[company]" value="{{ form.company }}">
+          </div>
+          
+          <div class="grid-item one-half small--one-whole">
+            <label for="address_phone_{{ form.id }}">{{ 'customer.addresses.phone' | t }}</label>
+            <input type="tel" id="address_phone_{{ form.id }}" class="address_form" name="address[phone]" value="{{ form.phone }}" onkeyup="this.value = this.value.match(/[\d]+/);" placeholder="555-555-1234">
+          </div>
+          
+          <div class="grid-item one-half small--one-whole">
+            <label for="address_address1_{{ form.id }}">{{ 'customer.addresses.address1' | t }}</label>
+            <input type="text" id="address_address1_{{ form.id }}" class="address_form" name="address[address1]" required="required" value="{{ form.address1 }}">
+          </div>
+          
+          <div class="grid-item one-half small--one-whole">
+            <label for="address_address2_{{ form.id }}">{{ 'customer.addresses.address2' | t }}</label>
+            <input type="text" id="address_address2_{{ form.id }}" class="address_form" name="address[address2]" value="{{ form.address2 }}">
+          </div>
+          
+          <div class="grid-item one-half small--one-whole">
+            <label for="address_city_{{ form.id }}">{{ 'customer.addresses.city' | t }}</label>
+            <input type="text" id="address_city_{{ form.id }}" class="address_form" name="address[city]" required="required" value="{{ form.city }}">
+          </div>
+          
+          <div class="grid-item one-half small--one-whole">
+            <label for="address_zip_{{ form.id }}">{{ 'customer.addresses.zip' | t }}</label>
+            <input type="text" id="address_zip_{{ form.id }}" class="address_form" name="address[zip]" required="required" value="{{ form.zip }}" onkeyup="this.value = this.value.match(/[\d]+/);" autocapitalize="characters">
+          </div>
+          
+          <div class="grid-item one-half small--one-whole" style="position:relative;">
+            <label for="address_country_{{ form.id }}">{{ 'customer.addresses.country' | t }}</label>
+            <select id="address_country_{{ form.id }}" name="address[country]" required="required" data-default="{{ form.country }}">{{ all_country_option_tags }}</select>
+            <div style="position:absolute; top:0; bottom:0; left:0; right:0; z-index:100; cursor:not-allowed;"></div>
+          </div>
+          
+          <div class="grid-item one-half small--one-whole" id="address_province_container_{{ form.id }}" style="display:none">
+            <label for="address_province_{{ form.id }}">{{ 'customer.addresses.province' | t }}</label>
+            <select id="address_province_{{ form.id }}" class="address_form" name="address[province]" required="required" data-default="{{ form.province }}"></select>
+          </div>
+
+        </div>
+        
+        {% if template.suffix %}  
+          <input type="hidden" name="return_to" value="{{ request.path }}?view={{ template.suffix }}" />
+        {% endif %}
+
+        <br><br>
+
+        <p class="text-center">
+          {{ form.set_as_default_checkbox }}
+          <label for="address_default_address_new" class="inline">{{ 'customer.addresses.set_default' | t }}</label>
+        </p>
+        
+		<div class="text-center">
+          <input type="submit" class="btn" value="{{ 'customer.addresses.update' | t }}"><br><br>
+          {{ 'customer.addresses.or' | t }} <a href="#" class="w3-text-red" onclick="Shopify.CustomerAddress.toggleForm({{ form.id }}); return false;"><u>{{ 'customer.addresses.cancel' | t }}</u></a>
+        </div>
+          
+      </div>
+      <button title="Close (Esc)" onclick="Shopify.CustomerAddress.toggleForm({{ form.id }}); return false;" type="button" class="mfp-close">×</button>
+
+    </div>
+<!--     <div class="mfp-preloader w3-center center-block" style="display:initial; z-index:2000 !important;"><i class="fa fa-refresh fa-2x text-lite-blue w3-spin "></i></div> -->
+  </div>
+
+</div>
+  
+</div>
+{% endform %}

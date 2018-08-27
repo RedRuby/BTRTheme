@@ -1,0 +1,41 @@
+<div>
+  <label class="w3-medium w3-margin-0" style="padding:18px 20px;">{{ chart_title }}</label>
+  <table class="full responsive-table1 table-border-liter-blue text-center w3-padding-0 w3-margin-0">
+    <thead>
+      <tr class="w3-small">
+        <th>{{ sizes | split:":" | first }}</th>
+        {%- assign sizes1 = sizes | split:":" | last | split:"," -%}
+        {% for size in sizes1 %}
+        <th>{{ size }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {%- assign body_rows1 = body_rows | newline_to_br | strip_newlines | split: '<br />' -%}
+<!--       <script>console.log("bodyRows1: {{ body_rows1 }}");</script> -->
+      {% for body_row in body_rows1 %}
+      <tr class="w3-small">
+        <th>{{ body_row | split:":" | first }}</th>
+<!--         <script>console.log("bodyRow: {{ body_row }}");</script> -->
+        {%- assign cells = body_row | split:":" | last | split:"," -%}
+        {% for cell in cells %}
+        <th>{{ cell }}</th>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+	
+  {% comment %}
+  <div style="padding:18px 20px;">
+    <label class="w3-medium">{{ info_title }}</label>
+    {%- assign info_contents = info_content | newline_to_br | strip_newlines | split: '<br />' -%}
+    {% for info_content1 in info_contents %}
+    <p class="w3-small">
+      <b>{{ info_content1 | split:":" | first }}</b><br>
+      {{ info_content1 | split:":" | last }}
+    </p>
+	{% endfor %}
+  </div>
+  {% endcomment %}
+</div>

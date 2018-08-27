@@ -1,0 +1,88 @@
+{% include "definitions", def_tag: true, def_role_find: true, def_meta_keys: true %}
+
+<div class="grid w3-margin-bottom wrapper">
+  <div class="grid-item large--one-third medium--hide small--hide">
+    &nbsp;
+  </div>
+  <div class="grid-item large--one-third {% if customer.tags contains 'Role:Admin' %}medium-down--two-thirds small--text-left w3-padding-0{% endif %} text-center">
+    <h1 class="text-dark-blue w3-bold">{{ 'customer.account.title' | t }}</h1>
+  </div>
+  {% if customer.tags contains 'Role:Admin' %}
+  <div class="grid-item large-- one-third medium--hide small--hide1 text-right">
+    <h1><a href="/account?view=admin-orders"><button type="button" class="btn btn--secondary w3-small"><i class="fa fa-gear fa-lg"></i><span class="small--hide">&nbsp; ADMIN DASHBOARD</span></button></a></h1>
+  </div>
+  {% endif %}
+</div>
+
+<div class="wrapper text-center allowances-strip" style="background-color: #428ecb; padding:8px; position1:absolute; left:0; right:0;">
+  <small class="w3-medium w3-text-white"><b>MY ALLOWANCES</b></small>
+</div>
+<!-- <div style="height:38px;">&nbsp;</div> -->
+
+<div class="wrapper1 text-center bg-dark-blue allowances-strip" style="padding:20px; position1:absolute; left:0; right:0;">
+  {% if customer.metafields.allowance[seasonal_key] %}
+  <button type="button" class="btn btn--secondary w3-transparent w3-text-white w3-border-white w3-padding allowance-btn" style="width:100%; max-width:184px; font-style:normal !important;" disabled >
+    <h2 class="w3-text-white w3-margin-0 btn--1" style="font-size:28px;">
+      ${%- assign seasonal_allowance = customer.metafields.allowance[seasonal_key] | default: '00' | times: '1.00' | round: 2 -%}
+      {{- seasonal_allowance -}}
+      {%- assign seasonal_allowance_decimal_size = seasonal_allowance | split:"." | last | size -%}
+      {%- if seasonal_allowance_decimal_size == 1 -%}
+      	{{- '0' -}}
+      {%- endif -%}
+    </h2><small class="mob-font">{{ seasonal_apparel_tag }}</small>
+  </button>
+  <span>&nbsp;&nbsp;</span>
+  {%- assign allowance-btn = true -%}
+  {% endif %}
+  
+  {% if customer.metafields.allowance[annual_key] %}
+  <button type="button" class="btn btn--secondary w3-transparent w3-text-white w3-border-white w3-padding allowance-btn" style="width:100%; max-width:184px; font-style:normal !important;" disabled >
+    <h2 class="w3-text-white w3-margin-0 btn--2" style="font-size:28px;">
+      ${%- assign annual_allowance = customer.metafields.allowance[annual_key] | default: '00' | times: '1.00' | round: 2 -%}
+      {{- annual_allowance -}}
+      {%- assign annual_allowance_decimal_size = annual_allowance | split:"." | last | size -%}
+      {%- if annual_allowance_decimal_size == 1 -%}
+      	{{- '0' -}}
+      {%- endif -%}
+    </h2><small class="mob-font">{{ annual_apparel_tag }}</small>
+  </button>
+  <span class="large--hide"><br><br></span>
+  <span class="small--hide w3-hide-medium">&nbsp;&nbsp;</span>
+  {%- assign allowance-btn = true -%}
+  {% endif %}
+  
+  {% unless customer_role == "Role:PM" %}
+  {% if customer.metafields.allowance[mktGifts_key] %}
+  <button type="button" class="btn btn--secondary w3-transparent w3-text-white w3-border-white w3-padding allowance-btn" style="width:100%; max-width:184px; font-style:normal !important;" disabled >
+    <h2 class="w3-text-white w3-margin-0 btn--3" style="font-size:28px;">
+      ${%- assign mktGifts_allowance = customer.metafields.allowance[mktGifts_key] | default: '00' | times: '1.00' | round: 2 -%}
+      {{- mktGifts_allowance -}}
+      {%- assign mktGifts_allowance_decimal_size = mktGifts_allowance | split:"." | last | size -%}
+      {%- if mktGifts_allowance_decimal_size == 1 -%}
+      	{{- '0' -}}
+      {%- endif -%}
+    </h2><small class="mob-font">{{ mkt_gift_tag }}</small>
+  </button>
+  <span>&nbsp;&nbsp;</span>
+  {%- assign allowance-btn = true -%}
+  {% endif %}
+  {% endunless %}
+  
+  {% if customer.metafields.allowance[FieldTees_key] %}
+  <button type="button" class="btn btn--secondary w3-transparent w3-text-white w3-border-white w3-padding allowance-btn" style="width:100%; max-width:184px; font-style:normal !important;" disabled >
+    <h2 class="w3-text-white w3-margin-0 btn--4" style="font-size:28px;">
+      {%- assign FieldTees_allowance = customer.metafields.allowance[FieldTees_key] | default: '00' -%}
+      {{- FieldTees_allowance -}}
+    </h2><small class="mob-font">{{ field_tees_tag }}</small>
+  </button>
+  {%- assign allowance-btn = true -%}
+  {% endif %}
+</div>
+
+{% unless allowance-btn %}
+  <style>
+    .allowances-strip{ display:none !important; }
+  </style>
+{% endunless %}
+
+<!-- <div style="height:120px;">&nbsp;</div> -->

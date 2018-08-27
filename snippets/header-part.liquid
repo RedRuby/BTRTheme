@@ -1,0 +1,42 @@
+  {% comment %}
+      <div class="grid-item large--one-half text-center large--text-right">
+        
+        {% if section.settings.show_announcement or shop.customer_accounts_enabled %}
+          <div class="site-header--text-links{% if section.settings.announcement_text == blank %} medium-down--hide{% endif %}">
+            {% if section.settings.show_announcement %}
+              {% if section.settings.announcement_link != blank %}
+                <a href="{{ section.settings.announcement_link }}">
+              {% endif %}
+
+                <p>{{ section.settings.announcement_text | escape }}</p>
+
+              {% if section.settings.announcement_link != blank %}
+                </a>
+              {% endif %}
+            {% endif %}
+
+            {% if shop.customer_accounts_enabled %}
+              <span class="site-header--meta-links medium-down--hide">
+                {% if customer %}
+                  {% capture first_name %}<a href="/account">{{ customer.first_name }}</a>{% endcapture %}
+                  {{ 'layout.customer.logged_in_as_html' | t: first_name: first_name }} &middot; {{ 'layout.customer.log_out' | t | customer_logout_link }}
+                {% else %}
+                  {{ 'layout.customer.sign_in' | t | customer_login_link }}
+                  <span class="site-header--spacer">{{ 'layout.customer.or' | t }}</span>
+                  {{ 'layout.customer.create_account' | t | customer_register_link }}
+                {% endif %}
+              </span>
+            {% endif %}
+          </div>
+
+          <br class="medium-down--hide">
+        {% endif %}
+
+        {% include 'search-bar' %}
+
+        <a href="/cart" class="header-cart-btn cart-toggle">
+          <span class="icon icon-cart"></span>
+          {{ 'layout.cart.cart' | t }} <span class="cart-count cart-badge--desktop {% if cart.item_count == 0 %}hidden-count{% endif %}">{{ cart.item_count }}</span>
+        </a>
+      </div>
+  {% endcomment %}

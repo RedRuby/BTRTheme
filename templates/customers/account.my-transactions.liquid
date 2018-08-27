@@ -1,0 +1,298 @@
+{% include "account-allowance-strip" %}
+
+
+<div class="grid account-wrapper">
+
+  <div class="grid-item one-whole medium-down--one-whole w3-padding-right">
+    
+    <span class="small--hide1"><br></span>
+    
+    <h6 class="w3-medium w3-bold text-dark-blue w3-uppercase" style="display: inline-block;">{{ 'My Transactions' }}</h6>
+    
+<!--     <button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small" onclick="getData_CSV('/apps/api/list_transaction.csv?shopify_customer_id={{- customer.id -}}&domain='+shop_domain{%- if customer.tags contains 'Role:Admin' -%}+'&customer_only=true'{%- endif -%});"><i class="fa fa-download fa-lg"></i><span class="small--hide">&nbsp; Export CSV</span></button> -->
+    <a href="/account"><button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small w3-margin-right"><i class="fa fa-shopping-cart fa-lg"></i><span class="small--hide">&nbsp; {{ 'customer.orders.title' | t }}</span></button></a>
+    
+    <hr class="hr--small border-liter-blue" style="margin-bottom:0px;">
+    
+    <table id="transaction-table" class="full responsive-table" style="display:none;">
+        <thead class="small--hide medium-down--hide">
+          <tr class="w3-medium">
+            <th>{{ 'Employee Name' }}</th>
+            <th>{{ 'Date' }}</th>
+            <th>{{ "Created By" }}</th>
+            <th>{{ "Allowance Name" }}</th>
+            <th>{{ 'Type' }}</th>
+            <th>{{ "Credit" }}</th>
+            <th>{{ "Debit" }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% capture minus_icon %}<span class="null-placeholder">&nbsp;&nbsp;</span>{% endcapture %}
+          <tr w3-repeat="transactions" class="text-dark-blue w3-medium">
+            <td title="{% raw %}{{ email }}{% endraw %}"><span class="large--hide medium--hide text-liter-blue">{{ 'Employee Name' }}<br></span>{% raw %}{{ employee_name }}{% endraw %}</td>
+            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Date' }}<br></span>{% raw %}{{ date }}{% endraw %}</td>
+            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Created By' }}<br></span>{% raw %}{{ created_by }}{% endraw %}</td>
+            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Allowance Name' }}<br></span>{% raw %}{{ allowance_name }}{% endraw %}</td>
+            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Allowance Type' }}<br></span>{% raw %}{{ allowance_type }}{% endraw %}</td>
+            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Credit' }}<br></span>{% raw %}{{ credit }}{% endraw %}</td>
+            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Debit' }}<br></span>{% raw %}{{ debit }}{% endraw %}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div id="table-style"><style>.date_desc_btn{ color: #ea8221 !important; }</style></div>
+
+      <br>
+      <div class="grid one-whole per_pageContainer pagination pagination-custom w3-pagination" style="display:none;">
+        <div class="grid-item two-thirds small--one-whole small--text-center w3-padding-0">
+          <div id="paginationInit" class="w3-margin-top">
+
+          </div>
+        </div>
+        <div class="grid-item one-third text-right small--one-whole small--text-center">
+          <label for="per_page" style="display:inline-block;" class="w3-margin-top">Per Page: &nbsp;</label>
+          <select id="per_page" class="per_page w3-margin-top" style="width:72px; display:inline-block; height:auto;" onchange="updateState({page: '1',per_page: this.value}); updatePerPage(this.value);">
+            <option value='10'>10</option>
+            <option value='20'>20</option>
+            <option value='30'>30</option>
+            <option value='40'>40</option>
+            <option value='50'>50</option>
+          </select>
+        </div>
+      </div>
+
+      <p id="no-data" class="w3-medium w3-margin-top" style="display:none;">{{ 'No Data Found..' }}</p>
+
+    
+  </div>
+
+
+</div>
+
+<style>
+  @media (max-width: 749px){
+    .responsive-table tr > td:not(:nth-last-of-type(1)) {
+        border: none;
+        padding: 0px;
+    }
+    .td-full{
+    	width: 100% !important;
+    }
+  }
+</style>
+
+<script>
+  
+  var test_data = {"employees":[{"name":"Test Test","last_name":"Test","email":"prashant.b.chaudhari@gmail.com","shopify_customer_id":"507812937788","role_id":"PM","collection_id":1,"doh":"2018-01-01","allowances":[{"allowance_type":"ApparelPM","allowance_amount":150}],"gifts":[]},{"name":"Test Test","last_name":"Test","email":"prashant.b.chaudhari@gmail.com","shopify_customer_id":"508555591740","role_id":"PM","collection_id":1,"doh":"2018-01-01","allowances":[{"allowance_type":"ApparelPM","allowance_amount":150}],"gifts":[]}],"total_orders":2,"per_page":"10","page":"1"};
+  
+  var uri = new YouAreI(document.location.href);
+  query = uri.query_get();
+  
+  var name = '';
+  var role = '';
+  var doh = '';
+  var manager = '';
+  
+  var page = (query.page != undefined) ? query.page : "1";
+  var per_page = (query.per_page != undefined) ? query.per_page : localStorage.per_page_{{ customer.id }} || "10";
+  
+  var sort_name = '';
+  var sort_role = '';
+  var sort_doh = '';
+  var sort_manager = '';
+  
+  var employee_id = "";
+  var data = {};
+  var employee_data = {};
+  var employees_data = {};
+  var old_update_form_data = '';
+  var shop_domain = "{{ shop.permanent_domain }}";
+  
+  var client_data = {navigator: navigator};
+  
+  var scroll = false;
+  
+  updateState(query);
+  
+  $.get("http://ipinfo.io", function(response) {
+      client_data.ip = response.ip;
+  }, "jsonp");
+  
+  function dateInit(){
+      $(".datepicker").datepicker({
+          showAnim: "drop",
+          changeMonth: true,
+          changeYear: true,
+          maxDate: '0',
+  //         showButtonPanel: true,
+          dateFormat: "mm/dd/yy",
+          showOtherMonths: true,
+  //         onClose: function(dateText, inst) { 
+  //             $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+  //         }
+      });
+  }
+  
+  function ApplyDate() {
+      var start_date = $("#start-date").val();
+      var end_date = $("#end-date").val();
+      start_unix = getUnix(start_date, 0);
+      end_unix = getUnix(end_date, 1);
+      if (start_date === "" || end_date === "") {
+          alert("Please select start and end dates.");
+      } else if(start_unix >= end_unix){
+          alert("Start date must be smaller than End date.");
+      } else {
+          updateState({ start_date: start_date, end_date: end_date, page: '1' });
+      }
+  }
+    
+  function getUnix(date, i){
+    if(i == 0)
+      var newDate = Date.parse(date + " 00:00:00");
+    else if(i == 0.5)
+      var newDate = Date.parse(date + " 12:00:00");
+    else
+      var newDate = Date.parse(date + " 24:00:00");
+    var date_unix = Math.round(new Date(newDate).getTime()/1000);
+    var date_unix = new Date(newDate).getTime();
+    
+    return date_unix;
+    
+  }
+  
+  function updatePerPage(val){
+    if (typeof(Storage) !== "undefined") {
+      localStorage.per_page_{{ customer.id }} = val;
+    }
+  }
+  
+  function toggleOrderBtns(btn , data){ console.log('called-for:', data)
+    switch(btn){
+      case 'name': if(data == 'asc') $('#table-style').html('<style>.name_asc_btn{ color: #ea8221 !important; }</style>'); else $('#table-style').html('<style>.name_desc_btn{ color: #ea8221 !important; }</style>'); console.log('called-for:', btn); break;
+      case 'role': if(data == 'asc') $('#table-style').html('<style>.role_asc_btn{ color: #ea8221 !important; }</style>'); else $('#table-style').html('<style>.role_desc_btn{ color: #ea8221 !important; }</style>'); console.log('called-for:', btn); break;
+      case 'doh': if(data == 'asc') $('#table-style').html('<style>.doh_asc_btn{ color: #ea8221 !important; }</style>'); else $('#table-style').html('<style>.doh_desc_btn{ color: #ea8221 !important; }</style>'); console.log('called-for:', btn); break;
+      case 'manager': if(data == 'asc') $('#table-style').html('<style>.manager_asc_btn{ color: #ea8221 !important; }</style>'); else $('#table-style').html('<style>.manager_desc_btn{ color: #ea8221 !important; }</style>'); console.log('called-for:', btn); break;
+    }
+  }
+  
+  function updateState(param){
+      if(param.page != undefined)data.page = param.page; else if(page.length != 0)data.page = page;
+      if(param.per_page != undefined)data.per_page = param.per_page; else if(per_page.length != 0)data.per_page = per_page;
+    
+      if(param.name != undefined)data.name = param.order; else if(name.length != 0)data.name = name;
+      if(param.role != undefined)data.role = param.role; else if(role.length != 0)data.role = role;
+      if(param.doh != undefined)data.doh = param.doh; else if(doh.length != 0)data.doh = doh;
+      if(param.manager != undefined)data.manager = param.manager; else if(manager.length != 0)data.manager = sort_total;
+    
+      fetchOrder(data);     
+      
+  }
+  
+  function fetchOrder(data){
+    
+    page = data.page;
+    per_page = data.per_page; $('#per_page option[value="'+data.per_page+'"]').prop('selected', 'selected');
+    
+    if(data.name != undefined){ name = data.name; if(data.name.length != 0)toggleOrderBtns('name', data.name); }
+    if(data.role != undefined){ role = data.role; if(data.role.length != 0)toggleOrderBtns('role', data.role); }
+    if(data.doh != undefined){ doh = data.doh; if(data.doh.length != 0)toggleOrderBtns('doh', data.doh); }
+    if(data.manager != undefined){ manager = data.manager; if(data.manager.length != 0)toggleOrderBtns('manager', data.manager); }
+    
+    data = removeEmpty(data);  
+    History.pushState({ url: document.location.href }, document.title, '?view={{ template.suffix }}&' + $.param(data) );
+    
+    data2 = Object.assign({}, data);
+    data2.domain = shop_domain; 
+    data2.shopify_customer_id = {{- customer.id -}}; 
+    data2.customer_only = true;
+    
+    freez();
+    console.log(data2);
+    
+    console.log($.param(data2));
+    
+    {% comment %} dataSetup(test_data); defreez();  {% endcomment %}  
+      $.ajax({
+        url: "/apps/api/list_transaction.json",
+        type:'GET',
+        data: data2,
+        dataType: 'json',
+        contentType: 'application/json',
+        success:function(data){
+          console.log(JSON.stringify(data));
+          if(data.message){
+              console.log(data.message);
+              show_message4(data.message,true);
+          }
+           else if(data.error){
+              console.log(data.error);
+              show_message4(data.error,false);
+          }
+          if(data.transactions != undefined){ //&& data.orders.length > 0
+        	dataSetup(data);
+          }else{
+          	$('#transaction-table, .pagination').hide();
+            $('#no-data').show();
+          }
+          defreez();  
+        },
+        error:function(data){
+          console.log(JSON.stringify(data)); 
+          console.log('Some error occured..');
+          show_message4('Some error occured..',false);
+        }
+      });
+  }
+  
+  function dataSetup(data){ 
+      var i, j; 
+      var myArray = data['transactions'];
+      for (i = 0; i < myArray.length; i++) {
+        data['transactions'][i]["allowance_type"] = (data['transactions'][i]["allowance_type"] == "amount_base") ? "$" : "#" ;
+      } 
+//       console.log(JSON.stringify(data));
+  //     return(data);
+         populateTable(data);
+  }
+  
+  function populateTable(data){
+      employees_data = data;
+      w3DisplayData("transaction-table", data);
+      $('#transaction-table, .pagination').show();
+      $('#no-data').hide();
+      $("td:contains('{% raw %}{{{% endraw %}'):contains('{% raw %}}}{% endraw %}')").html('{{ minus_icon }}');
+      
+      $('td.gift').html('<span class="large--hide medium--hide text-liter-blue">{{ "Gift Codes" }}<br></span>'+$('td.gift').html());
+                        
+      if(scroll)
+        $('body, html').delay(100).animate({scrollTop: $('table').offset().top-200});
+      else
+        scroll = true;                  
+        
+      {% comment %}{% endcomment %}
+      $('#paginationInit').pagination({
+          items: data["total_orders"],
+          itemsOnPage: data["per_page"],
+          hrefTextPrefix: "javascript:updateState({ 'page': '",
+          hrefTextSuffix: "'});",
+          currentPage: data["page"],
+          prevText:'<i class="fa fa-arrow-left"></i>',
+          nextText:'<i class="fa fa-arrow-right"></i>',
+          listStyle: 'w3-pagination pagination pagination-custom',
+          ellipsePageSet: false,
+  //         cssStyle: 'light-theme'
+      });
+    
+  }
+  
+  function removeEmpty(obj) {
+    Object.keys(obj).forEach(function(key) {
+      if (obj[key] && typeof obj[key] === 'object') removeEmpty(obj[key])
+      else if (!obj[key] && obj[key] !== undefined) delete obj[key]
+    });
+    return obj;
+  };
+</script>
+
+{% include "common_code_lib", def_data_csv: true %}

@@ -1,0 +1,11 @@
+if(location.href.indexOf("/checkouts") != -1){
+  $ = window.Checkout.$; console.log('checkout loaded');
+  
+  {% assign gateway_code = cart.attributes['pay_by'] | split:'-' | last | default:'6873743420' %}
+  
+  if($('.main .step[data-step="payment_method"]').length > 0){ console.log('payment method loaded');
+    $('#checkout_payment_gateway_{{ gateway_code }}')[0].click();
+    
+    $('[name="checkout[payment_gateway]"][id]').not('#checkout_payment_gateway_{{ gateway_code }}').parent().parent().hide();
+  }
+}

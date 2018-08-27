@@ -1,0 +1,172 @@
+<div class="mfp-bg mfp-fade mfp-ready" style="display:none; opacity:0.9; background-color:gray;"></div>
+
+<div class="mfp-wrap mfp-auto-cursor mfp-fade mfp-ready mfp-hide" tabindex="-1" style="overflow-x: hidden; overflow-y: auto;" style="display:none;">
+  <div class="mfp-container mfp-s-ready mfp-inline-holder">
+    <div class="mfp-content bounceIn animated w3-card-2">
+
+      <div id="EmployeeAddModal" class="white-popup-block" style="display:none;">
+        <form id="EmployeeAddModal_form" action="" method="post" onsubmit="callAddEmployee(event, this); return false ;" order_id="">
+          <h2 class="text-center w3-bold text-dark-blue">Employee Registration<span style="font-size:inherit !important;" class="orderName"></span></h2>
+          <span class=""><br></span>
+          <div class="grid w3-margin-top">
+          	<div class="grid-item large--one-half small--one-whole">
+              <label for="add_first_name" class="w3-bold text-dark-blue" >Employee First Name</label>
+              <input id="add_first_name" type="text" name="add_first_name" required="required" placeholder="" onchange="contentChanged_a();"/>
+            </div>
+            <div class="grid-item large--one-half small--one-whole">
+              <label for="add_last_name" class="w3-bold text-dark-blue" >Employee Last Name</label>
+              <input id="add_last_name" type="text" name="add_last_name" required="required" placeholder="" onchange="contentChanged_a();"/>
+            </div>
+            <div class="grid-item large--one-half small--one-whole">
+              <label for="add_email" class="w3-bold text-dark-blue" >Email ID</label>
+              <input id="add_email" type="email" name="add_email" required="required" placeholder="" onchange="contentChanged_a();"/>
+            </div>
+            <div class="grid-item large--one-half small--one-whole">
+              <label for="add_doh" class="w3-bold text-dark-blue" >Date of Hire</label>
+              <input id="add_doh" class="datepicker" type="text" name="add_doh" required="required" autocomplete="off" placeholder="" onpaste="event.preventDefault();" onchange="contentChanged_a();"/>
+            </div>
+            <div class="grid-item large--one-whole half small--one-whole">
+              <label for="add_role_name" class="w3-bold text-dark-blue" >Employee Role</label>
+              <select id="add_role_name" name="add_role_name" required="required" onchange="contentChanged_a();"  style="max-width:100% !important;">
+                <option value="" selected disabled>Select</option>
+                  {% for role in non_admin_role_names %}
+                    <option value="{{ non_admin_roles[forloop.index0] | split:":" | last }}">{{ role }}</option>
+                  {% endfor %}
+              </select>
+            </div>
+            <div class="grid-item large--one-half small--one-whole hide">
+              <label for="add_report_to" class="w3-bold text-dark-blue" >Reporting Manager</label>
+              <select id="add_report_to" name="add_report_to" onchange="contentChanged_a();" >
+                <option value="" selected disabled>Select</option>
+              </select>
+            </div>
+          </div>
+          <br>
+          <div class="text-center">
+            <br>
+            <button type="submit" style="" class="btn" disabled="disabled">Submit</button><br><br>
+            <a class="w3-text-red" style="cursor:pointer;" onclick="updateModal_a();"><u>Cancel</u></a>
+            <br>
+          </div>
+        </form>
+      </div>
+      <button title="Close (Esc)" onclick="updateModal_a();" type="button" class="mfp-close">×</button>
+
+    </div>
+    <div class="mfp-preloader w3-center center-block" style="display:initial; z-index:2000 !important;"><i class="fa fa-refresh fa-2x text-lite-blue w3-spin "></i></div>
+  </div>
+
+</div>
+
+<style>
+  .mfp-content{
+    width:95% !important; 
+    min-height:632px;
+    background:white; 
+    padding:40px 50px 50px;
+    max-width:830px;
+    min-width:400px;
+    position:relative;
+    border-radius:5px;
+    margin:20px auto;
+  }
+  
+  @media (max-width: 749px){
+  	.mfp-content{
+      width:100% !important; 
+      height:auto;
+      padding:20px;
+      margin:auto;
+    }
+    .mfp-container{
+      height:auto;
+    }
+  }
+</style>
+
+<script>
+  
+  var changed_a = '';
+  var mfpHTML_a = '';
+  
+  
+  $(document).ready(function(){
+     dateInit();
+  	 mfpHTML_a = $('#EmployeeAddModal').html();
+//      FormValidationPolyfill.addForm('EmployeeAddModal_form'); 
+  });
+  
+  function updateModal_a(){
+    $('html').css('overflow','auto');
+    $('.employee-add-form').find('.mfp-bg, .mfp-wrap, #EmployeeAddModal, .mfp-content').hide().addClass('mfp-hide');
+    $('.employee-add-form').find('.mfp-preloader').show();
+    
+    if( changed_a == true || true ){ 
+      $('#EmployeeAddModal form').trigger("reset");
+//       $('#EmployeeAddModal').html(mfpHTML_a); 
+    
+      changed_a = ''; 
+    }
+  }
+  
+  function contentChanged_a(){
+    empty_field = $('#EmployeeAddModal [name][required]').filter(function(){ return this.value.length == 0; }).length;
+    
+    if(!empty_field){
+      $('#EmployeeAddModal button[type = "submit"]').removeAttr('disabled'); 
+    }else{
+      $('#EmployeeAddModal button[type = "submit"]').prop('disabled', 'disabled'); 
+    }
+  }
+  
+  function callAddEmployee(e, obj){
+    e.preventDefault();
+    e.stopPropagation();
+    
+    data2 = {
+          first_name : $('#EmployeeAddModal [name="add_first_name"]').val(),
+          last_name  : $('#EmployeeAddModal [name="add_last_name"]').val(),
+          email      : $('#EmployeeAddModal [name="add_email"]').val(),
+          role_name	 : $('#EmployeeAddModal [name="add_role_name"]').val(),
+          doh 		 : $('#EmployeeAddModal [name="add_doh"]').val(),
+          report_to	 : $('#EmployeeAddModal [name="add_report_to"]').val(),
+    };
+    
+    console.log(data2);
+    
+    freez();
+    
+    $.ajax({
+        url: "/apps/api/customer/create.json",
+        type:'POST',
+        data: JSON.stringify(data2),
+        dataType: 'json',
+        contentType: 'application/json',
+        success:function(data){
+          console.log(JSON.stringify(data));
+          if(data.status == "200"){
+              console.log(data.message);
+              show_message4(data.message,true);
+              setTimeout(function(){
+                changed_a = true;
+                updateModal_a();
+                updateState({ page: '1' });
+              },1500);
+          }
+           else if(data.status == "400"){
+              console.log(data.message);
+              show_message4(data.message,false);
+          }
+  
+        },
+        error:function(data){
+          console.log(JSON.stringify(data)); 
+          console.log('Some error occured..');
+          show_message4('Some error occured..',false);
+        }
+      });
+    
+    return false;
+  }
+  
+</script>

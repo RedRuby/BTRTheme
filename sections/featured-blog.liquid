@@ -1,0 +1,172 @@
+<div class="featured-blog featured-blog--{{ section.id }}" data-section-id="{{ section.id }}">
+
+  {%- assign blog = blogs[section.settings.blog] -%}
+
+  {% case section.settings.post_limit %}
+    {% when 3 %}
+      {%- assign grid_width = 'small--one-whole medium--one-third large--one-third' -%}
+      {%- assign width = '345' -%}
+      {%- assign height = '550' -%}
+    {% when 2 %}
+      {%- assign grid_width = 'small--one-whole medium--one-half large--one-half' -%}
+      {%- assign width = '540' -%}
+      {%- assign height = '600' -%}
+    {% when 1 %}
+      {% if section.settings.blog_show_image %}
+        {%- assign grid_width = 'small--one-whole medium--one-half large--one-half' -%}
+        {%- assign width = '345' -%}
+        {%- assign height = '550' -%}
+      {% else %}
+        {%- assign grid_width = 'text-center one-whole' -%}
+      {% endif %}
+    {% else %}
+      {%- assign grid_width = 'small--one-whole medium--one-third large--one-third' -%}
+  {% endcase %}
+
+  <hr>
+
+  {% if section.settings.title != blank %}
+    <div class="section-header">
+      <h2 class="section-header--left h1">{{ section.settings.title | escape }}</h2>
+    </div>
+  {% endif %}
+
+  {% unless blog.articles_count == 0 %}
+    <div class="grid-uniform">
+      {% for article in blog.articles limit: section.settings.post_limit %}
+        <div class="grid-item {{ grid_width }}">
+          <div class="featured-blog__post">
+
+            {% if section.settings.blog_show_image %}
+              {% unless article.image == blank %}
+                {%- assign image = article.image -%}
+
+                {%- assign max_width = width | plus: 0 -%}
+                {%- assign max_height = height | plus: 0 -%}
+
+                {%- include 'image-logic' with width: max_width, height: max_height -%}
+
+                {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                <a class="article__featured-link" href="{{ article.url }}">
+                  <div class="lazyload__image-wrapper no-js" style="max-width: {{ max_width }}px">
+                    <div style="padding-top:{{ 1 | divided_by: image.aspect_ratio | times: 100}}%;">
+                      <img
+                        class="lazyload no-js"
+                        data-src="{{ img_url }}"
+                        data-widths="[125, 180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                        data-aspectratio="{{ image.aspect_ratio }}"
+                        data-sizes="auto"
+                        alt="{{ image.alt | escape }}">
+                    </div>
+                  </div>
+                  <noscript>
+                    <div class="article__featured-image-wrapper-nojs">
+                      {{ image | img_url: '1024x1024' | img_tag: article.title | escape }}
+                    </div>
+                  </noscript>
+                </a>
+              {% endunless %}
+            {% endif %}
+
+            {% unless section.settings.post_limit == 1 and section.settings.blog_show_image %}
+              {% include 'featured-blog', article: article %}
+            {% endunless %}
+
+          </div>
+        </div>
+
+        {% if section.settings.post_limit == 1 and section.settings.blog_show_image %}
+          <div class="grid-item {{ grid_width }}">
+            <div class="featured-blog__post">
+               {% include 'featured-blog', article: article %}
+            </div>
+          </div>
+        {% endif %}
+
+      {% endfor %}
+    </div>
+
+  {% else %}
+    {% include 'onboarding-featured-blog' %}
+  {% endunless %}
+
+  {% if blog == empty %}
+    {% include 'onboarding-featured-blog' %}
+  {% endif %}
+
+  {% if section.settings.show_view_all %}
+    <div class="section-header text-center">
+      <a href="{{ blog.url }}" class="btn">
+        {{ 'blogs.article.view_all' | t }}
+      </a>
+    </div>
+  {% endif %}
+
+</div>
+
+{% schema %}
+  {
+    "name": "Blog posts",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Blog"
+      },
+      {
+        "id": "blog",
+        "type": "blog",
+        "label": "Blog"
+      },
+      {
+        "type": "range",
+        "id": "post_limit",
+        "label": "Posts",
+        "min": 1,
+        "max": 3,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "checkbox",
+        "id": "blog_show_date",
+        "label": "Show date",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "blog_show_author",
+        "label": "Show author",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "blog_show_image",
+        "label": "Show cover image",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "blog_show_excerpt",
+        "label": "Show excerpt",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_view_all",
+        "label": "Show 'View all' button",
+        "default": false
+      }
+    ],
+    "presets": [
+      {
+        "name": "Blog posts",
+        "category": "Blog",
+        "settings": {
+          "blog": "News"
+        }
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,174 @@
+{% include "definitions", def_role_list: true %}
+
+<header class="site-header {% if template contains 'login' or template contains 'activate' or template contains 'reset' %}no-cart-header{% endif %}" role="banner" data-section-id="{{ section.id }}" data-section-type="header-section">
+  <div class="wrapper">
+
+    <div class="grid--full">
+      {% unless customer %}
+        <div class="grid-item large--one-third medium--hide small--hide text-right">
+          &nbsp;
+        </div>
+      {% endunless %}
+      
+      <div class="grid-item push--large--one-third1 {% unless customer %}large--one-third text-center{% else %}large--one-half medium--one-whole small--one-whole text-left{% endunless %}">
+        {% if template.name == 'index' %}
+          <h1 class="header-logo" itemscope itemtype="http://schema.org/Organization">
+        {% else %}
+          <div class="h1 header-logo" itemscope itemtype="http://schema.org/Organization">
+        {% endif %}
+          {% if section.settings.logo %}
+          {% capture image_size %}{{ section.settings.logo_max_width | escape }}x{% endcapture %}
+          {%- assign img_url = section.settings.logo | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+          {% capture logo_alt %}{{ section.settings.logo.alt | default: shop.name }}{% endcapture %}
+          <a href="/" itemprop="url">
+            <div class="lazyload__image-wrapper no-js" style="max-width:{{ section.settings.logo_max_width }}px; {% if customer %}margin: 0px;{% endif %}">
+              <div style="padding-top:{{ 1 | divided_by: section.settings.logo.aspect_ratio | times: 100}}%;">
+                <img class="lazyload js"
+                  data-src="{{ img_url }}"
+                  data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                  data-aspectratio="{{ section.settings.logo.aspect_ratio }}"
+                  data-sizes="auto"
+                  alt="{{ logo_alt | escape }}"
+                  style="width:{{ section.settings.logo_max_width }}px;">
+              </div>
+            </div>
+            <noscript>
+              {% capture image_size %}{{ section.settings.logo_max_width | escape }}x{% endcapture %}
+              <img src="{{ section.settings.logo | img_url: image_size }}"
+                srcset="{{ section.settings.logo | img_url: image_size }} 1x, {{ section.settings.logo | img_url: image_size, scale: 2 }} 2x"
+                alt="{{ logo_alt | escape }}"
+                itemprop="logo"
+                style="max-width:{{ section.settings.logo_max_width }}px;">
+            </noscript>
+          </a>
+          {% else %}
+            <a href="/" itemprop="url">{{ shop.name }}</a>
+          {% endif %}
+        {% if template.name == 'index' %}
+          </h1>
+        {% else %}
+          </div>
+        {% endif %}
+      </div>
+      
+      
+      {% if customer %}
+      	<div class="grid-item large--one-half medium--one-half text-right">
+          {% if customer.tags contains 'Role:Admin' %}
+            {% unless template.suffix contains 'admin' or template.name == 'account' %}
+                <a href="/account?view=admin-orders" class="small--hide medium--hide"><button type="button" class="btn btn--secondary w3-small"><i class="fa fa-gear fa-lg"></i>&nbsp; ADMIN DASHBOARD</button></a>
+            {% endunless %}
+          {% endif %}
+          
+          {% for tag in customer.tags %}
+            {% if tag contains 'Role:' and tag != 'Role:Admin' %}
+              {% assign customer_role = tag %}
+            {% endif %}
+          {% endfor %}
+
+<!--           <script>console.log('{{ non_admin_roles | join:',' }}');</script>
+          <script>console.log('{{ customer_role }}');</script> -->
+          
+          {% if customer_role and non_admin_roles contains customer_role %}
+          <a href="/cart" class="header-cart-btn cart-toggle" style="display: inline-block;" title="{{ 'layout.cart.cart' | t }}">
+            <i class="fa fa-shopping-cart fa-2x"></i>
+            <span class="cart-count cart-badge--desktop {% if cart.item_count == 0 %}hidden-count{% endif %}">{{ cart.item_count }}</span>
+          </a>
+          {% endif %}
+        </div>
+      {% endif %}
+      
+    </div>
+    
+    
+    
+  </div>
+</header>
+
+{% if customer %}
+  <div id="mobileNavBar" class="w3-card-2">
+    <div class="display-table-cell">
+      <button class="menu-toggle mobileNavBar-link" aria-controls="navBar" aria-expanded="false" style="font-size:16px;">{{ 'layout.navigation.mobile_menu' | t }}&nbsp; <span class="fa fa-caret-down" aria-hidden="true"></span><span class="fa fa-caret-up hide" aria-hidden="true"></span></button>
+    </div>
+    <div class="display-table-cell text-right">
+      <a href="/account" class="site-nav--link" style="padding-right:0; color:white;" data-meganav-type="child">
+        <i class="fa fa-user-circle fa-lg"></i>&nbsp; <small><b>{{ 'layout.customer.view_account' | t }}</b></small>
+      </a>
+    </div>
+  </div>
+
+  {% for tag in customer.tags %}
+    {% if tag contains 'Role:' and tag != 'Role:Admin' %}
+      {% assign customer_role = tag %}
+    {% endif %}
+  {% endfor %}
+
+  {% if non_admin_roles contains customer_role %}
+  <nav class="nav-bar w3-card-2" id="navBar" role="navigation">
+    <div class="wrapper">
+      {% comment %}{% include 'search-bar' %}{% endcomment %}
+      {% include 'mobile-nav' %}
+      {% include 'site-nav' %}
+    </div>
+  </nav>
+  {% else %}
+	<hr class="hr--small border-liter-blue" style="margin-top:0px;">
+  {% endif %}
+{% else %}
+  {% unless template contains "customers" %}
+    <hr class="hr--small border-liter-blue" style="margin-top:0px;">
+  {% endunless %}
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Header",
+    "class": "header-section",
+    "settings": [
+      {
+        "type": "link_list",
+        "id": "menu",
+        "label": "Menu",
+        "default": "main-menu"
+      },
+      {
+        "type": "header",
+        "content": "Logo"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Custom logo",
+        "info": "400px wide .png recommended"
+      },
+      {
+        "type": "text",
+        "id": "logo_max_width",
+        "label": "Custom logo width",
+        "default": "305"
+      },
+      {
+        "type": "header",
+        "content": "Announcement bar"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_announcement",
+        "label": "Show announcement",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "announcement_text",
+        "label": "Text",
+        "default": "Announce something here"
+      },
+      {
+        "type": "url",
+        "id": "announcement_link",
+        "label": "Link",
+        "info": "Optional"
+      }
+    ]
+  }
+{% endschema %}

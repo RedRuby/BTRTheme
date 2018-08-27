@@ -1,0 +1,365 @@
+<div class="grid w3-margin-bottom">
+  <div class="grid-item large--one-third medium--hide small--hide">
+    &nbsp;
+  </div>
+  <div class="grid-item large--one-third text-center">
+    <h1 class="text-dark-blue w3-bold">Admin Dashboard</h1>
+  </div>
+  <div class="grid-item large--one-third medium--hide small--hide text-right">
+    &nbsp;
+  </div>
+</div>
+
+{% include "common_code_lib", def_admin_nav: true %}
+
+<div style="height:40px;">&nbsp;</div>
+
+<span class="small--hide1"><br></span>
+
+<div class="grid account-wrapper">
+
+  <div class="grid-item one-whole">
+    <h6 class="w3-medium w3-bold text-dark-blue w3-uppercase" style="display: inline-block;">{{ 'All Gift Codes' }}</h6>
+    
+<!--     <button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small" onclick="getData_CSV('/apps/api/customer/gift_listing.csv?domain='+shop_domain);"><i class="fa fa-download fa-lg"></i><span class="small--hide">&nbsp; Export CSV</span></button> -->
+    
+    <hr class="hr--small border-liter-blue" style="margin-bottom:0px;">
+
+      <table id="gift-table" class="full responsive-table" style="display:none;">
+        <thead class="small--hide medium-down--hide">
+          <tr class="w3-medium">
+            <th>{{ 'Gift Code' }}</th>
+            <th>{{ 'Gift Type' }}</th>
+            <th>{{ 'Gift Amount' }}</th>
+            <th>{{ 'Assigned To' }}</th>
+            <th>{{ 'Date Assigned' }}</th>
+            <th>{{ 'Valid Through' }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% capture minus_icon %}<span class="null-placeholder">&nbsp;&nbsp;</span>{% endcapture %}
+          <tr w3-repeat="gifts" class="text-dark-blue w3-medium">
+            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Gift Code' }}<br></span>{% raw %}{{ code }}{% endraw %}</td>
+            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Gift Type' }}<br></span>{% raw %}{{ gift_type }}{% endraw %}</td>
+            <td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ 'Gift Amount' }}<br></span>${% raw %}{{ amount }}{% endraw %}</td>
+            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Assigned To' }}<br></span><div style="position:relative; max-width:200px !important;"><input type="text" class="autocomplete emp-search" value="{% raw %}{{ assigned_to }}{% endraw %}" placeholder="Search Employee.." gift_id="{% raw %}{{ shopify_discount_id }}{% endraw %}" style="height:auto; margin:0;"/></div></td>
+            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Date Assigned' }}<br></span>{% raw %}{{ gift_assigned_at }}{% endraw %}</td>
+            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Valid Through' }}<br></span>{% raw %}{{ validity }}{% endraw %}</td>
+          </tr>
+        </tbody>
+      </table>
+
+
+      <div id="table-style"><style>.date_desc_btn{ color: #ea8221 !important; }</style></div>
+
+      <br>
+      <div class="grid one-whole per_pageContainer pagination pagination-custom w3-pagination" style="display:none;">
+        <div class="grid-item two-thirds small--one-whole small--text-center w3-padding-0">
+          <div id="paginationInit" class="w3-margin-top">
+
+          </div>
+        </div>
+        <div class="grid-item one-third text-right small--one-whole small--text-center">
+          <label for="per_page" style="display:inline-block;" class="w3-margin-top">Per Page: &nbsp;</label>
+          <select id="per_page" class="per_page w3-margin-top" style="width:72px; display:inline-block; height:auto;" onchange="updateState({page: '1',per_page: this.value}); updatePerPage(this.value);">
+            <option value='10'>10</option>
+            <option value='20'>20</option>
+            <option value='30'>30</option>
+            <option value='40'>40</option>
+            <option value='50'>50</option>
+          </select>
+        </div>
+      </div>
+
+      <p id="no-data" class="w3-medium w3-margin-top" style="display:none;">{{ 'No Data Found..' }}</p>
+    
+  </div>
+
+</div>
+
+<script>
+  
+  var uri = new YouAreI(document.location.href);
+  query = uri.query_get();
+  
+  var name = '';
+  var role = '';
+  var doh = '';
+  var manager = '';
+  
+  var page = (query.page != undefined) ? query.page : "1";
+  var per_page = (query.per_page != undefined) ? query.per_page : localStorage.per_page_{{ customer.id }} || "10";
+  
+  var sort_name = '';
+  var sort_role = '';
+  var sort_doh = '';
+  var sort_manager = '';
+  
+  var gift_id = "";
+  var data = {};
+  var gifts_data = {};
+  var shop_domain = "{{ shop.permanent_domain }}"; //"pepsigenerations.myshopify.com";
+  
+  var client_data = {navigator: navigator};
+  
+  var scroll = false;
+  
+  updateState(query);
+  
+  $.get("http://ipinfo.io", function(response) {
+      client_data.ip = response.ip;
+  }, "jsonp");
+  
+  function dateInit(){
+      $(".datepicker").datepicker({
+          showAnim: "drop",
+          changeMonth: true,
+          changeYear: true,
+  //         showButtonPanel: true,
+          dateFormat: "mm/dd/yy",
+          showOtherMonths: true,
+  //         onClose: function(dateText, inst) { 
+  //             $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+  //         }
+      });
+  }
+  
+  function ApplyDate() {
+      var start_date = $("#start-date").val();
+      var end_date = $("#end-date").val();
+      start_unix = getUnix(start_date, 0);
+      end_unix = getUnix(end_date, 1);
+      if (start_date === "" || end_date === "") {
+          alert("Please select start and end dates.");
+      } else if(start_unix >= end_unix){
+          alert("Start date must be smaller than End date.");
+      } else {
+          updateState({ start_date: start_date, end_date: end_date, page: '1' });
+      }
+  }
+    
+  function getUnix(date, i){
+    if(i == 0)
+      var newDate = Date.parse(date + " 00:00:00");
+    else if(i == 0.5)
+      var newDate = Date.parse(date + " 12:00:00");
+    else
+      var newDate = Date.parse(date + " 24:00:00");
+    var date_unix = Math.round(new Date(newDate).getTime()/1000);
+    var date_unix = new Date(newDate).getTime();
+    
+    return date_unix;
+    
+  }
+  
+  function updatePerPage(val){
+    if (typeof(Storage) !== "undefined") {
+      localStorage.per_page_{{ customer.id }} = val;
+    }
+  }
+  
+  function toggleOrderBtns(btn , data){ console.log('called-for:', data)
+    switch(btn){
+      case 'name': if(data == 'asc') $('#table-style').html('<style>.name_asc_btn{ color: #ea8221 !important; }</style>'); else $('#table-style').html('<style>.name_desc_btn{ color: #ea8221 !important; }</style>'); console.log('called-for:', btn); break;
+      case 'role': if(data == 'asc') $('#table-style').html('<style>.role_asc_btn{ color: #ea8221 !important; }</style>'); else $('#table-style').html('<style>.role_desc_btn{ color: #ea8221 !important; }</style>'); console.log('called-for:', btn); break;
+      case 'doh': if(data == 'asc') $('#table-style').html('<style>.doh_asc_btn{ color: #ea8221 !important; }</style>'); else $('#table-style').html('<style>.doh_desc_btn{ color: #ea8221 !important; }</style>'); console.log('called-for:', btn); break;
+      case 'manager': if(data == 'asc') $('#table-style').html('<style>.manager_asc_btn{ color: #ea8221 !important; }</style>'); else $('#table-style').html('<style>.manager_desc_btn{ color: #ea8221 !important; }</style>'); console.log('called-for:', btn); break;
+    }
+  }
+  
+  function updateState(param){
+      if(param.page != undefined)data.page = param.page; else if(page.length != 0)data.page = page;
+      if(param.per_page != undefined)data.per_page = param.per_page; else if(per_page.length != 0)data.per_page = per_page;
+    
+      if(param.name != undefined)data.name = param.order; else if(name.length != 0)data.name = name;
+      if(param.role != undefined)data.role = param.role; else if(role.length != 0)data.role = role;
+      if(param.doh != undefined)data.doh = param.doh; else if(doh.length != 0)data.doh = doh;
+      if(param.manager != undefined)data.manager = param.manager; else if(manager.length != 0)data.manager = sort_total;
+    
+      fetchOrder(data);     
+      
+  }
+  
+  function fetchOrder(data){
+    
+    page = data.page;
+    per_page = data.per_page; $('#per_page option[value="'+data.per_page+'"]').prop('selected', 'selected');
+    
+    if(data.name != undefined){ name = data.name; if(data.name.length != 0)toggleOrderBtns('name', data.name); }
+    if(data.role != undefined){ role = data.role; if(data.role.length != 0)toggleOrderBtns('role', data.role); }
+    if(data.doh != undefined){ doh = data.doh; if(data.doh.length != 0)toggleOrderBtns('doh', data.doh); }
+    if(data.manager != undefined){ manager = data.manager; if(data.manager.length != 0)toggleOrderBtns('manager', data.manager); }
+    
+    data = removeEmpty(data);  
+    History.pushState({ url: document.location.href }, document.title, '?view={{ template.suffix }}&' + $.param(data) );
+    
+    try {
+      data2 = Object.assign({}, data);
+    }catch(e){ data2 = $.extend({}, data); }
+    data2.domain = shop_domain; 
+    
+    freez();
+    console.log(data2);
+    
+    {% comment %} dataSetup(test_data); defreez();  {% endcomment %}  
+      $.ajax({
+        url: "/apps/api/customer/gift_listing.json",
+        type:'GET',
+        data: data2,
+        dataType: 'json',
+        contentType: 'application/json',
+        success:function(data){
+          console.log(JSON.stringify(data));
+          if(data.message){
+              console.log(data.message);
+              show_message4(data.message,true);
+          }
+           else if(data.error){
+              console.log(data.error);
+              show_message4(data.error,false);
+          }
+          if(data.gifts != undefined){ //&& data.orders.length > 0
+        	dataSetup(data);
+          }else{
+          	$('#gift-table, .pagination').hide();
+            $('#no-data').show();
+          }
+          defreez();  
+        },
+        error:function(data){
+          console.log(JSON.stringify(data)); 
+          console.log('Some error occured..');
+          show_message4('Some error occured..',false);
+        }
+      });
+  }
+  
+  function dataSetup(data){ 
+      var i; 
+      var myArray = data['gifts'];
+      for (i = 0; i < myArray.length; i++) {
+        data['gifts'][i]["assigned_to"] =  Boolean(data['gifts'][i]["assigned_to"].trim()) ? data['gifts'][i]["assigned_to"] : '';
+        
+      } 
+//       console.log(JSON.stringify(data));
+  //     return(data);
+         populateTable(data);
+  }
+  
+  function populateTable(data){
+      orders_data = data;
+      w3DisplayData("gift-table", data);
+      $('#gift-table, .pagination').show();
+      $('#no-data').hide();
+      $("td:contains('{% raw %}{{{% endraw %}'):contains('{% raw %}}}{% endraw %}')").html('{{ minus_icon }}');
+    
+      $(".autocomplete").autocomplete({
+          source: function( request, response ) { console.log(request);
+            $.ajax({
+              url: "/apps/api/customer/employee_search.json",
+              dataType: "json",
+              data: {
+                search: request.term
+              },
+              success: function( data ) {
+                response($.map(data.employees, function (item) {
+                  	
+                    return {
+                        value: item.name,
+                        data: item.shopify_customer_id
+                    };
+                }));
+              }
+            });
+          },
+          minLength: 2,
+          select: function( event, ui ) {
+//             log( ui.item ?
+//               "Selected: " + ui.item.label :
+//               "Nothing selected, input was " + this.value);
+            if(ui.item){
+//               	console.log(ui.item);
+            	assignGiftToEmployee(ui.item.data, $(this).attr('gift_id'), this);
+            }else{
+            	show_message4("Nothing selected, input was '" + this.value+"'", false);
+            }
+          },
+          open: function() {
+            $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+          },
+          close: function() {
+            $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+          }
+      }).each(function(i, el){
+        if($(el).val().trim().length > 0){
+          $(el).prop('disabled','disabled');
+        }
+      });
+    
+      if(scroll)
+        $('body, html').delay(100).animate({scrollTop: $('table').offset().top-200});
+      else
+        scroll = true;
+        
+      $('#paginationInit').pagination({
+          items: data["total_orders"],
+          itemsOnPage: data["per_page"],
+          hrefTextPrefix: "javascript:updateState({ 'page': '",
+          hrefTextSuffix: "'});",
+          currentPage: data["page"],
+          prevText:'<i class="fa fa-arrow-left"></i>',
+          nextText:'<i class="fa fa-arrow-right"></i>',
+          listStyle: 'w3-pagination pagination pagination-custom',
+          ellipsePageSet: false,
+  //         cssStyle: 'light-theme'
+      });
+    
+  }
+  
+  function removeEmpty(obj) {
+    Object.keys(obj).forEach(function(key) {
+      if (obj[key] && typeof obj[key] === 'object') removeEmpty(obj[key])
+      else if (!obj[key] && obj[key] !== undefined) delete obj[key]
+    });
+    return obj;
+  };
+  
+  
+  function assignGiftToEmployee(employee_id, gift_id, input){
+  	freez();
+    
+    data2 = {
+      shopify_customer_id: employee_id, shopify_discount_id: gift_id, assigned_by_meta: '{{ customer.id }}'
+    };
+    
+    console.log(data2);
+    
+    $.ajax({
+        url: "/apps/api/customer/assign_gift.json",
+        type:'POST',
+        data: JSON.stringify(data2),
+        dataType: 'json',
+        contentType: 'application/json',
+        success:function(data){
+          console.log(JSON.stringify(data));
+          if(data.status == "200"){
+              console.log(data.message);
+              show_message4(data.message,true);
+              $(input).prop('disabled','disabled');
+          }
+          else{
+              console.log(data.message);
+              show_message4(data.message,false);
+          }  
+        },
+        error:function(data){
+          console.log(JSON.stringify(data)); 
+          console.log('Some error occured..');
+          show_message4('Some error occured..',false);
+        }
+      });
+  }
+  
+</script>
+
+{% include "common_code_lib", def_data_csv: true %}

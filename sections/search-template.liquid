@@ -1,0 +1,85 @@
+{%- comment %}<locksmith:62b7>{% endcomment -%}
+  {%- if search.results %}{% paginate search.results by 20 %}{% assign locksmith_search__results_count = 0 %}{% for result in search.results %}{% include 'locksmith-variables', locksmith_scope: 'subject', locksmith_subject: result, locksmith_subject_parent: search %}{% if locksmith_transparent %}{% else %}{% continue %}{% endif %}{% assign locksmith_search__results_count = locksmith_search__results_count | plus: 1 %}{% endfor %}{% endpaginate %}{% endif -%}
+{%- comment %}</locksmith:62b7>{% endcomment -%}
+
+{% assign grid_results = true %}
+
+<div class="grid">
+  <div class="grid-item">
+
+    <hr class="hr--clear hr--small">
+
+    {% if search.performed %}
+
+      {% paginate search.results by 20 %}
+
+        {% if locksmith_search__results_count == 0 %}
+
+          <h1 class="h2 text-center">{{ 'general.search.no_results_html' | t: terms: search.terms }}</h1>
+          {% include 'search-bar' %}
+
+        {% else %}
+
+          <h1 class="h2 text-center">{{ 'general.search.results_for_html' | t: terms: search.terms }}</h1>
+          {% include 'search-bar' %}
+          <hr class="hr--clear">
+
+          {% if grid_results == false %}
+
+            {% for item in search.results %}{%- comment %}<locksmith:35ab>{% endcomment -%}{%- include 'locksmith-variables', locksmith_scope: 'subject', locksmith_subject: item, locksmith_subject_parent: search %}{% if locksmith_transparent %}{% else %}{% continue %}{% endif -%}{%- comment %}</locksmith:35ab>{% endcomment -%}{% include 'easylockdown_filter_search' with item %}
+              {% include 'search-result' %}
+            {% endfor %}
+
+          {% else %}
+
+            <div class="grid-uniform">
+              {% for item in search.results %}            {%- comment %}<locksmith:6421>{% endcomment -%}{%- include 'locksmith-variables', locksmith_scope: 'subject', locksmith_subject: item, locksmith_subject_parent: search %}{% if locksmith_transparent %}{% else %}{% continue %}{% endif -%}{%- comment %}</locksmith:6421>{% endcomment -%}            {% include 'easylockdown_filter_search' with item %}
+                {% assign grid_item_width = 'large--one-fifth medium--one-third small--one-half' %}
+                {% include 'search-result-grid' %}
+              {% endfor %}
+            </div>
+
+          {% endif %}
+
+        {% endif %}
+
+        {% if paginate.pages > 1 %}
+          <div class="text-center">
+            {% include 'pagination-custom' %}
+          </div>
+        {% endif %}
+
+      {% endpaginate %}
+
+    {% else %}
+
+      {% comment %}
+        If search.performed is false, someone either accessed the page without the q parameter, or it was blank.
+      {% endcomment %}
+      <h1 class="text-center h2">{{ 'general.search.title' | t }}</h1>
+      {% include 'search-bar' %}
+
+    {% endif %}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name":"Search",
+  "settings":[
+    {
+      "type": "checkbox",
+      "id": "product_show_compare_at_price",
+      "label": "Show compare at price",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "product_show_saved_amount",
+      "label": "Show saved amount",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

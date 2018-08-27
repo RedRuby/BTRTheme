@@ -1,0 +1,91 @@
+{% if def_tag %}
+
+  {% assign field_tees_tag = "products.general.field_tees_tag" | t %}
+  {% assign yos_gift_tag = "products.general.yos_gift_tag" | t %}
+  {% assign client_gift_tag = "products.general.client_gift_tag" | t %}
+  {% assign employee_reward_tag = "products.general.employee_reward_tag" | t %}
+  {% assign annual_apparel_tag = "products.general.annual_apparel_tag" | t %}
+  {% assign seasonal_apparel_tag = "products.general.seasonal_apparel_tag_html" | t %}
+  {% assign mkt_gift_tag = "products.general.mkt_gift_tag" | t %}
+  {% assign other_product_tag = "products.general.other_product_tag" | t %}
+ 
+{% endif %}
+
+{% if def_tag_find %}
+
+  {% assign product_tags = product_tags | default: product.tags %}
+  
+  {% if product_tags contains field_tees_tag %}
+      {% assign is_field_tees = true %}  
+      {% assign product_type = field_tees_tag %}
+  {% elsif product_tags contains yos_gift_tag %}
+      {% assign is_yos_gift = true %}  
+      {% assign product_type = yos_gift_tag %}
+  {% elsif product_tags contains client_gift_tag %}
+      {% assign is_client_gift = true %}  
+      {% assign product_type = client_gift_tag %}
+  {% elsif product_tags contains employee_reward_tag %}
+      {% assign is_employee_reward = true %}  
+      {% assign product_type = employee_reward_tag %}
+  {% elsif product_tags contains annual_apparel_tag %}
+      {% assign is_annual_apparel = true %}  
+      {% assign product_type = annual_apparel_tag %}
+  {% elsif product_tags contains seasonal_apparel_tag %}
+      {% assign is_seasonal_apparel = true %}  
+      {% assign product_type = seasonal_apparel_tag %}
+  {% elsif product_tags contains mkt_gift_tag %}
+      {% assign is_mkt_gift = true %}  
+      {% assign product_type = mkt_gift_tag %}
+  {% elsif product_tags contains other_product_tag %}
+      {% assign is_other_product = true %}  
+      {% assign product_type = other_product_tag %}
+  {% endif %}
+
+{% endif %}
+
+{% if def_role_list %}
+
+  {% assign temp = linklists['non-admin-roles'].links | map: 'title' %}
+
+  {% for role in temp %}
+      {%- capture non_admin_roles -%}{{- non_admin_roles -}},{{- role | split:"-" | first -}}{%- endcapture -%}
+  {% endfor %}
+  {% assign non_admin_roles = non_admin_roles | remove_first:"," | split:"," %}
+
+{% endif %}
+
+{% if def_role_name_list %}
+
+  {% assign temp = linklists['non-admin-roles'].links | map: 'title' %}
+
+  {% for role in temp %}
+      {%- capture non_admin_role_names -%}{{- non_admin_role_names -}},{{- role | split:"-" | last -}}{%- endcapture -%}
+  {% endfor %}
+  {% assign non_admin_role_names = non_admin_role_names | remove_first:"," | split:"," %}
+
+{% endif %}
+
+{% if def_role_find %}
+  
+  {% for tag in customer.tags %}
+    {% if tag contains 'Role:' and tag != 'Role:Admin' %}
+      {% assign customer_role = tag %}
+    {% endif %}
+  {% endfor %}
+
+{% endif %}
+
+{% if def_role_list %}
+
+  {% assign not_role_allowances = linklists['non-admin-roles'].links | map: 'url' %}
+
+{% endif %}
+
+{% if def_meta_keys %}
+
+  {% assign seasonal_key = "products.general.seasonal_apparel_tag_html" | t %}
+  {% assign annual_key = "products.general.annual_apparel_tag" | t %}
+  {% assign mktGifts_key = "products.general.mkt_gift_tag" | t %}
+  {% assign FieldTees_key = "products.general.field_tees_tag" | t %}
+
+{% endif %}

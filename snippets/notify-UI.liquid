@@ -1,0 +1,151 @@
+{{ 'jquery.blockUI.js' | asset_url | script_tag }}
+{{ 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' | stylesheet_tag }}
+
+<script type="text/javascript">
+    function freez() {
+        $.blockUI({ 
+            message: '<div id="freezTxt"><i class="fa fa-refresh fa-spin text-lite-blue" style="font-size:32px; opacity:0.9;"></i></div>', 
+            overlayCSS: { backgroundColor: 'white', baseZ: 2043 },
+            css: { 
+                top:  (window.innerHeight - 32) /2 + 'px', 
+                left: (window.innerWidth - 32) /2 + 'px', 
+                width: '32px',
+                border: 'none',
+              	baseZ: 2043,
+                color: 'ligtgray',
+              	backgroundColor: 'transparent'
+            } 
+        }); 
+
+//         setTimeout($.unblockUI, 2000); <img src="https://cdn.shopify.com/s/files/1/1634/5803/files/3.gif?1846620989793874192">
+    }
+  	
+  function show_message(message){
+  	$.blockUI({ 
+            message: $(message), 
+            fadeIn: 700, 
+            fadeOut: 700, 
+            timeout: 3000, 
+            showOverlay: false, 
+            css: { 
+                width: '350px',
+               	height: '50px',
+                top: ($(window).height() - 60) + 'px', 
+                left: ($(window).width() - 350) /2 + 'px', 
+                right: '', 
+                border: 'none', 
+                padding: '10px', 
+                backgroundColor: '{{ settings.color_topbar_bg }}', 
+                '-webkit-border-radius': '5px', 
+                '-moz-border-radius': '5px', 
+                opacity: .9, 
+                color: '#fff',
+              	baseZ: 2043,
+            } 
+        });
+  }
+  
+  function defreez(){$.unblockUI();} 
+  
+  function show_message2(message,type,noreload){
+  	$.blockUI({ 
+            message: '<div class="growlUI-added"><h3 class="flash-messg">'+message+'</h3></div>', 
+            fadeIn: 700, 
+            fadeOut: 700, 
+//             timeout: 3000, 
+            showOverlay: false, 
+            css: { 
+                width: '350px',
+               	minHeight: '50px',
+                top: ($(window).height() - 100) + 'px', 
+                left: ($(window).width() - 350) /2 + 'px', 
+                right: '', 
+                border: 'none', 
+                padding: '10px', 
+                backgroundColor: (type)?'{{ settings.color_primary }}':'#e00513', 
+                '-webkit-border-radius': '5px', 
+                '-moz-border-radius': '5px', 
+                
+                color: '#fff',
+              	baseZ: 2043,
+              	boxShadow: '0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+            },
+           	onUnblock:	function(){
+                       if(!type && !noreload){
+                          show_message2('Try again or Reload', true);
+                       }
+            }
+        });
+  }
+  
+  function show_message3(message,type){
+  	$.blockUI({ 
+            message: '<div class="growlUI-added"><h3 class="flash-messg">'+message+'</h3></div>', 
+            fadeIn: 700, 
+            fadeOut: 700, 
+//             timeout: 4000, 
+            showOverlay: false, 
+            css: { 
+                width: '350px',
+               	minHeight: '50px',
+                top: ($(window).height() - 100) + 'px', 
+                left: ($(window).width() - 350) /2 + 'px', 
+                right: '', 
+                border: 'none', 
+                padding: '10px', 
+                backgroundColor: (type)?'{{ settings.color_primary }}':'{{ settings.color_primary }}', 
+                '-webkit-border-radius': '5px', 
+                '-moz-border-radius': '5px', 
+                
+                color: '#fff',
+              	baseZ: 2043,
+              	boxShadow: '0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+            },
+           	onUnblock:	function(){
+                       if(type ){
+                          show_message3('Your export will be emailed to you. Please check your inbox for your report.', false);
+                       }
+            }
+        });
+  }
+  
+  function show_message4(message,type,mssg2){
+  	$.blockUI({ 
+      message: '<div class="growlUI-added" style="z-index:2043;"><span style="font-size:14px;" class="flash-messg" onclick="$(this).hide();">'+message+'</span style="font-size:14px;"></div>', 
+            fadeIn: 700, 
+            fadeOut: 700, 
+            timeout: 30000, 
+            showOverlay: false, 
+            css: { 
+//                 maxWidth: '350px',
+//                	maxHeight: '55px',
+                height: 'auto',
+                top: 'auto', 
+                bottom: '10px',
+//                 left: '50%', 
+                right: '', 
+                border: 'none', 
+              	'border-radius': '0px',
+                'text-align': 'center',
+                padding: '9px 15px', 
+                backgroundColor: (type)?'{{ settings.color_primary }}':'#e00513', 
+                '-webkit-border-radius': '0px', 
+                '-moz-border-radius': '0px', 
+                
+                color: 'white',
+              	baseZ: 10045,
+              	boxShadow: '0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+            },
+           	onUnblock:	function(){
+                 if(!type && mssg2){
+                    show_message4(mssg2, true);
+                 }
+            }
+        });
+  }
+  
+</script>
+
+<style>
+
+</style>

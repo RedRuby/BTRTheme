@@ -1,0 +1,42 @@
+<div class="mfp-bg mfp-fade mfp-ready" style="display:none; opacity:0.9; background-color:#0C3458;"></div>
+
+<div class="mfp-wrap mfp-auto-cursor mfp-fade mfp-ready mfp-hide" tabindex="-1" style="overflow-x: hidden; overflow-y: auto;" style="display:none;">
+  <div class="mfp-container mfp-s-ready mfp-inline-holder">
+    <div class="mfp-content bounceIn animated w3-card-2 w3-margin-top w3-margin-bottom">
+
+      <div id="size-chart" class="white-popup-block" style="display:none;">
+        {% comment %}snippet-title<img src="{{ size-chart-link }}" lg-img-src="{{ size-chart-link }}" sm-img-src="{{ size-chart-link1 }}" class="w3-round" style="width:100%; height:auto;" />{% endcomment %}
+        {% include "size-chart" %}
+      </div>
+      <button title="Close (Esc)" onclick="sizeChartHide();" type="button" class="mfp-close">×</button>
+
+    </div>
+    <div class="mfp-preloader w3-center center-block" style="display:initial; z-index:2000 !important;"><i class="fa fa-refresh fa-2x text-lite-blue w3-spin "></i></div>
+  </div>
+
+</div>
+
+<style>
+  .mfp-content{
+    width:95% !important; 
+    min-height:521px;
+    background:white; 
+/*     padding:40px 50px 50px; */
+    max-width:650px;
+    min-width:300px;
+    position:relative;
+    border-radius:5px;
+  }
+  
+  @media (max-width: 749px){
+  	.mfp-content{
+      width:100% !important; 
+      height:auto;
+/*       padding:20px; */
+      {% comment %}min-height:516px;{% endcomment %}
+    }
+    .mfp-container{
+      height:auto;
+    }
+  }
+</style>

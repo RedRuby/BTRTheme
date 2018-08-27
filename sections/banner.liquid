@@ -1,0 +1,67 @@
+<div style="position: relative;">
+  <img src="{{ section.settings.image | img_url: '150x' }}" lg-img-src="{{ section.settings.image | img_url: '2048x' }}" sm-img-src="{{ section.settings.image1 | img_url: '1555x' }}" class="" style="position:relative; width:100%; height:auto;">
+  <div class="grid" style="position:absolute; top:0; bottom:0; left:0; right:0;">
+    <div class="grid-item small-- text-center large--one-half">
+      <span class="small--hide medium--hide" style="margin-top:70px;">&nbsp;</span>
+      <div class="hide1">
+        <h1 class="w3-xxxlarge w3-text-white w3-hide-medium" style="margin-top:70px; margin-bottom:30px; font-weight:700 !important; padding: 0 20px;">{{ section.settings.title }}</h1>
+        <h2 class="w3-xxlarge w3-text-white w3-hide-large w3-hide-small" style="margin-top:35px; margin-bottom:30px; font-weight:700 !important; padding: 0 20px;">{{ section.settings.title }}</h2>
+        <a href="{{ section.settings.link }}"><button type="button" class="btn btn--secondary w3-transparent w3-text-white w3-border-white w3-padding-16" style="width:250px;">{{ section.settings.btnLabel }}</button></a>
+      </div>
+    </div>
+    <div class="grid-item large--one-half small--hide">
+      &nbsp;
+    </div>
+  </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Banner",
+    "settings": [
+		{
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+			"default": "Shop Field Shirts"
+        },
+		{
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image (Desktop)",
+            "info":"1000 x 500px recommended"
+        },
+		{
+            "type": "image_picker",
+            "id": "image1",
+            "label": "Image (Mobile)",
+            "info":"480 x 360px recommended"
+        },
+        {
+            "type": "url",
+            "id": "link",
+            "label": "Link URL",
+			"default": "\/"
+        },
+		{
+            "type": "text",
+            "id": "btnLabel",
+            "label": "Buton Label",
+			"default": "ORDER NOW"
+        }
+    ],
+	"presets": [
+      {	
+		"name": "Banner",
+        "category": "Image"
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

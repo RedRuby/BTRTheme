@@ -1,0 +1,691 @@
+{
+  "current": {
+    "color_primary": "#2273ba",
+    "color_secondary": "#f3f3f3",
+    "color_accent": "#545454",
+    "color_body_bg": "#ffffff",
+    "color_borders": "#dedede",
+    "product_reviews_star_color": "#e5c649",
+    "color_header_background": "#ffffff",
+    "color_header_text": "#0c3458",
+    "color_header_cart_search": "#f3f3f3",
+    "color_nav_bg": "#2273ba",
+    "color_nav_text": "#ffffff",
+    "color_body_text": "#0c3458",
+    "color_heading_text": "#0c3458",
+    "color_footer_bg": "#0c3458",
+    "color_footer_text": "#ffffff",
+    "color_footer_social_link": "#ffffff",
+    "type_base_family": "'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+    "type_base_size": "14px",
+    "type_header_family": "'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+    "type_header_transform": false,
+    "type_accent_family": "'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+    "type_navigation_size": "15px",
+    "type_navigation_transform": false,
+    "type_button_size": "16px",
+    "type_button_transform": true,
+    "favicon": "shopify:\/\/shop_images\/BBMK_LOGO_fab.png",
+    "cart_notes_enable": true,
+    "ajax_cart_method": "page",
+    "share_image": "",
+    "social_twitter_link": "",
+    "social_facebook_link": "",
+    "social_pinterest_link": "",
+    "social_google_plus_link": "",
+    "social_instagram_link": "",
+    "social_snapchat_link": "",
+    "social_tumblr_link": "",
+    "social_youtube_link": "",
+    "social_vimeo_link": "",
+    "social_fancy_link": "",
+    "social_sharing_style": "is-normal",
+    "share_facebook": true,
+    "share_twitter": true,
+    "share_pinterest": true,
+    "superscript_decimals": true,
+    "checkout_header_image": "",
+    "checkout_logo_image": "shopify:\/\/shop_images\/BBMK_Contracting_LogoNormal.png",
+    "checkout_logo_position": "left",
+    "checkout_logo_size": "small",
+    "checkout_body_background_image": "",
+    "checkout_body_background_color": "#fff",
+    "checkout_input_background_color_mode": "white",
+    "checkout_sidebar_background_image": "",
+    "checkout_sidebar_background_color": "#fafafa",
+    "checkout_heading_font": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+    "checkout_body_font": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+    "checkout_accent_color": "#2273ba",
+    "checkout_button_color": "#2273ba",
+    "checkout_error_color": "#be3326",
+    "collection_sidebar_filters": "tags",
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "menu": "main-menu",
+          "logo": "shopify:\/\/shop_images\/BBMK_Contracting_LogoNormal.png",
+          "logo_max_width": "146",
+          "show_announcement": false,
+          "announcement_text": "Announce something here",
+          "announcement_link": ""
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "blocks": {
+          "1525514441564": {
+            "type": "text",
+            "settings": {
+              "title": "",
+              "richtext": "",
+              "width": "50%"
+            }
+          },
+          "1525514234379": {
+            "type": "menu",
+            "settings": {
+              "title": "",
+              "menu": "footer",
+              "width": "50%"
+            }
+          }
+        },
+        "block_order": [
+          "1525514441564",
+          "1525514234379"
+        ],
+        "settings": {
+          "social_enabled": false,
+          "legal_menu": ""
+        }
+      },
+      "collection-list": {
+        "type": "collection-list",
+        "blocks": {
+          "collection-list-0": {
+            "type": "collection",
+            "settings": {
+              "collection": "",
+              "coming_soon": false
+            }
+          },
+          "1524667969490": {
+            "type": "collection",
+            "settings": {
+              "collection": "",
+              "coming_soon": false
+            }
+          },
+          "1524667980688": {
+            "type": "collection",
+            "settings": {
+              "collection": "",
+              "coming_soon": true
+            }
+          },
+          "1524667988217": {
+            "type": "collection",
+            "settings": {
+              "collection": "",
+              "coming_soon": true
+            }
+          },
+          "1524667992209": {
+            "type": "collection",
+            "settings": {
+              "collection": "",
+              "coming_soon": true
+            }
+          },
+          "1525365669009": {
+            "type": "collection",
+            "settings": {
+              "collection": "",
+              "coming_soon": true
+            }
+          }
+        },
+        "block_order": [
+          "collection-list-0",
+          "1524667969490",
+          "1524667980688",
+          "1524667988217",
+          "1524667992209",
+          "1525365669009"
+        ],
+        "settings": {}
+      },
+      "1525374291450": {
+        "type": "banner",
+        "settings": {
+          "title": "Shop Field Shirts",
+          "image": "shopify:\/\/shop_images\/Home-banner.png",
+          "image1": "shopify:\/\/shop_images\/Home-banner_m.png",
+          "link": "shopify:\/\/collections\/field-shirts",
+          "btnLabel": "ORDER NOW"
+        }
+      },
+      "collection-template": {
+        "type": "collection-template",
+        "settings": {
+          "grid": "4",
+          "rows": "5",
+          "collection_sidebar_filters": "groups",
+          "product_show_compare_at_price": false,
+          "product_show_saved_amount": false,
+          "product_reviews_enable": false,
+          "enable_sidebar": false
+        }
+      },
+      "product-template": {
+        "type": "product-template",
+        "blocks": {
+          "1525757900375": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Heather Polos",
+              "sizes": "Size:MD,LG,XL,2XL,3XL,4XL",
+              "body_rows": "Neck:15-15\",16-16.5\",17-17.5\",18-18.5\",19-19.5\",20-20.5\"\nChest:38-40\",42-44\",46-48\",50-52\",54-56\",58-60\"\nWaist:32-34\",36-38\",40-42\",44-46\",48-50\",52-54\"",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1531213332680": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Shadow Polos",
+              "sizes": "Size:MD,LG,XL,2XL,3XL,4XL",
+              "body_rows": "Neck:15-15\",16-16.5\",17-17.5\",18-18.5\",19-19.5\",20-20.5\"\nChest:38-40\",42-44\",46-48\",50-52\",54-56\",58-60\"\nWaist:32-34\",36-38\",40-42\",44-46\",48-50\",52-54\"",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1531213761276": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Nike Polos",
+              "sizes": "Size:MD,LG,XL,2XL",
+              "body_rows": "Chest:37 1\/2-41,41-44,44-48 1\/2,48 1\/2-53 1\/2",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1531214208261": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Eperformance Polos",
+              "sizes": "Size:MD,LG,XL,2XL,3XL",
+              "body_rows": "Chest:39-41,42-45,46-49,50-52,53-56",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1531214409643": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Adidas Polos",
+              "sizes": "Size:MD,LG,XL,2XL,3XL",
+              "body_rows": "Chest:43.5-45.5,46.5-48.5,50.5-52.5,54.5-56.5,59.5-61.5",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1531218599390": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Greg Norman Polos",
+              "sizes": "Size:MD,LG,XLG,2X,3X,4X",
+              "body_rows": "Front Length(From High Point of Shoulder):30.5,31.5,32.5,33.5,34.5,35.5\nChest(1\" Below Armhole):22,23.5,25,26.5,28,29.5\nSweep:22,23.5,25,26.5,28,29.5\nSleeve Length(From Center Back Neck):20.5,21.25,22,22.75,23.5,24.25",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1531306556260": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Dress Shirts",
+              "sizes": "Size:SM,MD,LG,XL,2XL,3XL,4XL",
+              "body_rows": "Neck Size:15,15.5,16.5,17.5,18.5,19.5,21\nSleeve Length:32\/33,32\/33,34\/35,34\/35,36\/37,36\/37,36\/37",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1533284712044": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Executive Heather Polo",
+              "sizes": "Size:LG,XL,2XL",
+              "body_rows": "Neck:16-16.5\",17-17.5\",18-18.5\"\nChest:42-44\",46-48\",50-52\"\nWaist:36-38\",40-42\",44-46\"",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1533288246718": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Executive Shadow Polo",
+              "sizes": "Size:LG,XL,2XL",
+              "body_rows": "Neck:16-16.5\",17-17.5\",18-18.5\"\nChest:42-44\",46-48\",50-52\"\nWaist:36-38\",40-42\",44-46\"",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1533288611856": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Executive Eperformance Polo",
+              "sizes": "Size:LG,XL,2XL",
+              "body_rows": "Chest:42-45,46-49,50-52",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1533290215110": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Executive Greg Norman Polo",
+              "sizes": "Size:LG,XL,2XL",
+              "body_rows": "Front Length:31.5,32.5,33.5\nChest:23.5,25,26.5\nSweep:23.5,25,26.5\nSleeve Length:21.25,22,22.75",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          }
+        },
+        "block_order": [
+          "1525757900375",
+          "1531213332680",
+          "1531213761276",
+          "1531214208261",
+          "1531214409643",
+          "1531218599390",
+          "1531306556260",
+          "1533284712044",
+          "1533288246718",
+          "1533288611856",
+          "1533290215110"
+        ],
+        "settings": {
+          "product_image_zoom_enable": true,
+          "product_quantity_enable": true,
+          "product_quantity_message": false,
+          "product_incoming_message": false,
+          "product_vendor_enable": false,
+          "product_show_saved_amount": true,
+          "product_show_compare_at_price": false,
+          "related_products_enable": false,
+          "enable_payment_button": false,
+          "social_sharing_products": false,
+          "product_reviews_enable": false,
+          "add_to_cart_button_size": "medium",
+          "hide_field_tees_price": true
+        }
+      }
+    },
+    "content_for_index": [
+      "1525374291450",
+      "collection-list"
+    ]
+  },
+  "presets": {
+    "Blue": {
+      "ajax_cart_method": "modal",
+      "cart_notes_enable": false,
+      "collection_sidebar_filters": "tags",
+      "color_accent": "#dd2525",
+      "color_body_bg": "#fff",
+      "color_body_text": "#585858",
+      "color_borders": "#ececec",
+      "color_footer_bg": "#f2f2f2",
+      "color_footer_social_link": "#bbbbbb",
+      "color_footer_text": "#636363",
+      "color_header_background": "#182e49",
+      "color_header_cart_search": "#0f243d",
+      "color_header_text": "#fff",
+      "color_heading_text": "#000",
+      "color_nav_bg": "#182e49",
+      "color_nav_text": "#fff",
+      "color_primary": "#528ec1",
+      "color_secondary": "#dcdcdc",
+      "share_facebook": true,
+      "share_pinterest": true,
+      "share_twitter": true,
+      "social_facebook_link": "",
+      "social_fancy_link": "",
+      "social_google_plus_link": "",
+      "social_instagram_link": "",
+      "social_pinterest_link": "",
+      "social_sharing_style": "is-normal",
+      "social_snapchat_link": "",
+      "social_tumblr_link": "",
+      "social_twitter_link": "",
+      "social_vimeo_link": "",
+      "social_youtube_link": "",
+      "type_accent_family": "Google_Montserrat_400_sans",
+      "type_base_family": "Google_Montserrat_400,700_sans",
+      "type_base_size": "13px",
+      "type_button_size": "14px",
+      "type_button_transform": true,
+      "type_header_family": "Google_Montserrat_700_sans",
+      "type_header_transform": true,
+      "type_navigation_size": "14px",
+      "type_navigation_transform": true,
+      "superscript_decimals": true,
+      "sections": {
+        "header": {
+          "type": "header",
+          "settings": {
+            "logo": "",
+            "logo_max_width": "305"
+          }
+        },
+        "footer": {
+          "type": "footer",
+          "blocks": {
+            "menu": {
+              "type": "menu",
+              "settings": {
+                "title": "Quick links",
+                "menu": "",
+                "width": "16%"
+              }
+            },
+            "text": {
+              "type": "text",
+              "settings": {
+                "title": "Get in touch",
+                "richtext": "<p>Use this text to share information about your brand with your customers.<\/p>",
+                "width": "50%"
+              }
+            },
+            "newsletter": {
+              "type": "newsletter",
+              "settings": {
+                "title": "Newsletter",
+                "width": "33%"
+              }
+            }
+          },
+          "block_order": [
+            "menu",
+            "text",
+            "newsletter"
+          ],
+          "settings": {
+            "social_enabled": false,
+            "legal_menu": ""
+          }
+        },
+        "slideshow": {
+          "type": "slideshow",
+          "blocks": {
+            "slide-0": {
+              "type": "image",
+              "settings": {
+                "slide": "",
+                "link": ""
+              }
+            },
+            "slide-1": {
+              "type": "image",
+              "settings": {
+                "slide": "",
+                "link": ""
+              }
+            },
+            "slide-2": {
+              "type": "image",
+              "settings": {
+                "slide": "",
+                "link": ""
+              }
+            }
+          },
+          "block_order": [
+            "slide-0",
+            "slide-1",
+            "slide-2"
+          ],
+          "settings": {
+            "slider_home_auto": false,
+            "slider_home_rate": "5000"
+          }
+        },
+        "collection-list": {
+          "type": "collection-list",
+          "blocks": {
+            "collection-list-0": {
+              "type": "collection",
+              "settings": {
+                "collection": ""
+              }
+            },
+            "collection-list-1": {
+              "type": "collection",
+              "settings": {
+                "collection": ""
+              }
+            }
+          },
+          "block_order": [
+            "collection-list-0",
+            "collection-list-1"
+          ],
+          "settings": {}
+        },
+        "collection-row-1": {
+          "type": "collection-rows",
+          "settings": {
+            "home_featured_row": "",
+            "grid": 4,
+            "rows": 1
+          }
+        },
+        "collection-row-2": {
+          "type": "collection-rows",
+          "settings": {
+            "home_featured_row": "",
+            "grid": 4,
+            "rows": 1
+          }
+        },
+        "collection-row-3": {
+          "type": "collection-rows",
+          "settings": {
+            "home_featured_row": "",
+            "grid": 4,
+            "rows": 1
+          }
+        }
+      },
+      "content_for_index": [
+        "slideshow",
+        "collection-list",
+        "collection-row-1",
+        "collection-row-2",
+        "collection-row-3"
+      ]
+    },
+    "Light": {
+      "ajax_cart_method": "modal",
+      "cart_notes_enable": false,
+      "collection_sidebar_filters": "tags",
+      "color_accent": "#545454",
+      "color_body_bg": "#f3f3f3",
+      "color_body_text": "#858585",
+      "color_borders": "#dedede",
+      "color_footer_bg": "#ffffff",
+      "color_footer_social_link": "#545454",
+      "color_footer_text": "#545454",
+      "color_header_background": "#ffffff",
+      "color_header_cart_search": "#f3f3f3",
+      "color_header_text": "#545454",
+      "color_heading_text": "#2f2f2f",
+      "color_nav_bg": "#9c756f",
+      "color_nav_text": "#ffffff",
+      "color_primary": "#9c756f",
+      "color_secondary": "#f3f3f3",
+      "share_facebook": true,
+      "share_pinterest": true,
+      "share_twitter": true,
+      "social_facebook_link": "",
+      "social_google_plus_link": "",
+      "social_instagram_link": "",
+      "social_sharing_style": "is-normal",
+      "social_twitter_link": "",
+      "type_accent_family": "Google_Lato_700_sans",
+      "type_base_family": "Google_Roboto_400,700_sans",
+      "type_base_size": "14px",
+      "type_button_size": "14px",
+      "type_button_transform": true,
+      "type_header_family": "TimesNewRoman, 'Times New Roman', Times, Baskerville, Georgia, serif",
+      "type_header_transform": false,
+      "type_navigation_size": "14px",
+      "type_navigation_transform": true,
+      "superscript_decimals": true,
+      "sections": {
+        "header": {
+          "type": "header",
+          "settings": {
+            "logo": "",
+            "logo_max_width": "305"
+          }
+        },
+        "footer": {
+          "type": "footer",
+          "blocks": {
+            "menu": {
+              "type": "menu",
+              "settings": {
+                "title": "Quick links",
+                "menu": "",
+                "width": "16%"
+              }
+            },
+            "text": {
+              "type": "text",
+              "settings": {
+                "title": "Get in touch",
+                "richtext": "<p>Use this text to share information about your brand with your customers.<\/p>",
+                "width": "50%"
+              }
+            },
+            "newsletter": {
+              "type": "newsletter",
+              "settings": {
+                "title": "Newsletter",
+                "width": "33%"
+              }
+            }
+          },
+          "block_order": [
+            "menu",
+            "text",
+            "newsletter"
+          ],
+          "settings": {
+            "social_enabled": false,
+            "legal_menu": ""
+          }
+        },
+        "slideshow": {
+          "type": "slideshow",
+          "blocks": {
+            "slide-0": {
+              "type": "image",
+              "settings": {
+                "slide": "",
+                "link": ""
+              }
+            }
+          },
+          "block_order": [
+            "slide-0"
+          ],
+          "settings": {
+            "slider_home_auto": false,
+            "slider_home_rate": "5000"
+          }
+        },
+        "collection-list": {
+          "type": "collection-list",
+          "blocks": {
+            "collection-list-0": {
+              "type": "collection",
+              "settings": {
+                "collection": ""
+              }
+            },
+            "collection-list-1": {
+              "type": "collection",
+              "settings": {
+                "collection": ""
+              }
+            }
+          },
+          "block_order": [
+            "collection-list-0",
+            "collection-list-1"
+          ],
+          "settings": {}
+        },
+        "collection-row-1": {
+          "type": "collection-rows",
+          "settings": {
+            "home_featured_row": "",
+            "grid": 4,
+            "rows": 1
+          }
+        },
+        "collection-row-2": {
+          "type": "collection-rows",
+          "settings": {
+            "home_featured_row": "",
+            "grid": 4,
+            "rows": 1
+          }
+        },
+        "collection-row-3": {
+          "type": "collection-rows",
+          "settings": {
+            "home_featured_row": "",
+            "grid": 4,
+            "rows": 1
+          }
+        },
+        "featured-content": {
+          "type": "featured-content",
+          "settings": {}
+        },
+        "slideshow-2": {
+          "type": "slideshow",
+          "blocks": {
+            "slideshow-2-0": {
+              "type": "image",
+              "settings": {
+                "slide": "",
+                "link": ""
+              }
+            }
+          },
+          "block_order": [
+            "slideshow-2-0"
+          ],
+          "settings": {
+            "slider_home_auto": false,
+            "slider_home_rate": "5000"
+          }
+        }
+      },
+      "content_for_index": [
+        "slideshow",
+        "collection-list",
+        "collection-row-1",
+        "collection-row-2",
+        "collection-row-3",
+        "slideshow-2",
+        "featured-content"
+      ]
+    }
+  }
+}

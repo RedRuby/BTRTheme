@@ -1,0 +1,46 @@
+{%- assign allowance_balance = customer.metafields.allowance[product_type] | default: '0' -%}
+
+{% if cart.item_count > 0 %}
+  {% assign cart_product_types = cart.items | map:"properties" | map: 'Product Type' | uniq | join:"," | replace:"&amp;","&" | split:"," %}
+
+  {% if customer_role == "Role:SS" and product_type == annual_apparel_tag %}
+    {% unless cart_product_types contains annual_apparel_tag %}
+      <div class="w3-red text-center w3-padding w3-margin-bottom">You cannot checkout this item with other non allowance {{ collection.title }} products.</div>
+    {% endunless %}
+  {% elsif customer_role != "Role:PM" and customer_role != "Role:SS" and product_type == annual_apparel_tag or product_type == seasonal_apparel_tag or product_type == field_tees_tag or product_type == mkt_gift_tag %}
+    {% unless cart_product_types contains annual_apparel_tag or cart_product_types contains field_tees_tag or cart_product_types contains seasonal_apparel_tag or cart_product_types contains mkt_gift_tag %}
+      <div class="w3-red text-center w3-padding w3-margin-bottom">You cannot checkout this item with other non allowance {{ collection.title }} products.</div>
+    {% endunless %}
+  {% elsif customer_role == "Role:PM" and product_type == annual_apparel_tag or product_type == seasonal_apparel_tag or product_type == field_tees_tag %}
+    {% unless cart_product_types contains annual_apparel_tag or cart_product_types contains field_tees_tag or cart_product_types contains seasonal_apparel_tag %}
+      <div class="w3-red text-center w3-padding w3-margin-bottom">You cannot checkout this item with other non allowance {{ collection.title }} products.</div>
+    {% endunless %}
+  {% elsif product_type == client_gift_tag and cart_product_types contains client_gift_tag and cart_product_types.size == 1  %}
+    <div class="w3-red text-center w3-padding w3-margin-bottom">You cannot checkout with more than one {{ collection.title }} product.</div>
+  {% elsif product_type == yos_gift_tag %}
+    {% unless cart_product_types contains product_type %}
+      <div class="w3-red text-center w3-padding w3-margin-bottom">You cannot checkout this item with other non {{ collection.title }} products.</div>
+    {% endunless %}
+  {% else %}
+    {% unless cart_product_types contains product_type or cart_product_type contains field_tees_tag or customer_role == "Role:SS" %}
+      <div class="w3-red text-center w3-padding w3-margin-bottom">You cannot checkout this item with other non {{ collection.title }} / Allowance products.</div>
+    {% endunless %}
+  {% endif %}
+
+{% else %}
+  {% if product_type == client_gift_tag %}
+    {% unless customer.tags contains client_gift_tag %}
+      {% assign employee_has_no_client_gift = true %}
+    {% endunless %}
+  {% elsif product_type == yos_gift_tag %}
+    {% unless customer.tags contains yos_gift_tag %}
+      {% assign employee_has_no_yos_gift = true %}
+    {% endunless %}
+  {% endif %}
+
+  {% if product_type == client_gift_tag and employee_has_no_client_gift %}
+    <div class="w3-red text-center w3-padding w3-margin-bottom">You don't have any Client Gift !</div>
+  {% elsif product_type == yos_gift_tag and employee_has_no_yos_gift %}
+    <div class="w3-red text-center w3-padding w3-margin-bottom">You don't have any Year of Service Gift !</div>
+  {% endif %}
+{% endif %}

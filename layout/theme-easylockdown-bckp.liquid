@@ -1,0 +1,261 @@
+{%- comment %}<locksmith:0a8d>{% endcomment -%}
+  {%- include 'locksmith', locksmith_context: 'layout/start' %}{% capture locksmith_source -%}
+{%- comment %}</locksmith:0a8d>{% endcomment -%}
+
+{% unless customer %}
+    {% if template contains 'customers' or template == blank %}
+        {% assign send_to_rout = false %}
+    {% else %}
+       {% if page.handle == 'register' %}
+	        {% assign send_to_rout = false %}
+		{% else %}
+	        {% assign send_to_rout = '/account/login' %}
+		{% endif %}
+    {% endif %}
+{% else %}
+	
+	{% for tag in customer.tags %}
+      {% if tag contains 'Role:' and tag != 'Role:Admin' %}
+        {% assign customer_role = tag %}
+      {% endif %}
+    {% endfor %}
+
+    {% assign non_admin_roles = linklists['non-admin-roles'].links | map: 'title' %}
+
+    {% unless template.suffix contains 'admin' %}
+      {% unless non_admin_roles contains customer_role %}
+        {% if customer.tags contains 'Role:Admin' %}
+          {% assign send_to_rout = '/account?view=admin-orders' %}
+        {% elsif template.suffix != 'no-role-error' %}
+          {% assign send_to_rout = '/pages/no-role-assigned' %}
+        {% endif %}
+      {% endunless %}
+	{% else %}
+      {% unless customer.tags contains 'Role:Admin' %}
+        {% assign send_to_rout = '/account' %}
+      {% endunless %}
+    {% endunless %}
+		
+	{% if template contains 'login' %}
+		{% assign send_to_rout = '/account' %}
+	{% endif %}
+{% endunless %}
+
+{% if template contains 'register' %}
+    {% assign send_to_rout = '/account' %}
+{% endif %}
+
+{% if template contains 'product' and collection == blank %}
+    {% assign send_to_rout = '/account' %}
+{% endif %}
+
+{% if template contains 'collection' and template.name != 'product'  %}
+    
+{% endif %}
+
+{% comment %}{% assign send_to_rout = false %}{% endcomment %}
+
+{% if send_to_rout %}
+  <meta content="0; url={{ send_to_rout }}" http-equiv="refresh" />
+{% else %}
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if IE 9 ]><html class="ie9 no-js"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-touch no-js"> <!--<![endif]-->
+<head>
+  <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
+  <!-- Basic page needs ================================================== -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  {% if settings.favicon %}
+  <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png" />
+  {% endif %}
+
+  <!-- Title and description ================================================== -->
+  <title>
+  {{ page_title }}{% if current_tags %}{% assign current_tags_joined = current_tags | join: ', ' %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags_joined }}{% endif %}{% if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif %}{% unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}
+  </title>
+
+
+  {% if page_description %}
+    {%- comment %}<locksmith:923d>{% endcomment -%}
+      {%- include 'locksmith-variables', locksmith_hiding_scope: 'resource' %}{% if locksmith_transparent %}<meta name="description" content="{{ page_description | escape }}">{% endif -%}
+      {%- comment %}original: <meta name="description" content="{{ page_description | escape }}">{%- endcomment %}
+    {%- comment %}</locksmith:923d>{% endcomment -%}
+  {% endif %}
+
+  <!-- Product meta ================================================== -->
+  {% include 'social-meta-tags' %}
+
+  <!-- Helpers ================================================== -->
+  <link rel="canonical" href="{{ canonical_url }}">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- CSS ================================================== -->
+  {{ 'theme.scss.css' | asset_url | stylesheet_tag }}
+  {% include 'google-fonts' %}
+  
+  {{ 'http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css' | stylesheet_tag }}
+  
+  {{ 'w3css.css' | asset_url | stylesheet_tag }}
+  
+  {{ 'custom-style.css' | asset_url | stylesheet_tag }}
+
+  <!-- Header hook for plugins ================================================== -->
+  {{ content_for_header }}
+
+  {% include 'oldIE-js' %}
+
+  {% comment %}
+    If you store has customers disabled, you can remove the following JS file
+  {% endcomment %}
+  {% if template.directory == 'customers' %}
+    {{ 'shopify_common.js' | shopify_asset_url | script_tag }}
+    {{ 'customer_area.js'  | shopify_asset_url | script_tag }}
+  {% endif %}
+
+  {{ 'jquery-2.2.3.min.js' | asset_url | script_tag }}
+  
+  {{ 'lazy-load-img.js' | asset_url | script_tag }}
+  
+  {% if template.suffix contains 'admin' %}
+  	{{ 'jquery.history.js' | asset_url | script_tag }}
+  	{{ 'w3data.js' | asset_url | script_tag }}
+  	{{ 'youarei.js' | asset_url | script_tag }}
+  	{{ 'jquery-ui.js' | asset_url | script_tag }}
+    {{ 'jquery.simplePagination.js' | asset_url | script_tag }}
+  
+  	{{ 'datepicker-UI.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+
+  <!--[if (gt IE 9)|!(IE)]><!--><script src="{{ 'lazysizes.min.js' | asset_url }}" async="async"></script><!--<![endif]-->
+  <!--[if lte IE 9]><script src="{{ 'lazysizes.min.js' | asset_url }}"></script><![endif]-->
+
+  <!--[if (gt IE 9)|!(IE)]><!--><script src="{{ 'vendor.js' | asset_url }}" defer="defer"></script><!--<![endif]-->
+  <!--[if lte IE 9]><script src="{{ 'vendor.js' | asset_url }}"></script><![endif]-->
+
+  <!--[if (gt IE 9)|!(IE)]><!--><script src="{{ 'theme.js' | asset_url }}" defer="defer"></script><!--<![endif]-->
+  <!--[if lte IE 9]><script src="{{ 'theme.js' | asset_url }}"></script><![endif]-->
+
+
+</head>
+
+<body id="{{ page_title | handle }}" class="{% if customer %}customer-logged-in {% endif %}template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}" >
+
+  {% section 'header' %}
+  
+  {% include 'notify-UI' %}
+
+  <main class="wrapper main-content" role="main" {% if template contains 'login' or template contains 'activate' or template contains 'reset' %}style="background-image: url('{{ "BBMK-bg-lg_150x.png" | asset_url }}'); background-repeat: no-repeat; background-size:cover;" lg-bg-src="{{ "BBMK-bg-lg.png" | asset_url | replace_last:'.','_720x.' }}" sm-bg-src="{{ "BBMK-bg-sm_420x.png" | asset_url }}"{% endif %}>
+    {% include 'breadcrumb' %}
+
+    {{ content_for_layout }}
+
+  </main>
+
+  {% section 'footer' %}
+
+  <script>
+
+  var moneyFormat = '{{ shop.money_format }}';
+
+  var theme = {
+    strings:{
+      product:{
+        unavailable: {{ 'products.product.unavailable' | t | json }},
+        will_be_in_stock_after:{{ 'products.product.will_be_in_stock_after' | t: date: '[date]' | json }},
+        only_left:{{ 'products.product.only_left' | t: count: '1' | json }}
+      },
+      navigation:{
+        more_link: {{ 'layout.navigation.more' | t | json }}
+      },
+      map:{
+        addressError: {{ 'map.errors.address_error' | t | json }},
+        addressNoResults: {{ 'map.errors.address_no_results' | t | json }},
+        addressQueryLimit: {{ 'map.errors.address_query_limit_html' | t | json }},
+        authError: {{ 'map.errors.auth_error_html' | t | json }}
+      }
+    },
+    settings:{
+      cartType: {{ settings.ajax_cart_method | json }}
+    }
+  }
+  </script>
+
+{% if settings.ajax_cart_method != 'page' %}
+
+  {% include 'ajax-cart-template' %}
+
+{% endif %}
+  
+<style>
+  {% unless customer %}
+  	
+  {% endunless %}
+</style>
+
+<script>
+  // media query event handler
+    if (matchMedia) {
+      var mq = window.matchMedia("(min-width: 750px)");
+      mq.addListener(WidthChange);
+      WidthChange(mq);
+    }
+
+    // media query change
+    function WidthChange(mq) {
+      if (mq.matches) {
+        // window width is at least 750px
+        $('[lg-img-src]').each(function(index, el){
+        	$(el).attr('data-lazy-src', el.getAttribute('lg-img-src')).attr('data-lazy-custom-placeholder','true');
+        });
+        $('[lg-bg-src]').each(function(index, el){
+        	$(el).attr('data-lazy-bg', el.getAttribute('lg-bg-src'));
+        });
+        LazyImage.run();
+      } else {
+        // window width is less than 750px
+        $('[sm-img-src]').each(function(index, el){
+        	$(el).attr('data-lazy-src', el.getAttribute('sm-img-src')).attr('data-lazy-custom-placeholder','true');
+        });
+        $('[sm-bg-src]').each(function(index, el){
+        	$(el).attr('data-lazy-bg', el.getAttribute('sm-bg-src'));
+        });
+        LazyImage.run();
+      }
+
+    }
+  
+  $(document).ready(function(){
+  	if (!Modernizr.svg) {
+      if (Modernizr.canvas) {
+          var canvas = document.createElement("canvas");
+          canvas.setAttribute("style", "height:500px;width:300px;");
+          canvg(canvas, mySVGImage);
+          document.body.appendChild(canvas);
+      } else {
+          // Do something else, perhaps a fallback to PNG?
+      }
+    } else {
+      var svgObj = document.createElement('object');
+      svgObj.setAttribute('type', 'image/svg+xml');
+      svgObj.setAttribute('data', 'data:image/svg+xml,' + mySVGImage);
+      svgObj.setAttribute('height', '500');
+      svgObj.setAttribute('width', '300');
+      document.body.appendChild(svgObj);
+    }
+  });
+  
+  console.log('{{ template.name }}');
+</script>
+  
+</body>
+</html>
+{% endif %}
+
+{%- comment %}<locksmith:599a>{% endcomment -%}
+  {%- endcapture %}{% include 'locksmith', locksmith_context: 'layout/end' -%}
+{%- comment %}</locksmith:599a>{% endcomment -%}

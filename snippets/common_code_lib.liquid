@@ -1,0 +1,90 @@
+{% if def_data_csv %}
+	<a id="exportPsudoLink" href="" target="stealthFrame" class="visually-hidden"></a>
+    <iframe name="stealthFrame" class="visually-hidden" onload="setTimeout(function(){ defreez(); }, 15000);"></iframe>
+	<script>
+		function getData_CSV(url){ console.log(url);
+          {% comment %}{% endcomment %}
+          freez();
+          $.ajax({
+              type: 'HEAD',
+              url: url,
+              crossDomain: true,
+              dataType: 'csv',
+              error: function(xhr) {
+                console.log(xhr);
+                if(xhr.status == 404 || xhr.status == 406)
+                  show_message4('Error in exporting or no report available.',false);
+              },
+              timeout: 5000,
+              success: function(){ defreez(); }
+          });
+          $('#exportPsudoLink').attr('href', url)[0].click();
+          
+//           location.assign(url);                        
+        }
+    </script>
+{% endif %}
+
+{% if def_admin_nav %}
+	{%- include "get-url-param" -%}
+
+    <div class="wrapper text-center admin-tab" style="background-color: #428ecb; padding:8px; position:absolute; left:0; right:0;">
+      <a href="{%- assign current_link = '/account?view=admin-orders' -%}{{ current_link }}"><small class="w3-medium w3-text-white {% unless pageUrl contains current_link %}w3-opacity w3-hover-opacity-off{% endunless %} w3-padding-left w3-padding-right"><span class="small--hide {% if pageUrl contains current_link %}w3-bold{% endif %}">Orders</span><i class="fa fa-shopping-cart {% if pageUrl contains current_link %}fa-2x{% else %}fa-lg{% endif %} large--hide medium--hide" {% unless pageUrl contains current_link %}style="position:relative; bottom:5px;"{% endunless %}></i></small></a>
+      <a href="{%- assign current_link = '/account?view=admin-employees' -%}{{ current_link }}"><small class="w3-medium w3-text-white {% unless pageUrl contains current_link %}w3-opacity w3-hover-opacity-off{% endunless %} w3-padding-left w3-padding-right"><span class="small--hide {% if pageUrl contains current_link %}w3-bold{% endif %}">Employees</span><i class="fa fa-users {% if pageUrl contains current_link %}fa-2x{% else %}fa-lg{% endif %} large--hide medium--hide" {% unless pageUrl contains current_link %}style="position:relative; bottom:5px;"{% endunless %}></i></small></a>
+      {% comment %}<a href="{%- assign current_link = '/account?view=admin-giftcodes' -%}{{ current_link }}"><small class="w3-medium w3-text-white {% unless pageUrl contains current_link %}w3-opacity w3-hover-opacity-off{% endunless %} w3-padding-left w3-padding-right"><span class="small--hide {% if pageUrl contains current_link %}w3-bold{% endif %}">Gift Codes</span><i class="fa fa-gift {% if pageUrl contains current_link %}fa-2x{% else %}fa-lg{% endif %} large--hide medium--hide" {% unless pageUrl contains current_link %}style="position:relative; bottom:5px;"{% endunless %}></i></small></a>{% endcomment %}
+      <a href="{%- assign current_link = '/account?view=admin-transactions' -%}{{ current_link }}"><small class="w3-medium w3-text-white {% unless pageUrl contains current_link %}w3-opacity w3-hover-opacity-off{% endunless %} w3-padding-left w3-padding-right"><span class="small--hide {% if pageUrl contains current_link %}w3-bold{% endif %}">Transactions</span><i class="fa fa-exchange {% if pageUrl contains current_link %}fa-2x{% else %}fa-lg{% endif %} large--hide medium--hide" {% unless pageUrl contains current_link %}style="position:relative; bottom:5px;"{% endunless %}></i></small></a>
+    </div>
+{% endif %}
+
+{% if def_back_detection %}
+  <input type="hidden" id="refreshed" value="no">
+  <script>
+    if (!!window.performance && window.performance.navigation.type === 2) {
+        // value 2 means "The page was accessed by navigating into the history"
+        console.log('Reloading');
+        window.location.reload(); // reload whole page
+
+    }            
+
+    window.onpageshow = function (event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    };   
+
+    window.onload=function(){
+      var e=document.getElementById("refreshed");
+      if(e.value=="no")e.value="yes";
+      else{e.value="no";window.location.reload();}
+    }
+  </script>
+{% endif %}
+
+{% if def_required_fallback %}
+	(function ($) {
+
+        // check for "required" input support with modernizr
+        if (Modernizr.input.required) {
+
+            // do something else
+
+        } else {
+
+            // parse through each required input
+            $('form').find('input[required]').each(function () {
+
+                // add a class to each required field with "required" & the input type
+                // using the normal "getAttribute" method because jQuery's attr always returns "text"
+                $(this).attr('class', 'required ' + this.getAttribute('type')).removeAttr('required');
+
+            });
+
+            // call jQuery validate plugin on each form
+            $('form').each(function () {
+                $(this).validate();
+            });
+
+        } // if required supported
+
+    }(jQuery));
+{% endif %}

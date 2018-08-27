@@ -1,0 +1,410 @@
+<div id="id01" class="grid" style="display:none;">
+
+  <div class="grid-item two-thirds small--one-whole">
+    <div id="id02" class="printModeExclude">
+      <div class="grid">
+        <div class="grid-item one-half small--one-whole">
+          <h2 class="h3 order_name_h2" style="display:inline-block;"><b>Order {% raw %}{{ name }}{% endraw %}</b></h2><p class="printModeExclude" style="display:inline-block;">, <b class="printModeExclude">Placed on :</b> {% raw %}{{ created_at }}{% endraw %}
+        </div>
+         <div class="grid-item  one-half small--one-whole text-right">
+           <button type="button" class="btn btn--secondary w3-small w3-margin-bottom" onclick="(document.referrer.indexOf('page=') != -1) ? location.assign(document.referrer) : location.assign('/account?view=admin-order-detail');"><i class="fa fa-arrow-left fa-lg"></i>&nbsp; Back</button>
+         </div>
+      </div>
+
+      
+      <div id="cancelled" class="errors w3-medium" style="display:none;">
+        <span class="">Cancelled at : {% raw %}{{ cancelled_at }}{% endraw %}</span><br>
+        <span>Cancel Reason : {% raw %}{{ cancel_reason }}{% endraw %}</span>
+      </div>
+	</div>
+    
+    <div id="" class="table-wrap1">
+      <table class="responsive-table w3-table w3-bordered w3-striped1 full1">
+        <thead>
+          <tr class="w3-text-white bg-lite-blue">
+            <th style="width:350px;">{{ 'customer.order.product' | t }}</th>
+<!--             <th>{{ 'customer.order.sku' | t }}</th> -->
+            <th class="text-right">{{ 'customer.order.price' | t }}</th>
+            <th class="text-right">{{ 'customer.order.quantity' | t }}</th>
+            <th class="text-right">{{ 'customer.order.total' | t }}</th>
+          </tr>
+        </thead>
+        
+        <tbody id="lineItem" style="position:relative;">
+          
+          <tr w3-repeat="line_items">
+            <td>
+              
+              <div class="row">
+                <div class="w3-col s4 hide">
+                  <img src="{{ 'loader.gif' |asset_url }}" srcs="{% raw %}{{ product_thumb_url }}{% endraw %}" style="max-width:90px; cursor:zoom-in;" class="js-toggle-previewImg-modal zoom-lightbox1" data-mfp-src="{% raw %}{{ product_image_url }}{% endraw %}">
+                </div>
+                <div class="w3-col s81 s12">
+                  <span class="w3-bold">{% raw %}{{ title }}{% endraw %}</span>
+                  <small>{% raw %}{{ variant_title }}{% endraw %}</small>
+                  <div id="properties_{% raw %}{{ line_item_No }}{% endraw %}" class="properties-wrapper">
+                    <b class="hide">Properties:</b>
+                    <div class="note1">
+                      <small w3-repeat="properties"><span class="w3-bold">{% raw %}{{ property_name }}{% endraw %}</span> : {% raw %}{{ value }}{% endraw %}</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            </td>
+<!--             <td>{% raw %}{{ sku }}{% endraw %}</td> -->
+            <td class="text-right">${% raw %}{{ price }}{% endraw %}</td>
+            <td class="text-right">{% raw %}{{ quantity }}{% endraw %}</td>
+            <td class="text-right">${% raw %}{{ line_total }}{% endraw %}</td>
+          </tr>
+          
+        </tbody>
+        
+        <tbody id="discountCodes" style="display:none;">
+          <tr w3-repeat="discount_codes" class="order_summary discount">
+            <td colspan="3">{{ 'customer.order.discount' | t }} <b>{% raw %}{{ code }}{% endraw %}</b></td>
+            <td class="text-right">-${% raw %}{{ amount }}{% endraw %}</td>
+          </tr>
+        </tbody>
+        
+        <tbody class="printModeExclude">  
+          <tr id="subTotal">
+            <td colspan="3">{{ 'customer.order.subtotal' | t }}</td>
+            <td class="text-right">${% raw %}{{ subtotal_price }}{% endraw %}</td>
+          </tr>
+        </tbody>
+        
+        <tbody id="shippingPrice" style="display:none;">  
+          <tr w3-repeat="shipping_lines">
+            <td colspan="3">
+              {{ 'customer.order.shipping' | t }}
+              <div class="row hide">
+                <div class="w3-col s4">
+                  {{ 'customer.order.shipping' | t }} <b>{% raw %}({{ title }}){% endraw %}</b> <span id="trackNo-wrap" style="display:none;"> &nbsp;&nbsp;&nbsp;<b>Tracking No. : </b></span>
+                </div>
+                <div class="w3-col s8">
+                  <span id="trackNo"></span>
+                </div>
+              </div>
+            </td>
+            <td class="text-right">${% raw %}{{ shipping_charge }}{% endraw %}</td>
+          </tr>
+        </tbody>
+
+        <tfoot>
+          <tr id="taxPrice" style="display:none;">
+            <td colspan="3">{{ 'customer.order.tax' | t }} ({{ tax_line.title }} {{ tax_line.rate | times: 100 }}%)</td>
+            <td class="text-right">{{ tax_line.price | money }}</td>
+          </tr>
+
+          <tr id="grandTotal">
+            <td colspan="3"><strong>{{ 'customer.order.total' | t }}</strong> <span class="w3-right">{% raw %}{{ payment_status }}{% endraw %}</span></td>
+            <td class="text-right"><strong>${% raw %}{{ total_price }}{% endraw %} {{ order.currency }}</strong></td>
+          </tr>
+          
+        </tfoot>
+      </table>
+      
+      <div class="fulfilled" style="display:none;">
+        <div class="note">
+        Fulfillment created at: <span class="created_at"></span> and updated at: <span class="updated_at"></span>
+        <br><a target="_blank" href=""></a>
+        </div>
+      </div>
+      {% comment %}{% endcomment %}
+      <div id="note" style="display:none;">
+        <br>
+        <div class="note">
+          <span class="w3-bold">{{ 'cart.general.note' | t }}:</span>
+          <span class="note-text"></span>
+        </div>
+      </div>
+      
+    </div>
+
+  </div>
+
+  <div id="address" class="grid-item one-third small--one-whole">
+    
+	<div class="print-w3-half printModeExclude">
+
+  <!--     <p><strong>{{ 'customer.order.payment_status' | t }}:</strong> {% raw %}{{ payment_status }}{% endraw %}</p> -->
+
+      <div id="billing_address">
+        <h2 class="h3"><b class="printModeExclude">{{ 'customer.order.billing_address' | t }}</b><b class="printModeInclude hide">Order By</b></h2>
+        <span class="h5 name"></span>
+
+        <p>
+          <span class="email"></span>
+          <span class="company printModeExclude"></span>
+
+          <span class="address1 printModeExclude"></span>
+          <span class="address2 printModeExclude"></span>
+
+          <span class="city printModeExclude"></span>
+          <span class="province printModeExclude"></span>
+
+          <span class="zip printModeExclude"></span>
+          <span class="country printModeExclude"></span>
+          <span class="phone printModeExclude"></span>
+
+        </p>
+
+        <p class="fulfillment_block"><strong><span class="printModeExclude">Fulfillment</span> status:</strong> {% raw %}{{ fulfillment_status }}{% endraw %}</p>
+      </div>
+    </div>
+    
+    <div class="print-w3-half">
+      <h2 class="h3 printModeExclude"><b>{{ 'customer.order.shipping_address' | t }}</b></h2>
+
+      <div id="shipping_address">
+        <span class="printModeExclude name"></span>
+
+        <span class="email hide"></span>
+        <span class="company"></span>
+		<span class="addr">
+          <span class="address1"></span>
+          <span class="address2"></span>
+
+          <span class="city"></span>
+          <span class="province"></span>
+
+          <span class="zip"></span>
+          <span class="country printModeExclude"></span>
+          <span class="phone printModeExclude"></span>
+        </span>
+      <p></p>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+<script type="text/javascript">
+  	var order_id = "";
+  	var order_name = "";
+  	var order_data = "";
+  	var shop_domain = "{{ shop.permanent_domain }}"
+	var uri = new YouAreI(document.location.href);
+    query = uri.query_get();
+  	
+  	if(query.id != undefined && query.name != undefined){
+       order_id = query.id;
+       order_name = query.name;
+       fetch_Order(order_id, order_name);
+    }
+//     else window.location.assign('{{ shop.url }}/account');
+                                
+    function fetch_Order(id, name){
+    order_id = id;
+    order_name = name;
+    freez();
+      var data = {shopify_order_id: order_id, domain: shop_domain, cemail: "{{ customer.email }}" };
+//       , name:order_name          
+  	 $.ajax({
+          url: '/apps/product-tracking-analytics/get_order_detail.json',
+          type: 'GET',
+          data: data,
+          dataType: 'json',
+                success: function(data){
+//             	console.log(JSON.stringify(data)); 
+                console.log(data);
+                if(data.message){
+                    console.log(data.message);
+                    show_message4(data.message,true);
+                }
+                 else if(data.error){
+                    console.log(data.error);
+                    show_message4(data.error,false);
+//                     setTimeout(function(){location.assign('/account?view=admin-orders');},2500);
+                }
+      			if(data.order != undefined && data.order.id != undefined){
+                  dataHide(data);
+                }
+//                 data = createThumbImg(data);
+                
+                
+                
+          },
+          error: function(data){
+            console.log(JSON.stringify(data)); 
+            console.log('Some error occured..');
+            show_message4('Some error occured..',false);
+          }
+          
+	 });
+  }
+  
+  function mfpInit(){
+  	$('.js-toggle-previewImg-modal').magnificPopup({
+        type: 'image',
+        mainClass: 'mfp-fade1',
+      	removalDelay: 500,
+        closeOnBgClick: false,
+        closeBtnInside: false,
+        closeOnContentClick: false,
+//         tClose: password.strings.pageClose,
+        removalDelay: 500,
+      	tLoading: '<i class="fa fa-refresh w3-spin w3-text-black"></i>',
+      	preloader: true,
+        callbacks: {
+          beforeOpen: function() {
+            this.st.image.markup = this.st.image.markup.replace('mfp-figure', 'mfp-figure mfp-with-anim');
+                this.st.mainClass = 'mfp-zoom-out';
+          },
+          close: function(){
+          }
+        }
+      });
+  }
+  
+  function showOrderData(data){
+      order_data = data;
+                
+      if(data.order.cancelled_at != undefined){ $('#cancelled').show(); $('#shipping_details, #update-fulfillment, #assign-printer-wrapper').hide(); }
+      setTimeout(w3DisplayData("id02", data.order),100);
+      setTimeout(w3DisplayData("address", data.order),200); 
+      setTimeout(w3DisplayData("lineItem", data.order),300); //console.log('line size = '+data.order.line_items.size);
+      setTimeout(w3DisplayData("subTotal", data.order),500);
+      setTimeout(w3DisplayData("grandTotal", data.order),600);
+      setTimeout(w3DisplayData("discountCodes", data.order),700);
+      setTimeout(w3DisplayData("shippingPrice", data.order),800);
+// 				setTimeout(w3DisplayData("shipping_address", data.order.shipping_address),750);
+
+
+      data.order.line_items.forEach(showProperties);
+
+
+      function showProperties(item, index){ //console.log(item['product_id']);
+          setTimeout( w3DisplayData("properties_"+item['line_item_No'], item), 900+100*index);
+      }
+		
+      if(data.order.billing_address != null){
+        $('#billing_address .name').text(data.order.billing_name || data.order.billing_address.name);
+//         if(data.order.customer.email != null){ $('#billing_address .email').html(data.order.customer.email); }
+        if(data.order.billing_address.company != null){ $('#billing_address .company').html(data.order.billing_address.company); }
+        if(data.order.billing_address.address1){ $('#billing_address .address1').html('<br>'+data.order.billing_address.address1); }
+        if(data.order.billing_address.address2){ $('#billing_address .address2').html('<br>'+data.order.billing_address.address2); }
+        if(data.order.billing_address.city){ $('#billing_address .city').html('<br>'+data.order.billing_address.city); }
+        if(data.order.billing_address.province){ $('#billing_address .province').text(', '+data.order.billing_address.province); }
+        if(data.order.billing_address.zip){ $('#billing_address .zip').text(', '+data.order.billing_address.zip); }
+        if(data.order.billing_address.country){ $('#billing_address .country').html('<br>'+data.order.billing_address.country); }
+        if(data.order.billing_address.phone){ $('#billing_address .phone').html('<br>'+data.order.billing_address.phone); }
+      }
+
+      if(data.order.shipping_address != null){
+        var shipping_name = '';
+        if(data.order.shipping_address.first_name){shipping_name = data.order.shipping_address.first_name}
+        if(data.order.shipping_address.last_name){shipping_name = shipping_name +' '+data.order.shipping_address.last_name}
+        $('#shipping_address .name').text( data.order.shipping_name || shipping_name );
+        if(data.order.shipping_address.email != null){ $('#shipping_address .email').html(data.order.shipping_address.email); }
+        if(data.order.shipping_address.company != null){ $('#shipping_address .company').html('<br>'+data.order.shipping_address.company); }
+        if(data.order.shipping_address.address1){ $('#shipping_address .address1').html('<br>'+data.order.shipping_address.address1); }
+        if(data.order.shipping_address.address2){ $('#shipping_address .address2').html('<br>'+data.order.shipping_address.address2); }
+        if(data.order.shipping_address.city){ $('#shipping_address .city').html('<br>'+data.order.shipping_address.city); }
+        if(data.order.shipping_address.province != null){ $('#shipping_address .province').text(', '+data.order.shipping_address.province); }
+        if(data.order.shipping_address.zip){ $('#shipping_address .zip').text(', '+data.order.shipping_address.zip); }
+        if(data.order.shipping_address.country){ $('#shipping_address .country').html('<br>'+data.order.shipping_address.country); }
+        if(data.order.shipping_address.phone){ $('#shipping_address .phone').html('<br>'+data.order.shipping_address.phone); }
+      }
+
+      if(data.order.fulfillments != undefined){
+          if(data.order.fulfillments[0].created_at){ $('.note .created_at').html(data.order.fulfillments[0].created_at); }
+          if(data.order.fulfillments[0].updated){ $('.note .updated_at').html(data.order.fulfillments[0].updated); }
+          if(data.order.fulfillments[0].tracking_url){ $('#note a').attr('href',data.order.fulfillments[0].tracking_url); }else $('.note a').removeAttr('href');
+          if(data.order.fulfillments[0].tracking_company){ $('#note a').html(data.order.fulfillments[0].tracking_company); }
+          if(data.order.fulfillments[0].tracking_number){ $('#note a').html($('#note a').html()+' #'+data.order.fulfillments[0].tracking_number); }
+          if(data.order.fulfillments[0].status == 'success'){ $('.fulfilled').show(); }
+          $('#trackNo').html(' <a target="_blank" href="'+data.order.fulfillments[0].tracking_url+'">'+data.order.fulfillments[0].tracking_number+'</a>').parent().show();
+      }
+
+      $('img[srcs]').each(function(index, item){
+        $(item).attr('src', $(item).attr('srcs'));
+      });
+
+//       if(data.order.discount_codes[0] != null ){ $('#discountCodes').show(); }
+
+      if(data.order.note != null ){ 
+          $('#note').show().find(".note-text").text(data.order.note);
+//           console.log('note:', data.order.note);
+      }else
+        $('#orderNotes').hide(0);
+
+      if(data.order.shipping_charge != null ){ $('#shippingPrice').show(); }
+    
+      if(data.order.shipping_address.length > 0 && typeof data.order.shipping_address == "string"){
+      	$("#shipping_address .name").after(("<br>"+data.order.shipping_address).replace(/,/g,",<br>")).show();
+      }
+    
+      if(data.order.billing_address.length > 0 && typeof data.order.billing_address == "string"){
+      	$("#billing_address .h5.name").after(data.order.billing_address.replace(/,/g,",<br>")).show();
+      }
+
+      mfpInit();			
+
+      $.unblockUI(); 
+
+      $('#id01').show(); 
+    }                            
+                                
+    function createThumbImg(data){ console.log('thumb_called');
+      var i; 
+      var img_url;
+      var lastIndex;
+      var myArray = data['order']['line_items'];
+      for (i = 0; i < myArray.length; i++) {
+        img_url = data['order']['line_items'][i]["product_image_url"];
+        if(img_url != null){
+          lastIndex = img_url.lastIndexOf('.');
+          data['order']['line_items'][i]["product_thumb_url"] = img_url.substr(0, lastIndex)+'_150x'+img_url.substr(lastIndex);
+        }else
+          data['order']['line_items'][i]["product_thumb_url"] = 'http://placeholdit.imgix.net/~text?txtsize=35&bg=ddd&txtclr=aaa&txt=No%20Image&w=150&h=200&txttrack=0';
+      } 
+  //     console.log(JSON.stringify(data));
+  //     return(data);
+         showOrderData(data);
+    }
+
+    function dataHide(data){
+      var i; 
+      var x;
+      var str;
+      var total = 0;
+      var file_name = '';
+      var anchorPre = '';
+      var anchorPost = '';
+      var nullCount = 0;
+      var myArray = data.order.line_items; //console.log(JSON.stringify(data)); console.log(myArray);
+      for (i = 0; i < myArray.length; i++) {
+        myArray[i]["variant_title"] = (myArray[i]["variant_title"].length == 0) ? "" : ("<br>Size: "+myArray[i]["variant_title"]);
+        myArray[i]["line_total"] = parseFloat(myArray[i]["quantity"]*myArray[i]["price"]).toFixed(2);
+        myArray[i]["price"] = parseFloat(myArray[i]["price"]).toFixed(2);
+        myArray[i]["line_item_No"] = i;
+//         data['order']['properties_'+myArray[i]['product_id']] = myArray[i]['properties'];
+        myArray2 = myArray[i]['properties']; nullCount = 0; //console.log(myArray2);
+        
+        for (x = 0; x < myArray2.length; x++) {
+          if(myArray2[x]['name'].indexOf("_") != -1){
+              delete myArray2[x];	nullCount++;
+              $('head').append('<style class="prop-hide-style">#properties_'+myArray[i]['line_item_No']+' small:nth-last-of-type('+(1)+'){ display:none; }</style>');
+          }else{
+          	myArray2[x]['property_name'] = myArray2[x]['name'];
+          }
+        } //if(myArray[i]['properties'].length == nullCount){ $('head').append('<style>#properties_'+myArray[i]['line_item_No']+'{ display:none; }</style>'); }
+        //else{ $('head').append('<style>#properties_'+myArray[i]['line_item_No']+' p:nth-last-child(1){ display:none; }</style>'); }
+      } 
+//       data = removeEmpty(data);
+  //     console.log(JSON.stringify(data));
+  //     return(data);
+      createThumbImg(data);
+    }      
+  
+  function removeEmpty(obj) {
+    Object.keys(obj).forEach(function(key) {
+      if (obj[key] && typeof obj[key] === 'object') removeEmpty(obj[key])
+      else if (obj[key] == null) delete obj[key]
+    });
+    return obj;
+  };
+  
+</script>

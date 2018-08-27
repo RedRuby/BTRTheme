@@ -1,0 +1,182 @@
+{% include "account-allowance-strip" %}
+
+
+<div class="grid account-wrapper">
+
+  <div class="grid-item two-thirds medium-down--one-whole w3-padding-right">
+    
+    <span class="small--hide1"><br></span>
+    
+    <h6 class="w3-medium w3-bold text-dark-blue w3-uppercase" style="display: inline-block;">{{ 'customer.orders.title' | t }}</h6>
+    
+    <button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small" onclick="getData_CSV('/apps/product-tracking-analytics/get_orders.csv?domain={{ shop.permanent_domain }}'+'&shopify_customer_id={{- customer.id -}}');"><i class="fa fa-download fa-lg"></i><span class="small--hide">&nbsp; Export CSV</span></button>
+    
+    <a href="/account?view=my-transactions"><button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small w3-margin-right"><i class="fa fa-exchange fa-lg"></i><span class="small--hide">&nbsp; {{ 'My Transactions' }}</span></button></a>
+    
+    <hr class="hr--small border-liter-blue" style="margin-bottom:0px;">
+    
+    {%- include "get-url-param" -%}
+    
+    {% if pageUrl contains 'per_page=' %}
+      {% assign per_page = pageUrl | split: 'per_page=' | last | split: '&' | first %}
+    {% endif %}
+    
+    {% assign per_page = per_page | default: 10 | plus: 0 %}
+
+    {% paginate customer.orders by per_page %}
+    {% if customer.orders.size != 0 %}
+
+      <table class="full responsive-table">
+        <thead class="small--hide">
+          <tr class="w3-medium">
+            <th>{{ 'customer.orders.order_number' | t }}</th>
+            <th>{{ 'customer.orders.date' | t }}</th>
+            <th>{{ 'Order By' }}</th>
+            <th>{{ 'Project Number' }}</th>
+            <th>{{ 'customer.orders.fulfillment_status' | t }}</th>
+            <th>{{ 'customer.orders.total' | t }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% capture minus_icon %}<span style="background:url('{{ 'minus-icon.svg' | asset_url }}') no-repeat;">&nbsp;&nbsp;</span>{% endcapture %}
+          {% for order in customer.orders %}
+            <tr class="text-dark-blue w3-medium">
+              <td><span class="large--hide medium--hide text-liter-blue">{{ 'customer.orders.order_number' | t }}<br></span><span class="{% if order.cancelled %}cancelled{% endif %}">{{ order.name | link_to: order.customer_url }}</span></td>
+              <td><span class="large--hide medium--hide text-liter-blue">{{ 'customer.orders.date' | t }}<br></span>{{ order.created_at | date: '%m/%d/%Y' }}</td>
+              <td><span class="large--hide medium--hide text-liter-blue">{{ 'Order By' }}<br></span>{{ order.customer.first_name }}{{ order.customer.last_name | prepend:' ' }}</td>
+<!--               <td><span class="large--hide medium--hide text-liter-blue">{{ 'Gift Code' }}<br></span>{{ order.discounts.first.code | default: minus_icon }}</td> -->
+              <td style="width:200px;"><span class="large--hide medium--hide text-liter-blue">{{ 'Project Number' }}<br></span>{{ order.note | truncate: 50 | default: minus_icon }}</td>
+              <td {% if order.fulfillment_status_label == 'Fulfilled' %}class="text-lite-blue"{% else %}style="color:{{ '#be3326' }};"{% endif %}><span class="large--hide medium--hide text-liter-blue">{{ 'customer.orders.fulfillment_status' | t }}<br></span>{% if order.cancelled %}Cancelled{% else %}{{ order.fulfillment_status_label }}{% endif %}</td>
+              <td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ 'customer.orders.total' | t }}<br></span>{{ order.total_price | money }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    {% else %}
+
+      <p class="w3-medium w3-margin-top">{{ 'customer.orders.none' | t }}</p>
+
+    {% endif %}
+
+    {% if paginate.pages > 1 %}
+    <div class="grid one-whole per_pageContainer pagination pagination-custom w3-pagination">
+      <div class="grid-item two-thirds small--one-whole small--text-center w3-padding-0">
+        <div class="w3-margin-top">
+      		{% include 'pagination-custom', per_page: per_page %}
+        </div>
+      </div>
+      <div class="grid-item one-third text-right small--one-whole small--text-center">
+        <label for="per_page" style="display:inline-block;" class="w3-margin-top">Per Page: &nbsp;</label>
+        <select id="per_page" class="per_page w3-margin-top" style="width:72px; display:inline-block; height:auto;" onchange="query.per_page = this.value; location.assign(location.pathname+'?'+$.param(query));">
+          {% for i in (10..50) %}
+          	{% assign check = i | modulo:10 %}
+          	{% if check == 0 %}
+              <option value="{{ i }}" {% if i == per_page %}selected{% endif %}>{{ i }}</option>
+          	{% endif %}
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    {% endif %}
+    {% endpaginate %}
+  </div>
+
+  <div class="grid-item one-third medium-down--one-whole">
+    
+    <span class="small--hide1"><br></span>
+    
+    <h6 class="w3-medium w3-bold text-dark-blue w3-uppercase">{{ 'customer.account.details' | t }}</h6>
+    
+    <hr class="hr--small border-liter-blue">
+
+    <h3 class="w3-medium" title="{{ customer.email }}">{{ customer.name }}</h3>
+
+    {% if customer.default_address != nil %}
+      <p class="w3-medium">
+      {{ customer.default_address.address1 }}<br>
+
+      {% if customer.default_address.address2 != "" %}
+        {{ customer.default_address.address2 }}<br>
+      {% endif %}
+
+      {% if customer.default_address.city != "" %}
+        {{ customer.default_address.city }}<br>
+      {% endif %}
+
+      {% if customer.default_address.province_code != "" %}
+        {{ customer.default_address.province_code | upcase }}<br>
+      {% endif %}
+
+      {% if customer.default_address.zip != "" %}
+        {{ customer.default_address.zip | upcase }}<br>
+      {% endif %}
+
+      {% if customer.default_address.country != "" %}
+        {{ customer.default_address.country }}<br>
+      {% endif %}
+
+      </p>
+    
+      <p>
+    	{% if customer.default_address.phone != "" %}
+          {{ customer.default_address.phone }}<br>
+        {% endif %}
+        <span class="text-lite-blue">{{ customer.email }}</span>
+      </p>
+
+    {% endif %}
+
+    <p><a href="/account/addresses"><button type="button" class="btn btn--secondary border-lite-blue w3-small"><i class="fa fa-address-book fa-lg"></i>&nbsp; {{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})</button></a></p>
+    
+    {% if customer_role == 'Role:PM' and false %}
+      <span class="small--hide1"><br></span>
+      <h6 class="w3-medium w3-bold text-dark-blue w3-uppercase">{{ 'My Free Field T-Shirt Balance' }}</h6>
+      <hr class="hr--small border-liter-blue">
+      <div class="w3-medium">
+    	{{ customer.metafields.allowance['FieldTees'] | default: 0 | plus: 0 }}
+      </div>
+    {% endif %}
+    
+    {% assign total_gift = customer.metafields['gift.YOSGIFT'].size | plus: customer.metafields['gift.CLIENTGIFT'].size | plus: customer.metafields['gift.EMPLOYEEREWARD'].size %}
+      
+    {% if total_gift > 0 %}
+    <div>
+      <span class="small--hide1"><br></span>
+      <h6 class="w3-medium w3-bold text-dark-blue w3-uppercase">{{ 'My Gift Codes' }}</h6>
+      <hr class="hr--small border-liter-blue">
+      <div class="w3-medium">
+        <ul>
+           {% for field in customer.metafields['gift.YOSGIFT'] %}
+            {% if forloop.first %}<b>Year of Service Awards</b>{% endif %}
+            <li>{{ field | first }}: <b>{{ field | last }}</b></li>
+           {% endfor %}
+        </ul>
+        <ul>
+           {% for field in customer.metafields['gift.CLIENTGIFT'] %}
+            {% if forloop.first %}<b>Client Gifts</b>{% endif %}
+            <li>{{ field | first }}: <b>{{ field | last }}</b></li>
+           {% endfor %}
+        </ul>
+        <ul>
+           {% for field in customer.metafields['gift.EMPLOYEEREWARD'] %}
+            {% if forloop.first %}<b>Employee Rewards</b>{% endif %}
+            <li>{{ field | first }}: <b>{{ field | last }}</b></li>
+           {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+    
+  </div>
+
+</div>
+
+{{ 'youarei.js' | asset_url | script_tag }}
+
+<script>
+  var uri = new YouAreI(document.location.href);
+  var query = uri.query_get();
+</script>
+
+{% include "common_code_lib", def_data_csv: true %}

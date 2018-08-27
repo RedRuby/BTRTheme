@@ -1,0 +1,127 @@
+{% form 'customer_address', customer.new_address %}
+
+<div id="add_address" {% unless form.errors %}style="display:none;"{% endunless %}>
+
+<div class="mfp-bg mfp-fade mfp-ready" style="opacity:0.9; background-color:gray;"></div>
+
+<div class="mfp-wrap mfp-auto-cursor mfp-fade mfp-ready" tabindex="-1" style="overflow-x: hidden; overflow-y: auto;">
+  <div class="mfp-container mfp-s-ready mfp-inline-holder">
+    <div class="mfp-content bounceIn animated w3-card-2 w3-margin-top w3-margin-bottom">
+
+      <div id="AddressAddModal" class="white-popup-block">
+        
+
+            <h2 class="text-center w3-bold text-dark-blue">{{ 'customer.addresses.add_new' | t }}</h2>
+        	<br>
+
+            {% include 'form-errors-custom' %}
+
+            <div class="grid">
+
+              <div class="grid-item one-half small--one-whole">
+                <label for="address_first_name_new">{{ 'customer.addresses.first_name' | t }}</label>
+                <input type="text" id="address_first_name_new" class="address_form" name="address[first_name]" required="required" value="{{ form.first_name }}">
+              </div>
+
+              <div class="grid-item one-half small--one-whole">
+                <label for="address_last_name_new">{{ 'customer.addresses.last_name' | t }}</label>
+                <input type="text" id="address_last_name_new" class="address_form" name="address[last_name]" required="required" value="{{ form.last_name }}">
+              </div>
+              
+              <div class="grid-item one-half small--one-whole">
+                <label for="address_company_new">{{ 'customer.addresses.company' | t }}</label>
+                <input type="text" id="address_company_new" class="address_form" name="address[company]" value="{{ form.company }}">
+              </div>
+              
+              <div class="grid-item one-half small--one-whole">
+                <label for="address_phone_new">{{ 'customer.addresses.phone' | t }}</label>
+                <input type="tel" id="address_phone_new" class="address_form" name="address[phone]" value="{{ form.phone }}" onkeyup="this.value = this.value.match(/[\d]+/);" placeholder="555-555-1234">
+              </div>
+              
+              <div class="grid-item one-half small--one-whole">
+                <label for="address_address1_new">{{ 'customer.addresses.address1' | t }}</label>
+                <input type="text" id="address_address1_new" class="address_form" name="address[address1]" required="required" value=" {{ form.address1 }}">
+              </div>
+              
+              <div class="grid-item one-half small--one-whole">
+                <label for="address_address2_new">{{ 'customer.addresses.address2' | t }}</label>
+                <input type="text" id="address_address2_new" class="address_form" name="address[address2]" value=" {{ form.address2 }}">
+              </div>
+              
+              <div class="grid-item one-half small--one-whole">
+                <label for="address_city_new">{{ 'customer.addresses.city' | t }}</label>
+                <input type="text" id="address_city_new" class="address_form" name="address[city]" required="required" value="{{ form.city }}">
+              </div>
+              
+              <div class="grid-item one-half small--one-whole">
+                <label for="address_zip_new">{{ 'customer.addresses.zip' | t }}</label>
+                <input type="text" id="address_zip_new" class="address_form" name="address[zip]" required="required" value="{{ form.zip }}" onkeyup="this.value = this.value.match(/[\d]+/);" autocapitalize="characters">
+              </div>
+              
+              <div class="grid-item one-half small--one-whole" style="position:relative;">
+                <label for="address_country_new">{{ 'customer.addresses.country' | t }}</label>
+                <select id="address_country_new" name="address[country]" required="required" data-default="{{ form.country }}">{{ all_country_option_tags | replace: 'value="United States"', 'value="United States" selected' }}</select>
+                <div style="position:absolute; top:0; bottom:0; left:0; right:0; z-index:100; cursor:not-allowed;"></div>
+              </div>
+              
+              <div class="grid-item one-half small--one-whole" id="address_province_container_new" style="display:none">
+                <label for="address_province_new">{{ 'customer.addresses.province' | t }}</label>
+                <select id="address_province_new" class="address_form" name="address[province]" required="required" data-default="{{ form.province }}"></select>
+              </div>
+
+            </div>
+        
+            {% if template.suffix %}  
+              <input type="hidden" name="return_to" value="{{ request.path }}?view={{ template.suffix }}" />
+			{% endif %}
+        
+        	<br><br>
+
+            <p class="text-center">
+              {{ form.set_as_default_checkbox }}
+              <label for="address_default_address_new" class="inline">{{ 'customer.addresses.set_default' | t }}</label>
+            </p>
+        
+        	<div class="text-center">
+              <input type="submit" class="btn" value="{{ 'customer.addresses.add' | t }}"><br><br>
+              <span class="form-spacer">{{ 'customer.addresses.or' | t }}</span>
+              <a href="#" class="w3-text-red" onclick="Shopify.CustomerAddress.toggleNewForm(); $(this).parents('form').trigger('reset'); return false;"><u>{{ 'customer.addresses.cancel' | t }}</u></a>
+            </div>
+
+          
+      </div>
+      <button title="Close (Esc)" onclick="Shopify.CustomerAddress.toggleNewForm(); $(this).parents('form').trigger('reset'); return false;" type="button" class="mfp-close">×</button>
+
+    </div>
+<!--     <div class="mfp-preloader w3-center center-block" style="display:initial; z-index:2000 !important;"><i class="fa fa-refresh fa-2x text-lite-blue w3-spin "></i></div> -->
+  </div>
+
+</div>
+  
+</div>
+
+{% endform %}
+
+<style>
+  .mfp-content{
+    width:95% !important; 
+    min-height:632px;
+    background:white; 
+    padding:40px 50px 50px;
+    max-width:830px;
+    min-width:400px;
+    position:relative;
+    border-radius:5px;
+  }
+  
+  @media (max-width: 749px){
+  	.mfp-content{
+      width:100% !important; 
+      height:auto;
+      padding:20px;
+    }
+    .mfp-container{
+      height:auto;
+    }
+  }
+</style>

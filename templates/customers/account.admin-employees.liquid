@@ -1,0 +1,402 @@
+{% include "definitions", def_tag: true, def_role_list: true, def_role_name_list: true, def_not_role_allowances: true %}
+
+<div class="grid w3-margin-bottom">
+  <div class="grid-item large--one-third medium--hide small--hide">
+    &nbsp;
+  </div>
+  <div class="grid-item large--one-third text-center">
+    <h1 class="text-dark-blue w3-bold">Admin Dashboard</h1>
+  </div>
+  <div class="grid-item large--one-third medium--hide small--hide text-right">
+    &nbsp;
+  </div>
+</div>
+
+{% include "common_code_lib", def_admin_nav: true %}
+
+<div style="height:40px;">&nbsp;</div>
+
+<span class="small--hide1"><br></span>
+
+<div class="grid account-wrapper">
+
+  <div class="grid-item one-whole">
+    <h1 class="w3-medium w3-bold text-dark-blue w3-uppercase" style="display: inline-block;">{{ 'All Employees' }}</h1>
+    
+    <button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small" onclick="addEmployeeInit();"><i class="fa fa-plus fa-lg"></i><span class="small--hide">&nbsp; Add Employee</span></button>
+    <button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small w3-margin-right" onclick="getData_CSV('/apps/api/customer/get_empployees.csv?domain='+shop_domain);"><i class="fa fa-download fa-lg"></i><span class="small--hide">&nbsp; Export CSV</span></button>
+    
+    <hr class="hr--small border-liter-blue" style="margin-bottom:0px;">
+
+      <table id="employee-table" class="full responsive-table" style="display:none;">
+        <thead class="small--hide medium-down--hide">
+          <tr class="w3-medium">
+            <th>{{ 'Name' }}</th>
+            <th>{{ 'Role' }}</th>
+            <th>{{ "Company A" }}</th>
+            <th>{{ "Seasonal & A" }}</th>
+            <th>{{ "Brand MKT GFT" }}</th>
+            <th>{{ "Field T's" }}</th>
+            <th>{{ 'Gift Codes' }}</th>
+            <th>{{ 'Date of Hire' }}</th>
+<!--             <th>{{ 'Manager' }}</th> -->
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% capture minus_icon %}<span class="null-placeholder">&nbsp;&nbsp;</span>{% endcapture %}
+          <tr w3-repeat="employees" class="text-dark-blue w3-medium">
+            <td style="width:150px;" title="{% raw %}{{ email }}{% endraw %}"><span class="large--hide medium--hide text-liter-blue">{{ 'Name' }}<br></span>{% raw %}{{ name }}{% endraw %}</td>
+            <td style="width:150px;"><span class="large--hide medium--hide text-liter-blue">{{ 'Role' }}<br></span>{% raw %}{{ role_name }}{% endraw %}</td>
+            <td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ annual_apparel_tag }}<br></span>${% include "double-curly-open" %}{{ annual_apparel_tag }}{% include "double-curly-close" %}</td>
+            <td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ seasonal_apparel_tag }}<br></span>${% include "double-curly-open" %}{{ seasonal_apparel_tag | replace:"&", "and" }}{% include "double-curly-close" %}</td>
+            <td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ mkt_gift_tag }}<br></span>${% include "double-curly-open" %}{{ mkt_gift_tag }}{% include "double-curly-close" %}</td>
+            <td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ field_tees_tag }}<br></span>{% include "double-curly-open" %}{{ field_tees_tag }}{% include "double-curly-close" %}</td>
+            <td class="gift"><span class="large--hide medium--hide text-liter-blue">{{ 'Gift Codes' }}<br></span>{% raw %}{{ gift_codes }}{% endraw %}</td>
+            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Date of Hire' }}<br></span>{% raw %}{{ doh }}{% endraw %}</td>
+<!--             <td><span class="large--hide medium--hide text-liter-blue">{{ 'Manager' }}<br></span>{% raw %}{{ manager }}{% endraw %}</td> -->
+            <td class="td-full text-right small--text-left"><button type="button" id="{% raw %}{{ shopify_customer_id }}{% endraw %}" class="btn btn--secondary w3-uppercase w3-small" onclick="editEmployeeInit(this);"><i class="fa fa-pencil fa-lg"></i>&nbsp; Edit Employee</button></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div id="table-style"><style>.date_desc_btn{ color: #ea8221 !important; }</style></div>
+
+      <br>
+      <div class="grid one-whole per_pageContainer pagination pagination-custom w3-pagination" style="display:none;">
+        <div class="grid-item two-thirds small--one-whole small--text-center w3-padding-0">
+          <div id="paginationInit" class="w3-margin-top">
+
+          </div>
+        </div>
+        <div class="grid-item one-third text-right small--one-whole small--text-center">
+          <label for="per_page" style="display:inline-block;" class="w3-margin-top">Per Page: &nbsp;</label>
+          <select id="per_page" class="per_page w3-margin-top" style="width:72px; display:inline-block; height:auto;" onchange="updateState({page: '1',per_page: this.value}); updatePerPage(this.value);">
+            <option value='10'>10</option>
+            <option value='20'>20</option>
+            <option value='30'>30</option>
+            <option value='40'>40</option>
+            <option value='50'>50</option>
+          </select>
+        </div>
+      </div>
+
+      <p id="no-data" class="w3-medium w3-margin-top" style="display:none;">{{ 'No Data Found..' }}</p>
+
+    
+  </div>
+
+
+</div>
+
+<style>
+  @media (max-width: 749px){
+    .responsive-table tr > td:not(:nth-last-of-type(1)) {
+        border: none;
+        padding: 0px;
+    }
+    .td-full{
+    	width: 100% !important;
+    }
+  }
+</style>
+
+<script>
+  var uri = new YouAreI(document.location.href);
+  query = uri.query_get();
+  
+  var name = '';
+  var role = '';
+  var doh = '';
+  var manager = '';
+  
+  var page = (query.page != undefined) ? query.page : "1";
+  var per_page = (query.per_page != undefined) ? query.per_page : localStorage.per_page_{{ customer.id }} || "10";
+  
+  var sort_name = '';
+  var sort_role = '';
+  var sort_doh = '';
+  var sort_manager = '';
+  
+  var employee_id = "";
+  var data = {};
+  var employee_data = {};
+  var employees_data = {};
+  var old_update_form_data = '';
+  var shop_domain = "{{ shop.permanent_domain }}";
+  
+  var role_list = "{{ non_admin_roles | join: "," }}".split(",");
+  
+  var role_names = "{{ non_admin_role_names | join: "," }}".split(",");
+  
+  var client_data = {navigator: navigator};
+  
+  var scroll = false;
+  
+  updateState(query);
+  
+  $.get("http://ipinfo.io", function(response) {
+      client_data.ip = response.ip;
+  }, "jsonp");
+  
+  function dateInit(){
+      $(".datepicker").datepicker({
+          showAnim: "drop",
+          changeMonth: true,
+          changeYear: true,
+          maxDate: '0',
+  //         showButtonPanel: true,
+          dateFormat: "mm/dd/yy",
+          showOtherMonths: true,
+  //         onClose: function(dateText, inst) { 
+  //             $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+  //         }
+      });
+  }
+  
+  function ApplyDate() {
+      var start_date = $("#start-date").val();
+      var end_date = $("#end-date").val();
+      start_unix = getUnix(start_date, 0);
+      end_unix = getUnix(end_date, 1);
+      if (start_date === "" || end_date === "") {
+          alert("Please select start and end dates.");
+      } else if(start_unix >= end_unix){
+          alert("Start date must be smaller than End date.");
+      } else {
+          updateState({ start_date: start_date, end_date: end_date, page: '1' });
+      }
+  }
+    
+  function getUnix(date, i){
+    if(i == 0)
+      var newDate = Date.parse(date + " 00:00:00");
+    else if(i == 0.5)
+      var newDate = Date.parse(date + " 12:00:00");
+    else
+      var newDate = Date.parse(date + " 24:00:00");
+    var date_unix = Math.round(new Date(newDate).getTime()/1000);
+    var date_unix = new Date(newDate).getTime();
+    
+    return date_unix;
+    
+  }
+  
+  function updatePerPage(val){
+    if (typeof(Storage) !== "undefined") {
+      localStorage.per_page_{{ customer.id }} = val;
+    }
+  }
+  
+  function toggleOrderBtns(btn , data){ console.log('called-for:', data)
+    switch(btn){
+      case 'name': if(data == 'asc') $('#table-style').html('<style>.name_asc_btn{ color: #ea8221 !important; }</style>'); else $('#table-style').html('<style>.name_desc_btn{ color: #ea8221 !important; }</style>'); console.log('called-for:', btn); break;
+      case 'role': if(data == 'asc') $('#table-style').html('<style>.role_asc_btn{ color: #ea8221 !important; }</style>'); else $('#table-style').html('<style>.role_desc_btn{ color: #ea8221 !important; }</style>'); console.log('called-for:', btn); break;
+      case 'doh': if(data == 'asc') $('#table-style').html('<style>.doh_asc_btn{ color: #ea8221 !important; }</style>'); else $('#table-style').html('<style>.doh_desc_btn{ color: #ea8221 !important; }</style>'); console.log('called-for:', btn); break;
+      case 'manager': if(data == 'asc') $('#table-style').html('<style>.manager_asc_btn{ color: #ea8221 !important; }</style>'); else $('#table-style').html('<style>.manager_desc_btn{ color: #ea8221 !important; }</style>'); console.log('called-for:', btn); break;
+    }
+  }
+  
+  function updateState(param){
+      if(param.page != undefined)data.page = param.page; else if(page.length != 0)data.page = page;
+      if(param.per_page != undefined)data.per_page = param.per_page; else if(per_page.length != 0)data.per_page = per_page;
+    
+      if(param.name != undefined)data.name = param.order; else if(name.length != 0)data.name = name;
+      if(param.role != undefined)data.role = param.role; else if(role.length != 0)data.role = role;
+      if(param.doh != undefined)data.doh = param.doh; else if(doh.length != 0)data.doh = doh;
+      if(param.manager != undefined)data.manager = param.manager; else if(manager.length != 0)data.manager = sort_total;
+    
+      fetchOrder(data);     
+      
+  }
+  
+  function fetchOrder(data){
+    
+    page = data.page;
+    per_page = data.per_page; $('#per_page option[value="'+data.per_page+'"]').prop('selected', 'selected');
+    
+    if(data.name != undefined){ name = data.name; if(data.name.length != 0)toggleOrderBtns('name', data.name); }
+    if(data.role != undefined){ role = data.role; if(data.role.length != 0)toggleOrderBtns('role', data.role); }
+    if(data.doh != undefined){ doh = data.doh; if(data.doh.length != 0)toggleOrderBtns('doh', data.doh); }
+    if(data.manager != undefined){ manager = data.manager; if(data.manager.length != 0)toggleOrderBtns('manager', data.manager); }
+    
+    data = removeEmpty(data);  
+    History.pushState({ url: document.location.href }, document.title, '?view={{ template.suffix }}&' + $.param(data) );
+    
+    try {
+      data2 = Object.assign({}, data);
+    }catch(e){ data2 = $.extend({}, data); }
+    data2.domain = shop_domain; 
+    
+    freez();
+    console.log(data2);
+    
+    console.log($.param(data2));
+    
+    {% comment %} dataSetup(test_data); defreez();  {% endcomment %}  
+      $.ajax({
+        url: "/apps/api/customer/get_empployees.json",
+        type:'GET',
+        data: data2,
+        dataType: 'json',
+        contentType: 'application/json',
+        success:function(data){
+          console.log(JSON.stringify(data));
+          if(data.message){
+              console.log(data.message);
+              show_message4(data.message,true);
+          }
+           else if(data.error){
+              console.log(data.error);
+              show_message4(data.error,false);
+          }
+          if(data.employees != undefined){ //&& data.orders.length > 0
+        	dataSetup(data);
+          }else{
+          	$('#employee-table, .pagination').hide();
+            $('#no-data').show();
+          }
+          defreez();  
+        },
+        error:function(data){
+          console.log(JSON.stringify(data)); 
+          console.log('Some error occured..');
+          show_message4('Some error occured..',false);
+        }
+      });
+  }
+  
+  function dataSetup(data){ 
+      var i, j; 
+      var myArray = data['employees'];
+      for (i = 0; i < myArray.length; i++) {
+        if(data['employees'][i]["gifts"].length > 0)
+          data['employees'][i]["gift_codes"] = data['employees'][i]["gifts"][0]['code']+':<b>$'+data['employees'][i]["gifts"][0]['code_amount']+'</b>'+((data['employees'][i]["gifts"].length > 1) ? '... and '+(data['employees'][i]["gifts"].length - 1)+' more.' : '');
+        
+        for (j = 0; j < data['employees'][i]["allowances"].length; j++) {
+          data['employees'][i][data['employees'][i]["allowances"][j].allowance_type.name.replace("&","and")] = data['employees'][i]["allowances"][j].allowance_amount;
+        }
+        
+        try{
+          data['employees'][i]["role_name"] = role_names[role_list.indexOf("Role:"+data['employees'][i]["role_id"])];
+        }catch(e){}
+      } 
+//       console.log(JSON.stringify(data));
+  //     return(data);
+         populateTable(data);
+  }
+  
+  function populateTable(data){
+      employees_data = data;
+      w3DisplayData("employee-table", data);
+      $('#employee-table, .pagination').show();
+      $('#no-data').hide();
+      $("td:contains('{% raw %}{{{% endraw %}'):contains('{% raw %}}}{% endraw %}')").html('{{ minus_icon }}');
+      
+      $('td.gift').html('<span class="large--hide medium--hide text-liter-blue">{{ "Gift Codes" }}<br></span>'+$('td.gift').html());
+                        
+      if(scroll)
+        $('body, html').delay(100).animate({scrollTop: $('table').offset().top-200});
+      else
+        scroll = true;                  
+        
+      {% comment %}{% endcomment %}
+      $('#paginationInit').pagination({
+          items: data["total_orders"],
+          itemsOnPage: data["per_page"],
+          hrefTextPrefix: "javascript:updateState({ 'page': '",
+          hrefTextSuffix: "'});",
+          currentPage: data["page"],
+          prevText:'<i class="fa fa-arrow-left"></i>',
+          nextText:'<i class="fa fa-arrow-right"></i>',
+          listStyle: 'w3-pagination pagination pagination-custom',
+          ellipsePageSet: false,
+  //         cssStyle: 'light-theme'
+      });
+    
+  }
+  
+  function removeEmpty(obj) {
+    Object.keys(obj).forEach(function(key) {
+      if (obj[key] && typeof obj[key] === 'object') removeEmpty(obj[key])
+      else if (!obj[key] && obj[key] !== undefined) delete obj[key]
+    });
+    return obj;
+  };
+  
+  function addEmployeeInit(){
+//     $obj = $(obj);
+    
+  	$('html').css('overflow','hidden');
+    $('.employee-add-form').find('.mfp-bg, .mfp-wrap').show().removeClass('mfp-hide');
+    
+//     $('#EmployeeAddModal form').attr('order_id', $obj.attr('id'));
+//     $('#EmployeeAddModal .orderName').text($obj.attr('name'));
+    
+    $('.employee-add-form .mfp-preloader').hide(); $('#EmployeeAddModal, .employee-add-form .mfp-content').show().removeClass('mfp-hide');
+  }
+  
+  function editEmployeeInit(obj){
+    $obj = $(obj);
+    
+    $('html').css('overflow','hidden');
+    
+    $('.employee-edit-form').find('.mfp-bg, .mfp-wrap, .mfp-content').show().removeClass('mfp-hide');
+    $('#EmployeeEditModal form').attr('employee_id', $obj.attr('id'));
+    
+    $.ajax({
+        url: "/apps/api/customer/get_empployee.json?id="+$obj.attr('id'),
+        type:'GET',
+//         data: data2,
+        dataType: 'json',
+        contentType: 'application/json',
+        success:function(data){
+          console.log(JSON.stringify(data));
+          
+          if(data.shopify_customer_id != undefined){
+            employee_data = data;
+            
+            $('.emp-status-update-link').attr({'email': data.email||'','status': data.status||''});
+            
+            if(data.status == "disabled")
+              $('.emp-status-update-link u').text("Activate Employee");
+            else
+              $('.emp-status-update-link u').text("Deactivate Employee");
+            
+            $('#update_first_name').val(data.first_name||'');
+            $('#update_last_name').val(data.last_name||'');
+            $('#update_email').val(data.email||'');
+            $('#update_doh').val(data.doh||'');
+            $('#update_total_allowance').val('$'+(data.total_allowance||'0.00'));
+            $('#update_role_name option[value="'+data.role_name+'"]').prop('selected','selected');
+            $('#update_gift_code').val(data.gifts.map(function(x){ return x["code"]+":$"+x["code_amount"]; }).join(', '));
+
+
+            $('.employee-edit-form .mfp-preloader').hide(); $('#EmployeeEditModal').show().removeClass('mfp-hide');
+            
+            window.old_update_form_data = $('#EmployeeEditModal form [name]').serializeArray().map(function(x){ return x.value; }).join(',');
+
+          }else{
+            show_message4('Customer data not found..',false);
+          }
+  
+        },
+        error:function(data){
+          console.log(JSON.stringify(data)); 
+          console.log('Some error occured..');
+          show_message4('Some error occured..',false);
+        }
+    });
+    
+    
+  }
+</script>
+
+{% include "common_code_lib", def_data_csv: true %}
+
+<div class="employee-add-form">
+{% include 'magnificPopup-add-employee' %}
+</div>
+<div class="employee-edit-form">
+{% include 'magnificPopup-edit-employee' %}
+</div>

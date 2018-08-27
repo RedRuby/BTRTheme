@@ -1,0 +1,127 @@
+<ul class="mobile-nav" id="MobileNav">
+  {% unless linklists[section.settings.menu].links.first.url == '/' %}
+  <li class="large--hide">
+    <a href="/">{{ 'general.breadcrumbs.home' | t }}</a>
+  </li>
+  {% endunless %}
+  {%- comment %}<locksmith:5663>{% endcomment -%}
+    {%- assign locksmith_0c69_forloop__size = 0 %}{% for link in linklists[section.settings.menu].links %}{% include 'locksmith-variables', locksmith_scope: 'subject', locksmith_subject: link %}{% if locksmith_transparent %}{% assign locksmith_0c69_forloop__size = locksmith_0c69_forloop__size | plus: 1 %}{% endif %}{% endfor %}{% assign locksmith_0c69_forloop__index = nil -%}
+  {%- comment %}</locksmith:5663>{% endcomment -%}
+  {% for link in linklists[section.settings.menu].links %}
+    {%- comment %}<locksmith:0be0>{% endcomment -%}
+      {%- include 'locksmith-variables', locksmith_scope: 'subject', locksmith_subject: link, locksmith_subject_parent: linklists[section.settings.menu] %}{% if locksmith_transparent %}{% if locksmith_0c69_forloop__index == nil %}{% assign locksmith_0c69_forloop__index = 1 %}{% assign locksmith_0c69_forloop__index0 = 0 %}{% else %}{% assign locksmith_0c69_forloop__index = locksmith_0c69_forloop__index | plus: 1 %}{% assign locksmith_0c69_forloop__index0 = locksmith_0c69_forloop__index0 | plus: 1 %}{% endif %}{% if locksmith_0c69_forloop__index == 1 %}{% assign locksmith_0c69_forloop__first = true %}{% else %}{% assign locksmith_0c69_forloop__first = false %}{% endif %}{% if locksmith_0c69_forloop__index == locksmith_0c69_forloop__size %}{% assign locksmith_0c69_forloop__last = true %}{% else %}{% assign locksmith_0c69_forloop__last = false %}{% endif %}{% assign locksmith_0c69_forloop__rindex = locksmith_0c69_forloop__size | minus: locksmith_0c69_forloop__index | minus: 1 %}{% assign locksmith_0c69_forloop__rindex0 = locksmith_0c69_forloop__size | minus: locksmith_0c69_forloop__index0 | minus: 1 %}{% else %}{% continue %}{% endif -%}
+    {%- comment %}</locksmith:0be0>{% endcomment -%}
+    {% if link.links != blank %}
+      {% assign parent_index = locksmith_0c69_forloop__index %}
+      <li 
+        class="mobile-nav--has-dropdown {% if link.active %}mobile-nav--active{% endif %}"
+        aria-haspopup="true" onmouseup="if($(this).hasClass('nav-active')){ setTimeout(function(){ $('#psudo-navlink')[0].click(); },100); }">
+        <a
+          hrefs="{{ link.url }}"
+          class="mobile-nav--link"
+          data-meganav-type="parent"
+          aria-controls="MenuParent-{{ parent_index }}"
+          aria-expanded="false"
+          {% unless template.name == 'index' %}{% if link.active %}aria-current="page"{% endif %}{% endunless%}>
+            {{ link.title | escape }}
+            <span class="fa fa-caret-down" aria-hidden="true"></span>
+          	<span class="fa fa-caret-up hide" aria-hidden="true"></span>
+        </a>
+        <ul
+          id="MenuParent-{{ parent_index }}"
+          class="mobile-nav--dropdown {% if link.levels == 2 %}mobile-nav--has-grandchildren{% endif %}"
+          data-meganav-dropdown>
+          {%- comment %}<locksmith:d296>{% endcomment -%}
+            {%- assign locksmith_cddd_forloop__size = 0 %}{% for childlink in link.links %}{% include 'locksmith-variables', locksmith_scope: 'subject', locksmith_subject: childlink %}{% if locksmith_transparent %}{% assign locksmith_cddd_forloop__size = locksmith_cddd_forloop__size | plus: 1 %}{% endif %}{% endfor %}{% assign locksmith_cddd_forloop__index = nil -%}
+          {%- comment %}</locksmith:d296>{% endcomment -%}
+          {% for childlink in link.links %}
+            {%- comment %}<locksmith:87db>{% endcomment -%}
+              {%- include 'locksmith-variables', locksmith_scope: 'subject', locksmith_subject: childlink, locksmith_subject_parent: link %}{% if locksmith_transparent %}{% if locksmith_cddd_forloop__index == nil %}{% assign locksmith_cddd_forloop__index = 1 %}{% assign locksmith_cddd_forloop__index0 = 0 %}{% else %}{% assign locksmith_cddd_forloop__index = locksmith_cddd_forloop__index | plus: 1 %}{% assign locksmith_cddd_forloop__index0 = locksmith_cddd_forloop__index0 | plus: 1 %}{% endif %}{% if locksmith_cddd_forloop__index == 1 %}{% assign locksmith_cddd_forloop__first = true %}{% else %}{% assign locksmith_cddd_forloop__first = false %}{% endif %}{% if locksmith_cddd_forloop__index == locksmith_cddd_forloop__size %}{% assign locksmith_cddd_forloop__last = true %}{% else %}{% assign locksmith_cddd_forloop__last = false %}{% endif %}{% assign locksmith_cddd_forloop__rindex = locksmith_cddd_forloop__size | minus: locksmith_cddd_forloop__index | minus: 1 %}{% assign locksmith_cddd_forloop__rindex0 = locksmith_cddd_forloop__size | minus: locksmith_cddd_forloop__index0 | minus: 1 %}{% else %}{% continue %}{% endif -%}
+            {%- comment %}</locksmith:87db>{% endcomment -%}
+            {% if childlink.links != blank %}
+            {% assign child_index = locksmith_cddd_forloop__index %}
+              <li
+                class="mobile-nav--has-dropdown mobile-nav--has-dropdown-grandchild {% if childlink.active %}mobile-nav--active{% endif %}"
+                aria-haspopup="true">
+                <a
+                  href="{{ childlink.url }}"
+                  class="mobile-nav--link"
+                  aria-controls="MenuChildren-{{ parent_index }}-{{ child_index }}"
+                  data-meganav-type="parent"
+                  {% unless template.name == 'index' %}{% if childlink.active %}aria-current="page"{% endif %}{% endunless%}>
+                    {{ childlink.title | escape }}
+                    <span class="icon icon-arrow-down" aria-hidden="true"></span>
+                </a>
+                <ul
+                  id="MenuChildren-{{ parent_index }}-{{ child_index }}"
+                  class="mobile-nav--dropdown-grandchild"
+                  data-meganav-dropdown>
+                  {% for grandchildlink in childlink.links %}
+                    {%- comment %}<locksmith:c467>{% endcomment -%}
+                      {%- include 'locksmith-variables', locksmith_scope: 'subject', locksmith_subject: grandchildlink, locksmith_subject_parent: childlink %}{% if locksmith_transparent %}{% else %}{% continue %}{% endif -%}
+                    {%- comment %}</locksmith:c467>{% endcomment -%}
+                    <li{% if grandchildlink.active %} class="mobile-nav--active"{% endif %}>
+                      <a 
+                        href="{{ grandchildlink.url }}"
+                        class="mobile-nav--link"
+                        data-meganav-type="child"
+                        {% unless template.name == 'index' %}{% if grandchildlink.active %}aria-current="page"{% endif %}{% endunless %}>
+                          {{ grandchildlink.title | escape }}
+                        </a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </li>
+            {% else %}
+              <li{% if childlink.active %} class="mobile-nav--active"{% endif %}>
+                <a
+                  href="{{ childlink.url }}"
+                  class="mobile-nav--link"
+                  data-meganav-type="child"
+                  {% if childlink.active %}aria-current="page"{% endif %}>
+                    {{ childlink.title | escape }}
+                </a>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </li>
+    {% else %}
+      <li{% if link.active %} class="mobile-nav--active"{% endif %}>
+        <a
+          href="{{ link.url }}"
+          class="mobile-nav--link"
+          data-meganav-type="child"
+          {% unless template.name == 'index' %}{% if link.active %}aria-current="page"{% endif %}{% endunless%}>
+            {{ link.title | escape }}
+        </a>
+      </li>
+    {% endif %}
+  {% endfor %}
+
+  {% if shop.customer_accounts_enabled %}
+    {% if customer %}
+      {% comment %}<li class="customer-navlink large--hide"><a href="/account">{{ 'layout.customer.view_account' | t }}</a></li>{% endcomment %}
+      <li class="customer-navlink large--hide">{{ 'layout.customer.log_out' | t | customer_logout_link }}</li>
+    {% else %}
+      <li class="customer-navlink large--hide">{{ 'layout.customer.sign_in' | t | customer_login_link }}</li>
+      {% comment %}<li class="customer-navlink large--hide">{{ 'layout.customer.create_account' | t | customer_register_link }}</li>{% endcomment %}
+    {% endif %}
+  {% endif %}
+  
+  <li id="psudo-navlink" class="mobile-nav--has-dropdown visually-hidden" aria-haspopup="true" onclick="if($(this).hasClass('nav-active')){$('#psudo-navlink')[0].click(); }">
+    <a hrefs="/collections/brand-marketing-gifts" class="mobile-nav--link" data-meganav-type="parent" aria-controls="MenuParent-{{ parent_index | plus:1 }}" aria-expanded="true">
+      Branded Marketing Gifts
+      <span class="fa fa-caret-down" aria-hidden="true"></span>
+      <span class="fa fa-caret-up hide" aria-hidden="true"></span>
+    </a>
+    <ul id="MenuParent-{{ parent_index | plus:1 }}" class="mobile-nav--dropdown " data-meganav-dropdown="">
+      <li class="mobile-nav--active">
+        <a href="/" class="mobile-nav--link" data-meganav-type="child" aria-current="page">
+            See All
+        </a>
+      </li>
+    </ul>
+  </li>
+  
+</ul>

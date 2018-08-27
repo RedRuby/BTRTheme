@@ -1,0 +1,113 @@
+{% layout none %}
+
+{% include "definitions", def_tag: true %}
+
+{% assign cart_product_types = cart.items | map:"properties" | map: 'Product Type' | uniq %}
+
+{% comment %}<script>cart.attributes.pay_by contains "CC" or cart.attributes.pay_by contains "Allowance"{% endcomment %}
+
+if(location.href.indexOf("/checkouts") != -1 && location.href.indexOf("/thank_you") == -1){
+  $ = window.Checkout.$; console.log('checkout loaded');
+  
+  var defClear="", state = null;
+  
+  {% if cart.attributes.pay_by == blank and cart.item_count > 0 %}
+  	location.assign("/cart");
+  {% endif %}
+  
+  {% assign gateway_code = cart.attributes.pay_by | split:'-' | last | default:'6873743420' %}
+  
+  function setShipping(){
+    if($('.section.section--shipping-method .radio-wrapper').length > 1){ clearInterval(defClear);
+      if({% if cart_product_types contains field_tees_tag and cart_product_types.size == 1 %}false{% else %}true{% endif %}){  console.log('pay by CC');
+        $('.section.section--shipping-method .radio-wrapper').filter('[data-shipping-method*="Air-"]').parent().hide();
+        try{ $('.section.section--shipping-method .radio-wrapper').not('[data-shipping-method*="Air-"]').find('input[type="radio"]')[0].click(); } catch(e){ console.log(e.message); }
+        {% comment %}                                                                              
+        $('.section.section--shipping-method .radio-wrapper').not('[data-shipping-method*="Air-"]').parent().hide();
+        try{ $('.section.section--shipping-method .radio-wrapper').filter('[data-shipping-method*="Air-"]').find('input[type="radio"]')[0].click(); } catch(e){ console.log(e.message); }
+        {% endcomment %}                                                                              
+
+      }else{ console.log('not pay by card');
+        
+
+      }    
+    }
+  }
+  
+  function setPayment(){
+    if($('[name="checkout[payment_gateway]"][id]').not('#checkout_payment_gateway_{{ gateway_code }}').is(":visible")){
+      $('#checkout_payment_gateway_{{ gateway_code }}')[0].click();
+      $('[name="checkout[payment_gateway]"][id]').not('#checkout_payment_gateway_{{ gateway_code }}').parent().parent().hide();
+    }                                                  	
+  }
+  
+  if($('.main .step[data-step="shipping_method"]').length > 0){ console.log('payment method loaded');
+    defClear = setInterval( function(){ setShipping(); }, 500);                                                 
+  }
+  
+  else if($('.main .step[data-step="payment_method"]').length > 0){ console.log('payment method loaded');
+    setPayment();
+  
+                                                    
+  {% if cart.attributes.pay_by contains yos_gift_tag or cart.attributes.pay_by contains client_gift_tag or cart.attributes.pay_by contains employee_reward_tag  %}
+    
+    {% assign complete_btn_label = 'shopify.checkout.general.complete_purchase_button_label' | t | default: 'Complete order' %}                                                
+                                                    
+    checkstyle = document.createElement('style');
+    checkstyle.innerHTML = "button[type='submit'].step__footer__continue-btn.disabled{background: #ccc !important;cursor: not-allowed;position:relative;}button[type='submit'].step__footer__continue-btn.disabled:after{content:'Gift Code Required';color:red;position: absolute;left: 50%;transform: translateX(-50%);-webkit-transform: translateX(-50%);-ms-transform: translateX(-50%);top: 110%;white-space: nowrap;margin-bottom: 15px;}button[type='submit'].step__footer__continue-btn.disabled.blink_me:after {animation: blinker 1.5s linear infinite;}@keyframes blinker { 50% { opacity: 0; } }";
+    document.body.appendChild( checkstyle );
+    console.log('style added');   
+                                                              
+    $(document).ready(function(){
+      
+      startPCC();
+
+    });
+
+    function startPCC(){
+      if($('button[type="submit"] span.btn__content:contains("{{ complete_btn_label }}")').parent().length > 0)
+        payment_cc = setInterval(function(){ //console.log('running')
+          if(($('form[data-reduction-form="true"]').length > 0) && ($('.payment-due__price').attr("data-checkout-payment-due-target") == "0"))
+            releaseBtn();
+          else
+            siezeBtn();
+            setPayment();
+        },100);
+    }
+
+    function siezeBtn(){
+        $('form[data-payment-form]').unbind('submit').bind('submit', function(e){
+          e.preventDefault(); console.log('payment code required');
+        });
+
+      $('button[type="submit"] span.btn__content:contains("{{ complete_btn_label }}")').parent().addClass('disabled blink_me').off('click').on('click', function(e){
+          e.preventDefault(); 
+          $('[name="checkout[reduction_code]"]:visible').focus();
+//           $(window).scrollTop(0); console.log('clicked');
+        });
+      state = false;
+    }
+
+    function releaseBtn(){ console.log(state);
+      $('form[data-payment-form]').unbind('submit');
+      $('button[type="submit"] span.btn__content:contains("{{ complete_btn_label }}")').parent().removeClass('disabled blink_me').off('click');
+      
+      if(!state){
+        $.ajax({
+              type: "POST",
+              url: '/cart.js',
+              data: {"attributes[gift-code]": $(".applied-reduction-code__information").text() },
+              success: function(data){
+                console.log('gift attribute added');
+              },
+              dataType: 'json'
+        });
+        state = true;
+      }
+    }                                                          		
+  {% endif %}
+ }                                                             
+                                                    
+}
+                                                    
+{% comment %}</script>{% endcomment %}

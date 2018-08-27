@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="18">
+	<defs>
+		<clipPath id="clip_0">
+			<rect x="-504" y="-715" width="1440" height="1150" clip-rule="evenodd"/>
+		</clipPath>
+	</defs>
+	<g clip-path="url(#clip_0)">
+		<text fill="rgb(11,52,87)" stroke="none" font-size="14" font-family="Segoe UI" x="0" y="13.901367">
+				—
+		</text>
+	</g>
+</svg>

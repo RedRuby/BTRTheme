@@ -1,0 +1,282 @@
+<div class="mfp-bg mfp-fade mfp-ready" style="display:none; opacity:0.9; background-color:gray;"></div>
+
+<div class="mfp-wrap mfp-auto-cursor mfp-fade mfp-ready mfp-hide" tabindex="-1" style="overflow-x: hidden; overflow-y: auto;" style="display:none;">
+  <div class="mfp-container mfp-s-ready mfp-inline-holder">
+    <div class="mfp-content bounceIn animated w3-card-2 w3-margin-top w3-margin-bottom">
+
+      <div id="EmployeeEditModal" class="white-popup-block" style="display:none;">
+        <form id="EmployeeEditModal_form" action="" method="post" onsubmit="callEditEmployee(event, this); return false ;" employee_id="">
+          <p class="text-center w3-bold text-dark-blue" style="position:relative; font-size:30px;">Edit Employee<a style="font-size:16px !important; position:absolute; right:0; font-weight:normal;" class="text-liter-blue w3-right w3-small-center w3-margin-top emp-status-update-link" onclick="ChangeCustomerState(this);"><u>Deactivate Employee</u></a></p>
+          <span class=""><br></span>
+          <div class="grid w3-margin-top">
+          	<div class="grid-item large--one-half small--one-whole">
+              <label for="update_first_name" class="w3-bold text-dark-blue" >Employee First Name</label>
+              <input id="update_first_name" type="text" name="update_first_name" required="required" placeholder="" onchange="contentChanged();"/>
+            </div>
+            <div class="grid-item large--one-half small--one-whole">
+              <label for="update_last_name" class="w3-bold text-dark-blue" >Employee Last Name</label>
+              <input id="update_last_name" type="text" name="update_last_name" required="required" placeholder="" onchange="contentChanged();"/>
+            </div>
+            <div class="grid-item large--one-half small--one-whole">
+              <label for="update_email" class="w3-bold text-dark-blue" >Email ID</label>
+              <input id="update_email" type="email" name="update_email" required="required" readonly disabled placeholder="" onchange="contentChanged();"/>
+            </div>
+            <div class="grid-item large--one-half small--one-whole">
+              <label for="update_doh" class="w3-bold text-dark-blue" >Date of Hire</label>
+              <input id="update_doh" type="text" name="update_doh" class="datepicker" required="required" readonly disabled autocomplete="off" placeholder="" onchange="contentChanged();"/>
+            </div>
+            <div class="grid-item large--one-half small--one-whole w3-margin-bottom">
+              <label for="update_role_name" class="w3-bold text-dark-blue" >Employee Role</label>
+              <select id="update_role_name" name="update_role_name" required="required" disabled onchange="contentChanged();" >
+                <option value="" selected disabled>Select</option>
+                  {% for role in non_admin_role_names %}
+                    <option value="{{ non_admin_roles[forloop.index0] | split:":" | last }}">{{ role }}</option>
+                  {% endfor %}
+              </select>
+            </div>
+            <div class="grid-item large--one-half small--one-whole w3-margin-bottom hide">
+              <label for="update_report_to" class="w3-bold text-dark-blue" >Reporting Manager</label>
+              <select id="update_report_to" name="update_report_to" onchange="contentChanged();" >
+                <option value="" selected disabled>Select</option>
+              </select>
+            </div>
+            <div class="grid-item large--one-half small--one-whole">
+              <label for="update_total_allowance" class="w3-bold text-dark-blue" >Total Allowance</label>
+              <input id="update_total_allowance" type="text" name="update_total_allowance" readonly disabled placeholder="" onchange="contentChanged_a();"/>
+            </div>
+            
+            <div class="grid-item large--one-whole half small--one-whole w3-margin-bottom">
+              <div class="w3-row w3-border w3-border-gray w3-round w3-padding allowance-wrapper">
+                <header class="section-header">
+                  <h1 class="w3-medium w3-bold text-dark-blue w3-uppercase section-header--left" style="padding-left1:30px;">{{ 'Add Allowance(s)' }}</h1>
+                  <div class="section-header--right small--text-right" style="padding-left:30px;">
+                    <a href="#" class="btn btn--secondary w3-small" onclick="addAllowanceRow();"><i class="fa fa-plus fa-lg"></i>&nbsp; {{ 'Add Allowance Row' }}</a>
+                  </div>
+                </header>
+
+                <div class="allowance-form-template">
+                  <div class="w3-half">
+                    <select class="allowance_list" name="Allowance[allowance_type]" required="required" onchange="contentChanged()">
+                      <option value="">Select Allowance</option>
+                        <option value="{{ annual_apparel_tag }}">{{ annual_apparel_tag }}</option>
+                        <option value="{{ seasonal_apparel_tag }}">{{ seasonal_apparel_tag }}</option>
+                        <option value="{{ mkt_gift_tag }}">{{ mkt_gift_tag }}</option>
+                        <option value="{{ field_tees_tag }}">{{ field_tees_tag }}</option>
+                    </select>
+                  </div>
+                  <div class="visually-hidden ">
+                    <select class="" name="Allowance[amount_type]" required="required" onchange="contentChanged()">
+                      <option value="">Select Credit/Debit</option>
+                      <option value="credit" selected>Credit</option>
+                      <option value="debit">Debit</option>
+                    </select>
+                  </div>
+                  <div class="w3-half">
+                    <div style="position:relative;">
+                      <input type="number" placeholder="Enter Amount" min="1" max="500" maxlength="3" class="" onkeyup="this.value = this.value.match(/[\d]+/);" name="Allowance[amount]" required="required" onchange="contentChanged()">
+                      <button type="button" class="btn ok" title="Remove this row." style="height:auto;right:10px;top:10px;max-width:40px !important;position:absolute;padding-left:0;padding-right:0;" onclick="$(this).parent().parent().parent().remove();"><i class="fa fa-times"></i></button>
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <div class="grid-item large--one-whole half small--one-whole">
+              <label for="update_gift_code" class="w3-bold text-dark-blue" >Gift Code</label>
+              <textarea id="update_gift_code" type="text" name="update_gift_code" rows="1" readonly disabled placeholder="" onchange="contentChanged();" style="max-width:100% !important;"></textarea>
+            </div>
+          </div>
+          <br>
+          <div class="text-center">
+            <br>
+            <button type="submit" style="" class="btn" disabled="disabled">Submit</button><br><br>
+            <a class="w3-text-red" style="cursor:pointer;" onclick="updateModal();"><u>Cancel</u></a>
+            <br>
+          </div>
+        </form>
+      </div>
+      <button title="Close (Esc)" onclick="updateModal();" type="button" class="mfp-close">×</button>
+
+    </div>
+    <div class="mfp-preloader w3-center center-block" style="display:initial; z-index:2000 !important;"><i class="fa fa-refresh fa-2x text-lite-blue w3-spin "></i></div>
+  </div>
+
+</div>
+
+<style>
+  
+</style>
+
+{{ 'jQuery.serializeJSON.js' | asset_url | script_tag }}
+
+<script>
+  
+  var order_id = '';
+  var changed = '';
+  var mfpHTML = '';
+  var allowance_template = '';
+  
+  
+  $(document).ready(function(){
+     dateInit();
+  	 mfpHTML = $('#EmployeeEditModal').html();
+     allowance_template = $('.allowance-form-template').clone();
+     $('.allowance-form-template').remove();
+//      FormValidationPolyfill.addForm('EmployeeEditModal_form'); 
+  });
+  
+  function addAllowanceRow(){
+//     $.when(function(){}).done(function(){});
+      $('.allowance-wrapper').append(allowance_template.clone());
+    
+      allowance_options = $('.allowance-form-template option');
+
+      switch(employee_data.role_name){
+        {% for role in non_admin_roles %}
+          {% assign allowance_not4_role = not_role_allowances[forloop.index0] | remove:"/" | replace: "+"," " %}
+          {% if allowance_not4_role.size > 0 %}
+          case '{{ role | split:":" | last | split:"-" | first }}': allowance_options.each(function(index, elem){
+                                    if(('{{ allowance_not4_role }}').split(',').indexOf($(elem).attr("value")) != -1)
+                                      $(elem).remove();
+                              }); break;
+          {% endif %}
+        {% endfor %}
+      }
+
+      contentChanged();
+    
+  }
+  
+  function updateModal(){
+    $('html').css('overflow','auto');
+    $('.employee-edit-form').find('.mfp-bg, .mfp-wrap, #EmployeeEditModal, .mfp-content').hide().addClass('mfp-hide');
+    $('.employee-edit-form').find('.mfp-preloader').show();
+    
+    $('.allowance-form-template').remove();
+    
+    if( changed == true ){ 
+      $('#EmployeeEditModal form').trigger("reset");
+//       $('#EmployeeEditModal').html(mfpHTML);
+      
+      $('#EmployeeEditModal form').attr('employee_id', '');
+      
+      employee_data = {};
+      
+      changed = ''; 
+    }
+  }
+  
+  function contentChanged(){
+    empty_field = $('#EmployeeEditModal [name][required]').filter(function(){ return this.value.length == 0; }).length;
+    
+    if(!empty_field && ($('#EmployeeEditModal form [name]').serializeArray().map(function(x){ return x.value; }).join(',') != window.old_update_form_data)){
+      $('#EmployeeEditModal button[type = "submit"]').removeAttr('disabled'); 
+    }else{
+      $('#EmployeeEditModal button[type = "submit"]').prop('disabled', 'disabled'); 
+    }
+  }
+  
+  function callEditEmployee(e, obj){
+    e.preventDefault();
+    e.stopPropagation();
+    
+  	data2 = {
+          cid		 : $('#EmployeeEditModal form').attr('employee_id'),
+          first_name : $('#EmployeeEditModal [name="update_first_name"]').val(),
+          last_name  : $('#EmployeeEditModal [name="update_last_name"]').val(),
+          email      : employee_data.email,
+          role_name	 : $('#EmployeeEditModal [name="update_role_name"]').val(),
+          doh 		 : $('#EmployeeEditModal [name="update_doh"]').val(),
+          report_to	 : $('#EmployeeEditModal [name="update_report_to"]').val(),
+          admin_id   : "{{ customer.id }}"
+    };
+    
+    allowance_lines = [];
+    
+    if($('.allowance-form-template').length != 0){
+      $('.allowance-form-template').each(function(index, elem){
+          allowance_lines.push($(elem).find('[name^="Allowance["]').serializeJSON().Allowance);
+      }).promise().done(function(){ data2["allowance_lines"] = allowance_lines });
+    }
+    
+    freez();
+    
+    console.log(data2); //alert(JSON.stringify(data2)); return false;
+    
+    $.ajax({
+        url: "/apps/api/customer/update.json",
+        type:'POST',
+        data: JSON.stringify(data2),
+        dataType: 'json',
+        contentType: 'application/json',
+        success:function(data){
+          console.log(JSON.stringify(data));
+          if(data.status == "200"){
+              console.log(data.message);
+              show_message4(data.message,true);
+              setTimeout(function(){
+                changed = true;
+                updateModal();
+                updateState({ page: '1' });
+              },1500);
+          }
+           else if(data.status == "400"){
+              console.log(data.message);
+              show_message4(data.message,false);
+          }
+  
+        },
+        error:function(data){
+          console.log(JSON.stringify(data)); 
+          console.log('Some error occured..');
+          show_message4('Some error occured..',false);
+        }
+      });
+    
+    return false;
+  }
+  
+  function ChangeCustomerState(link){
+    if(confirm('Click "OK" to confirm your action !') == true){
+      	freez();
+      
+      	if($(link).attr("status") == "enabled")
+          data2 = { email: $(link).attr("email"), status: "disabled" };
+      	else
+          data2 = { email: $(link).attr("email"), status: "enabled" };
+      
+      	console.log(data2);
+      	$.ajax({
+        url: "/apps/api/customer/deactivate_customer.json",
+        type:'POST',
+        data: JSON.stringify(data2),
+        dataType: 'json',
+        contentType: 'application/json',
+        success:function(data){
+          console.log(JSON.stringify(data));
+          if(data.status == "200"){
+              console.log(data.message);
+              show_message4(data.message,true);
+              setTimeout(function(){
+                changed = true;
+                updateModal();
+                updateState({ page: '1' });
+              },1500);
+          }
+           else if(data.status == "400"){
+              console.log(data.message);
+              show_message4(data.message,false);
+          }
+  
+        },
+        error:function(data){
+          console.log(JSON.stringify(data)); 
+          console.log('Some error occured..');
+          show_message4('Some error occured..',false);
+        }
+      });
+    }
+  }
+  
+</script>
