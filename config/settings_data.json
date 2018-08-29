@@ -106,42 +106,42 @@
           "collection-list-0": {
             "type": "collection",
             "settings": {
-              "collection": "",
+              "collection": "apparel",
               "coming_soon": false
             }
           },
           "1524667969490": {
             "type": "collection",
             "settings": {
-              "collection": "",
+              "collection": "branded-marketing-gifts",
               "coming_soon": false
             }
           },
           "1524667980688": {
             "type": "collection",
             "settings": {
-              "collection": "",
+              "collection": "years-of-service-awards",
               "coming_soon": true
             }
           },
           "1524667988217": {
             "type": "collection",
             "settings": {
-              "collection": "",
+              "collection": "client-gifts",
               "coming_soon": true
             }
           },
           "1524667992209": {
             "type": "collection",
             "settings": {
-              "collection": "",
+              "collection": "printed-materials",
               "coming_soon": true
             }
           },
           "1525365669009": {
             "type": "collection",
             "settings": {
-              "collection": "",
+              "collection": "employee-rewards",
               "coming_soon": true
             }
           }
@@ -160,8 +160,8 @@
         "type": "banner",
         "settings": {
           "title": "Shop Field Shirts",
-          "image": "shopify:\/\/shop_images\/Home-banner.png",
-          "image1": "shopify:\/\/shop_images\/Home-banner_m.png",
+          "image": "shopify:\/\/shop_images\/B59324854743B5B7D79F39AC765257813C662E2D4B14A90E5E_pimgpsh_fullsize_distr.jpg",
+          "image1": "shopify:\/\/shop_images\/24A91730788F6AC77130F6AC06712A96733923B634CAD2252D_pimgpsh_fullsize_distr.jpg",
           "link": "shopify:\/\/collections\/field-shirts",
           "btnLabel": "ORDER NOW"
         }
@@ -306,7 +306,7 @@
           "1533290215110"
         ],
         "settings": {
-          "product_image_zoom_enable": true,
+          "product_image_zoom_enable": false,
           "product_quantity_enable": true,
           "product_quantity_message": false,
           "product_incoming_message": false,

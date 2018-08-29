@@ -80,7 +80,7 @@
 
         {% if product.images.size > 1 %}
           <ul class="product-photo-thumbs grid-uniform" id="productThumbs-{{ section.id }}">
-            <script>console.log('{{ product.images | map: "aspect_ratio" | sort | join: "," }}')</script>
+
             {% for image in product.images %}
               <li class="grid-item medium-down--one-quarter large--one-quarter" style="border-radius: 5px;">
                 <a href="{{ image.src | img_url: '1024x1024', scale: 2 }}" class="product-photo-thumb product-photo-thumb-{{ section.id }}" onclick="toggleMe(this);" data-image-id="{{ image.id }}" style="background:url('{{ image.src | img_url: "compact" }}') no-repeat center; background-size: contain; {% unless featured_image == image %} opacity:0.4;{% endunless %}">
@@ -190,7 +190,7 @@
         {% endfor %}
       {% endif %}
 
-      {% if section.settings.product_quantity_enable and is_client_gift != true  and customer_role != "Role:VP" %}
+      {% if section.settings.product_quantity_enable and is_client_gift != true %}
           <div class="w3-margin-top margin-bottom">
           <label for="quantity" class="quantity-selector quantity-selector-{{ section.id }}">{{ 'products.product.quantity' | t }}</label>
           <input type="number" id="quantity" name="quantity" value="1" min="1" class="quantity-selector" >

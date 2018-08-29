@@ -66,7 +66,7 @@
         <div class="grid-item large--five-twelfths medium--two-thirds push--medium--one-third">
           <div class="grid">
             <div class="grid-item one-half medium-down--one-third text-right">
-              <input type="number" name="updates[]" id="updates_{{ item.key }}" data-id="{{ item.key }}" value="{{ item.quantity }}" min="0" {% if item.properties['Product Type'] == field_tees_tag1 or item.properties['Product Type'] == client_gift_tag or customer_role == "Role:VP" %}class="line-qty w3-opacity {{ 'prod_' | append: item.product.id }}" disabled readonly{% else %}class="line-qty"{% endif %} autocomplete="off" data-line="{{ forloop.index }}">
+              <input type="number" name="updates[]" id="updates_{{ item.key }}" data-id="{{ item.key }}" value="{{ item.quantity }}" min="0" {% if item.properties['Product Type'] == field_tees_tag1 or item.properties['Product Type'] == client_gift_tag %}class="line-qty w3-opacity {{ 'prod_' | append: item.product.id }}" disabled readonly{% else %}class="line-qty"{% endif %} autocomplete="off" data-line="{{ forloop.index }}">
             </div>
 
             <div class="grid-item one-third medium-down--one-third medium-down--text-left text-right">
