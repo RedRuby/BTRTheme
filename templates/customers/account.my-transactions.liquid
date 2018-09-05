@@ -9,7 +9,8 @@
     
     <h6 class="w3-medium w3-bold text-dark-blue w3-uppercase" style="display: inline-block;">{{ 'My Transactions' }}</h6>
     
-<!--     <button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small" onclick="getData_CSV('/apps/api/list_transaction.csv?shopify_customer_id={{- customer.id -}}&domain='+shop_domain{%- if customer.tags contains 'Role:Admin' -%}+'&customer_only=true'{%- endif -%});"><i class="fa fa-download fa-lg"></i><span class="small--hide">&nbsp; Export CSV</span></button> -->
+    <button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small" onclick="getData_CSV('/apps/api/list_transaction.csv?shopify_customer_id={{- customer.id -}}&domain='+shop_domain{%- if customer.tags contains 'Role:Admin' -%}+'&customer_only=true'{%- endif -%});"><i class="fa fa-download fa-lg"></i><span class="small--hide">&nbsp; Export CSV</span></button>
+    
     <a href="/account"><button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small w3-margin-right"><i class="fa fa-shopping-cart fa-lg"></i><span class="small--hide">&nbsp; {{ 'customer.orders.title' | t }}</span></button></a>
     
     <hr class="hr--small border-liter-blue" style="margin-bottom:0px;">

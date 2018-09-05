@@ -127,7 +127,7 @@
 {% if def_pushToken %}
   {% if customer %} 
   <script>
-    if(['{{ shop.url }}/account/login', '{{ shop.url }}/account/activate', '{{ shop.url }}/account/reset'].join(',').indexOf(document.referrer) != -1 && document.referrer != "{{ shop.url }}/"){
+    if(['{{ shop.url }}/account/login', '{{ shop.url }}/account/activate', '{{ shop.url }}/account/reset'].join(',').indexOf(document.referrer) != -1 && document.referrer != "{{ shop.url }}/" && document.referrer != "" ){
       var $token = (navigator.cookieEnabled) ? geToken("secreToken") : localStorage.secreToken ;
       $.ajax({
           url: '/apps/api/customer/set_token.json',
