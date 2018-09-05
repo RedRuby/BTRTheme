@@ -24,7 +24,14 @@
     <h1 class="w3-medium w3-bold text-dark-blue w3-uppercase" style="display: inline-block;">{{ 'All Employees' }}</h1>
     
     <button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small" onclick="addEmployeeInit();"><i class="fa fa-plus fa-lg"></i><span class="small--hide">&nbsp; Add Employee</span></button>
-    <button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small w3-margin-right" onclick="getData_CSV('/apps/api/customer/get_empployees.csv?domain='+shop_domain);"><i class="fa fa-download fa-lg"></i><span class="small--hide">&nbsp; Export CSV</span></button>
+    <button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small w3-margin-right" onclick="getData_CSV('/apps/api/customer/get_empployees.csv?per_page=600&domain='+shop_domain);"><i class="fa fa-download fa-lg"></i><span class="small--hide">&nbsp; Export CSV</span></button>
+    
+    <div class="large--inline-block" style="width:100%; max-width: 510px">
+      <form action="" class="w3-margin-0" onsubmit="event.preventDefault(); updateState({ 'search': $('#search').val(), 'page': 1 });">
+        <input type="text" class="w3-small inline-block w3-margin-left w3-small-margin-0" style="height: auto;" id="search" placeholder="Search Employee by Name / Email">
+        <button type="submit" class="btn btn--secondary w3-uppercase w3-small w3-margin-left w3-small-margin-0"><i class="fa fa-search fa-lg"></i><span class="small--hide">&nbsp; Search</span></button>
+      </form>
+    </div>
     
     <hr class="hr--small border-liter-blue" style="margin-bottom:0px;">
 
@@ -109,6 +116,8 @@
   var role = '';
   var doh = '';
   var manager = '';
+  
+  var search = (query.search != undefined) ? (query.search = query.search.replace(' ', '+'), (query.search.indexOf('@') != -1) ? query.search.replace(' ', '+') : query.search ) : "";
   
   var page = (query.page != undefined) ? query.page : "1";
   var per_page = (query.per_page != undefined) ? query.per_page : localStorage.per_page_{{ customer.id }} || "10";
@@ -198,6 +207,7 @@
   }
   
   function updateState(param){
+      if(param.search != undefined)data.search = param.search; else if(search.length != 0)data.search = search;
       if(param.page != undefined)data.page = param.page; else if(page.length != 0)data.page = page;
       if(param.per_page != undefined)data.per_page = param.per_page; else if(per_page.length != 0)data.per_page = per_page;
     
@@ -214,6 +224,7 @@
     
     page = data.page;
     per_page = data.per_page; $('#per_page option[value="'+data.per_page+'"]').prop('selected', 'selected');
+    search = data.search; $('#search').val(search);
     
     if(data.name != undefined){ name = data.name; if(data.name.length != 0)toggleOrderBtns('name', data.name); }
     if(data.role != undefined){ role = data.role; if(data.role.length != 0)toggleOrderBtns('role', data.role); }
