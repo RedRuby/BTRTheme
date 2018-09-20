@@ -161,11 +161,11 @@
       {% form 'product', product, class:form_class, id:form_id, onsubmit:on_submit_fun %}
       	<div class="{% if is_field_tees %}hide{% endif %}">
         <select name="id" required id="productSelect-{{ section.id }}" class="product-variants product-variants-{{ section.id }}">
-          <option value="" disabled="disabled" selected>Select Size</option>
+          {% comment %}<option value="" disabled="disabled" selected>Select Size</option>{% endcomment %}
           {% for variant in product.variants %}
             {% if variant.available %}
 
-              <option {% if variant == product.selected_or_first_available_variant and false %} selected="selected" {% endif %} data-sku="{{ variant.sku }}" value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money_with_currency }}</option>
+              <option {% if variant == product.selected_or_first_available_variant and product.selected_variant %} selected="selected" {% endif %} data-sku="{{ variant.sku }}" value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money_with_currency }}</option>
 
             {% else %}
               <option disabled="disabled">
@@ -374,6 +374,8 @@
   .selector-wrapper label{ text-transform:lowercase; }
   .selector-wrapper label::first-letter{ text-transform:capitalize; }
 </style>
+
+{% include "hide-zero-inventory-variant" %}
 
 <script>
   

@@ -1,5 +1,6 @@
 {% include "account-allowance-strip" %}
 
+{% include "definitions", def_role_find: false, def_role_list: true, def_role_name_list: true %}
 
 <div class="grid account-wrapper">
 
@@ -120,12 +121,20 @@
     
       <p>
     	{% if customer.default_address.phone != "" %}
-          {{ customer.default_address.phone }}<br>
+          {{ customer.default_address.phone }}
         {% endif %}
-        <span class="text-lite-blue">{{ customer.email }}</span>
       </p>
 
     {% endif %}
+
+    <p class="text-lite-blue">{{ customer.email }}</p>
+
+    {% for role in non_admin_roles %}
+      {% if role == customer_role %}
+        <p class="text-lite-blue"><b>Role:</b> {{ non_admin_role_names[forloop.index] }}</p>
+        {% break %}
+      {% endif %}
+    {% endfor %}
 
     <p><a href="/account/addresses"><button type="button" class="btn btn--secondary border-lite-blue w3-small"><i class="fa fa-address-book fa-lg"></i>&nbsp; {{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})</button></a></p>
     
