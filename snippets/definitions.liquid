@@ -47,6 +47,8 @@
 
   {% assign temp = linklists['non-admin-roles'].links | map: 'title' %}
 
+  {% assign non_admin_roles = blank %}
+
   {% for role in temp %}
       {%- capture non_admin_roles -%}{{- non_admin_roles -}},{{- role | split:"-" | first -}}{%- endcapture -%}
   {% endfor %}
@@ -57,6 +59,8 @@
 {% if def_role_name_list %}
 
   {% assign temp = linklists['non-admin-roles'].links | map: 'title' %}
+
+  {% assign non_admin_role_names = blank %}
 
   {% for role in temp %}
       {%- capture non_admin_role_names -%}{{- non_admin_role_names -}},{{- role | split:"-" | last -}}{%- endcapture -%}
@@ -75,7 +79,7 @@
 
 {% endif %}
 
-{% if def_role_list %}
+{% if def_not_role_allowances %}
 
   {% assign not_role_allowances = linklists['non-admin-roles'].links | map: 'url' %}
 

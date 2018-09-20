@@ -1,0 +1,21 @@
+{% if product.options.size == 1 %}
+  <script>
+  var $addToCartForm = $('form[action="/cart/add"]');
+  if (window.MutationObserver && $addToCartForm.length) {
+    if (typeof observer === 'object' && typeof observer.disconnect === 'function') {
+      observer.disconnect();
+    }
+    var config = { childList: true, subtree: true };
+    var observer = new MutationObserver(function() { 
+      {% for variant in product.variants %} 
+        {% unless variant.available %}
+          jQuery('.single-option-selector option').filter(function() { return jQuery(this).text() === {{ variant.title | json }}; }).remove();
+        {% endunless %}
+      {% endfor %}
+      jQuery('.single-option-selector').trigger('change');
+      observer.disconnect();
+    });  
+    observer.observe($addToCartForm[0], config);
+  }
+  </script>
+{% endif %}

@@ -20,7 +20,7 @@
       {% endif %}
     {% endfor %}
 
-	{% include "definitions", def_role_list: true %}
+	{% include "definitions", def_role_list: true %} 
 
     {% unless template.suffix contains 'admin' %}
       {% unless non_admin_roles contains customer_role %}
