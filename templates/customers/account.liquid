@@ -131,7 +131,7 @@
 
     {% for role in non_admin_roles %}
       {% if role == customer_role %}
-        <p class="text-lite-blue"><b>Role:</b> {{ non_admin_role_names[forloop.index] }}</p>
+        <p class="text-lite-blue"><b>Role:</b> {{ non_admin_role_names[forloop.index0] }}</p>
         {% break %}
       {% endif %}
     {% endfor %}
