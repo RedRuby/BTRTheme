@@ -279,7 +279,7 @@
                 {% assign variant_ids = product.variants | map:'id' %}
                 {% assign index = 0 %}
                 {% for size in sizes %}
-                    {% if product_option1 contains size %}
+                    {% if product_option1 contains size and product.variants[index].available %}
                         <div class="grid-item large--one-quarter medium--one-half small--one-third w3-margin-top">
                           <label for="size-{{ size }}">{{ size }}</label> {% comment %}| replace:'SM','S' | replace:'MD','M' | replace:'LG','L' | replace:'2X','XXL' | replace:'3X','XXXL'{% endcomment %}
                           <input type="number" id="size-{{ size }}" variant_id="{{ variant_ids[index] }}{% assign index = index | plus: 1 %}" disabled class="size-selector" min="0" value="0"/>
@@ -296,6 +296,8 @@
                           </select>
                           {% endcomment %}
                         </div>
+                    {% elsif product.variants[index].available == false %}
+                      {% assign index = index | plus: 1 %}
                     {% endif %}
                 {% endfor %}
 
