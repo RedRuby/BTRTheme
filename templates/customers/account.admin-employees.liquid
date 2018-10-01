@@ -22,10 +22,10 @@
 
   <div class="grid-item one-whole">
     <h1 class="w3-medium w3-bold text-dark-blue w3-uppercase" style="display: inline-block;">{{ 'All Employees' }}</h1>
-
+    
     <button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small" onclick="addEmployeeInit();"><i class="fa fa-plus fa-lg"></i><span class="small--hide">&nbsp; Add Employee</span></button>
     <button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small w3-margin-right" onclick="getData_CSV('/apps/api/customer/get_empployees.csv?per_page=600&domain='+shop_domain);"><i class="fa fa-download fa-lg"></i><span class="small--hide">&nbsp; Export CSV</span></button>
-
+    
     <div class="large--inline-block" style="width:100%; max-width: 510px">
       <form action="" class="w3-margin-0" onsubmit="event.preventDefault(); updateState({ 'search': $('#search').val(), 'page': 1 });">
         <input type="text" class="w3-small inline-block w3-margin-left w3-small-margin-0" style="height: auto;" id="search" placeholder="Search Employee by Name / Email">
@@ -116,7 +116,7 @@
   var role = '';
   var doh = '';
   var manager = '';
-
+  
   var search = (query.search != undefined) ? (query.search = query.search.replace(' ', '+'), (query.search.indexOf('@') != -1) ? query.search.replace(' ', '+') : query.search ) : "";
   
   var page = (query.page != undefined) ? query.page : "1";

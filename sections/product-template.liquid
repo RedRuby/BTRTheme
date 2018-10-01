@@ -71,7 +71,7 @@
           
           {%- if product.images.size == 0 -%}
           
-            <img src="{{ featured_image | img_url: '580x' }}"
+          	<img src="{{ featured_image | img_url: '580x' }}"
                   srcset="{{ featured_image | img_url: '580x' }} 1x, {{ featured_image | img_url: '580x', scale: 2 }} 2x"
                   alt="{{ image.alt }}" style="opacity:1;">
           {%- endif -%}
@@ -155,11 +155,11 @@
       {% if is_field_tees %}
         {%- capture "on_submit_fun" -%}event.preventDefault(); addFieldTee(this);{%- endcapture -%}
       {% else %}
-        {%- capture "on_submit_fun" -%}event.preventDefault(); validateProduct(this);{%- endcapture -%}
+      	{%- capture "on_submit_fun" -%}event.preventDefault(); validateProduct(this);{%- endcapture -%}
       {% endif %}
       
       {% form 'product', product, class:form_class, id:form_id, onsubmit:on_submit_fun %}
-        <div class="{% if is_field_tees %}hide{% endif %}">
+      	<div class="{% if is_field_tees %}hide{% endif %}">
         <select name="id" required id="productSelect-{{ section.id }}" class="product-variants product-variants-{{ section.id }}">
           {% comment %}<option value="" disabled="disabled" selected>Select Size</option>{% endcomment %}
           {% for variant in product.variants %}
@@ -224,22 +224,22 @@
           </div>
         {% endif %}
       
-        <input type="hidden" name="properties[__collection]" value="{{ collection.handle }}" />
+      	<input type="hidden" name="properties[__collection]" value="{{ collection.handle }}" />
       
-        <input type="hidden" name="properties[Product Type]" value="{{ product_type }}" />
+      	<input type="hidden" name="properties[Product Type]" value="{{ product_type }}" />
       
-        {% if is_field_tees %}
+      	{% if is_field_tees %}
       
-          {% if customer.metafields.allowance[FieldTees_key] %}
+      		{% if customer.metafields.allowance[FieldTees_key] %}
               {% assign limit_count = customer.metafields.allowance[FieldTees_key] | default: 0 | plus: 0 %}
               {% if limit_count > 0 %}
                 <h3 class="w3-bold w3-margin-bottom">Allowance: {{ customer.metafields.allowance[FieldTees_key] }}<span style="font-weight:normal !impormal;"> Field T-Shirts</span></h3>
               {% else %}
-            <h4 class="w3-bold w3-margin-bottom w3-text-red"><span style="font-weight:normal !impormal;">Sorry, your free Field T-Shirt purchase limit exceeded.</span></h4>
+      			<h4 class="w3-bold w3-margin-bottom w3-text-red"><span style="font-weight:normal !impormal;">Sorry, your free Field T-Shirt purchase limit exceeded.</span></h4>
               {% endif %}
             {% endif %}
       
-          <div class="grid">
+      		<div class="grid">
               <div class="grid-item large--one-half small--one-whole">
                 <label for="num_of_labourers" style="white-space:nowrap;">How many laborers on your job?</label>
                 <div style="position:relative;">
@@ -269,7 +269,7 @@
               </div>
             </div>
       
-          {% assign sizes = 'SM,MD,LG,XL,2X,3X' | split:',' %}
+      		{% assign sizes = 'SM,MD,LG,XL,2X,3X' | split:',' %}
             {% assign product_option1 = product.variants | map:'option1' %}
           
               
@@ -307,7 +307,7 @@
                 </div>
               </div>
             </div>
-          <br>
+      		<br>
         {% endif %}
 
         <div class="payment-buttons payment-buttons--{{ section.settings.add_to_cart_button_size }} field_tees_{{ is_field_tees }}">
@@ -383,7 +383,7 @@
   
   $(window).load(function(){
     {% if is_field_tees %}
-    $('button[type="submit"][name="add"]').prop('disabled', 'disabled'); 
+  	$('button[type="submit"][name="add"]').prop('disabled', 'disabled'); 
     {% endif %}
     
     {% if is_field_tees != true and product.selected_variant.id == blank and product.variants.size > 1 %}
@@ -399,13 +399,13 @@
   }); 
   
   function sizeChartShow(){
-    $('html').css('overflow','hidden');
+  	$('html').css('overflow','hidden');
     $('.size-chart').find('.mfp-bg, .mfp-wrap').show().removeClass('mfp-hide');
     $('.size-chart .mfp-preloader').hide(); $('#size-chart, .size-chart .mfp-content').show().removeClass('mfp-hide');
   }
   
   function sizeChartHide(){
-    $('html').css('overflow','auto');
+  	$('html').css('overflow','auto');
     $('.size-chart').find('.mfp-bg, .mfp-wrap, #size-chart, .mfp-content').hide().addClass('mfp-hide');
     $('.size-chart').find('.mfp-preloader').show();
   }
@@ -419,7 +419,7 @@
   {% if is_field_tees %}
   
   function calcTeeQty(el){
-    if(el.value > 0){ 
+  	if(el.value > 0){ 
       freez();
       $.when(data = $.getJSON('/cart.json')).done(function(){ 
           cart_json = data.responseJSON;
@@ -472,7 +472,7 @@
         $('button[type="submit"][name="add"]').removeAttr('disabled').css('cursor','pointer'); 
         $('#error_msg').html('&nbsp;').next().removeClass('error');
       }else{
-        $('button[type="submit"][name="add"]').prop('disabled', 'disabled'); 
+      	$('button[type="submit"][name="add"]').prop('disabled', 'disabled'); 
 //         $('#error_msg').html('<small>Minimum Purchase Quantity is '+(Number($('#calculated_qty').text()))+' !</small>').next().addClass('error');
       }
       
@@ -518,7 +518,7 @@
   {% else %}
   
   function validateProduct(form){
-//    event.preventDefault();
+//   	event.preventDefault();
 //     event.stopPropagation();
     var redirect_to = '/cart';
     
@@ -532,7 +532,8 @@
           var result_this_type = cart_json.items.filter(function( obj ) {
             if(obj.properties != undefined) return obj.properties['Product Type'] == '{{ product_type }}';
           });
-                                                             
+          
+          {% comment %}                                                   
           {% if customer_role == 'Role:SS' %}                                                                                                      
           if('{{ product_type }}' == '{{ annual_apparel_tag }}'){
             var result_not_this_type = cart_json.items.filter(function( obj ) {
@@ -556,7 +557,11 @@
             });
           }
           {% endif %}
-          else if('{{ product_type }}' == '{{ client_gift_tag }}' && {% if employee_has_no_client_gift %}true{% else %}false{% endif %}){
+
+          else 
+          {% endcomment %}
+
+          if('{{ product_type }}' == '{{ client_gift_tag }}' && {% if employee_has_no_client_gift %}true{% else %}false{% endif %}){
             var result_not_this_type = msg = "You don't have any Client Gift !";  
             redirect_to = "/";
           }                                        
@@ -575,9 +580,12 @@
             });                                      
           }
           else{
+            {% comment %}
             var result_not_this_type = cart_json.items.filter(function( obj ) {
               if(obj.properties != undefined) return obj.properties['Product Type'] != '{{ product_type }}' && obj.properties['Product Type'] != '{{ field_tees_tag }}';
-            });                                      
+            });     
+            {% endcomment %}       
+            var result_not_this_type = 0;                         
           }
           console.log(result_not_this_type); 
   //         defreez();
@@ -693,7 +701,7 @@
         "default": true
       }
     ],
-  "blocks": [
+	"blocks": [
       {
         "type": "size_charts",
         "name": "Size Charts",
@@ -702,7 +710,7 @@
             "id": "title",
             "type": "text",
             "label": "Chart title(will be used as tag as well, so must be unique)",
-      "info": "Size chart will apply on products having this title as TAG.",
+			"info": "Size chart will apply on products having this title as TAG.",
             "default": "Size Chart"
           },
           {
@@ -710,33 +718,33 @@
             "id": "sizes",
             "label": "Size Row",
             "placeholder": "Size:MD,LG,XL,2XL,3XL",
-      "default": "Size:MD,LG,XL,2XL,3XL",
-      "info": "Size Row, with row name prefix:size1, size2, size3...so on"
+			"default": "Size:MD,LG,XL,2XL,3XL",
+			"info": "Size Row, with row name prefix:size1, size2, size3...so on"
           },
           {
             "type": "textarea",
             "id": "body_rows",
             "label": "Size Value Rows",
             "placeholder": "Chest:38-40,42-44,46-48,50-52,54-56\nSleeve:13,14,15,16,17\nNeck:13,14,15,16,17",
-      "default": "Chest:38-40,42-44,46-48,50-52,54-56\nSleeve:13,14,15,16,17\nNeck:13,14,15,16,17",
-      "info": "Size value rows should be strictly in format."
+			"default": "Chest:38-40,42-44,46-48,50-52,54-56\nSleeve:13,14,15,16,17\nNeck:13,14,15,16,17",
+			"info": "Size value rows should be strictly in format."
           },
           {
             "id": "info_title",
             "type": "text",
             "label": "Guideline Title",
-      "default": "Measurement Guidelines"
+			"default": "Measurement Guidelines"
           },
           {
             "type": "textarea",
             "id": "info_content",
             "label": "Guideline Rows",
             "placeholder": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      "default": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      "info": "Guideline Rows should be strictly in format"
+			"default": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+			"info": "Guideline Rows should be strictly in format"
           }
-    ]
+		]
       }
-  ]
+	]
   }
 {% endschema %}
