@@ -1,6 +1,6 @@
 {% if def_data_csv %}
 	<a id="exportPsudoLink" href="" target="stealthFrame" class="visually-hidden"></a>
-    <iframe name="stealthFrame" class="visually-hidden" onload="setTimeout(function(){ defreez(); }, 15000);"></iframe>
+    <iframe name="stealthFrame" class="visually-hidden" onload="setTimeout(function(){ defreez(); }, 10000);"></iframe>
 	<script>
 		function getData_CSV(url){ console.log(url);
           {% comment %}{% endcomment %}
@@ -14,8 +14,12 @@
                 console.log(xhr);
                 if(xhr.status == 404 || xhr.status == 406)
                   show_message4('Error in exporting or no report available.',false);
+                else if(5 == parseInt(xhr.status/100))
+                  show_message4('Server error occured.',false);
+                else if(xhr.status == 200)
+                  defreez();
               },
-              timeout: 5000,
+              timeout: 10000,
               success: function(){ defreez(); }
           });
           $('#exportPsudoLink').attr('href', url)[0].click();

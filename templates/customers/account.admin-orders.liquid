@@ -66,9 +66,9 @@
           <tr w3-repeat="orders" class="text-dark-blue w3-medium">
             <td><span class="large--hide medium--hide text-liter-blue">{{ 'customer.orders.order_number' | t }}<br></span><a class="{% raw %}{{ cancelled }}{% endraw %} order_name" href="/account?view=admin-order-detail&name={% raw %}{{ order_name }}{% endraw %}&id={% raw %}{{ shopify_order_id }}{% endraw %}">{% raw %}{{ order_name }}{% endraw %}</a></td>
             <td><span class="large--hide medium--hide text-liter-blue">{{ 'customer.orders.date' | t }}<br></span>{% raw %}{{ shopify_created_at }}{% endraw %}</td>
-            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Order By' }}<br></span>{% raw %}{{ customer_name }}{% endraw %}</td>
+            <td style="width:200px; padding-right: 15px;"><span class="large--hide medium--hide text-liter-blue">{{ 'Order By' }}<br></span>{% raw %}{{ customer_name }}{% endraw %}</td>
 <!--             <td><span class="large--hide medium--hide text-liter-blue">{{ 'Gift Code' }}<br></span>{% raw %}{{ gift_code }}{% endraw %}</td> -->
-            <td style="width:200px;"><span class="large--hide medium--hide text-liter-blue">{{ 'Project Number' }}<br></span>{% raw %}{{ note }}{% endraw %}</td>
+            <td style="width:200px; padding-right: 15px;"><span class="large--hide medium--hide text-liter-blue">{{ 'Project Number' }}<br></span>{% raw %}{{ note }}{% endraw %}</td>
             <td class="text_{% raw %}{{ fulfillment_status }}{% endraw %}"><span class="large--hide medium--hide text-liter-blue">{{ 'customer.orders.fulfillment_status' | t }}<br></span>{% raw %}{{ fulfillment_status }}{% endraw %}</td>
             {% comment %}{% endcomment %}<td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ 'Frieght' }}<br></span>{% raw %}${{ total_shipment_price }}{% endraw %}</td>
             <td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ 'customer.orders.total' | t }}<br></span>{% raw %}${{ total_price }}{% endraw %}</td>

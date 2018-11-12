@@ -15,12 +15,18 @@
     
     <hr class="hr--small border-liter-blue" style="margin-bottom:0px;">
     
+    <div class="table-wrapper">
     <table id="transaction-table" class="full responsive-table" style="display:none;">
         <thead class="small--hide medium-down--hide">
           <tr class="w3-medium">
             <th>{{ 'Employee Name' }}</th>
             <th>{{ 'Date' }}</th>
             <th>{{ "Created By" }}</th>
+            
+            <th>{{ "Product Name" }}</th>
+            <th>{{ "Size" }}</th>
+            <th>{{ "Quantity" }}</th>
+            
             <th>{{ "Allowance Name" }}</th>
             <th>{{ 'Type' }}</th>
             <th>{{ "Credit" }}</th>
@@ -30,16 +36,22 @@
         <tbody>
           {% capture minus_icon %}<span class="null-placeholder">&nbsp;&nbsp;</span>{% endcapture %}
           <tr w3-repeat="transactions" class="text-dark-blue w3-medium">
-            <td title="{% raw %}{{ email }}{% endraw %}"><span class="large--hide medium--hide text-liter-blue">{{ 'Employee Name' }}<br></span>{% raw %}{{ employee_name }}{% endraw %}</td>
-            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Date' }}<br></span>{% raw %}{{ date }}{% endraw %}</td>
-            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Created By' }}<br></span>{% raw %}{{ created_by }}{% endraw %}</td>
-            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Allowance Name' }}<br></span>{% raw %}{{ allowance_name }}{% endraw %}</td>
-            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Allowance Type' }}<br></span>{% raw %}{{ allowance_type }}{% endraw %}</td>
-            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Credit' }}<br></span>{% raw %}{{ credit }}{% endraw %}</td>
-            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Debit' }}<br></span>{% raw %}{{ debit }}{% endraw %}</td>
+            <td class="td-employee_name" title="{% raw %}{{ email }}{% endraw %}"><span class="large--hide medium--hide text-liter-blue">{{ 'Employee Name' }}<br></span><span>{% raw %}{{ employee_name }}{% endraw %}</span></td>
+            <td class="td-date"><span class="large--hide medium--hide text-liter-blue">{{ 'Date' }}<br></span><span>{% raw %}{{ date }}{% endraw %}</span></td>
+            <td class="td-created_by"><span class="large--hide medium--hide text-liter-blue">{{ 'Created By' }}<br></span><span>{% raw %}{{ created_by }}{% endraw %}</span></td>
+            
+            <td class="td-product_name"><span class="large--hide medium--hide text-liter-blue">{{ 'Product Name' }}<br></span><span>{% raw %}{{ product_name }}{% endraw %}</span></td>
+            <td class="td-size"><span class="large--hide medium--hide text-liter-blue">{{ 'Size' }}<br></span><span>{% raw %}{{ size }}{% endraw %}</span></td>
+            <td class="td-quantity"><span class="large--hide medium--hide text-liter-blue">{{ 'Quantity' }}<br></span><span>{% raw %}{{ quantity }}{% endraw %}</span></td>
+            
+            <td class="td-allowance_name"><span class="large--hide medium--hide text-liter-blue">{{ 'Allowance Name' }}<br></span><span>{% raw %}{{ allowance_name }}{% endraw %}</span></td>
+            <td class="td-allowance_type"><span class="large--hide medium--hide text-liter-blue">{{ 'Allowance Type' }}<br></span><span>{% raw %}{{ allowance_type }}{% endraw %}</span></td>
+            <td class="td-credit"><span class="large--hide medium--hide text-liter-blue">{{ 'Credit' }}<br></span><span>{% raw %}{{ credit }}{% endraw %}</span></td>
+            <td class="td-debit"><span class="large--hide medium--hide text-liter-blue">{{ 'Debit' }}<br></span><span>{% raw %}{{ debit }}{% endraw %}</span></td>
           </tr>
         </tbody>
       </table>
+      </div>
 
       <div id="table-style"><style>.date_desc_btn{ color: #ea8221 !important; }</style></div>
 
@@ -72,7 +84,7 @@
 
 <style>
   @media (max-width: 749px){
-    .responsive-table tr > td:not(:nth-last-of-type(1)) {
+    .responsive-table tr > td:not(:nth-last-of-type(1)):not(:nth-last-of-type(2)) {
         border: none;
         padding: 0px;
     }
@@ -262,7 +274,7 @@
       w3DisplayData("transaction-table", data);
       $('#transaction-table, .pagination').show();
       $('#no-data').hide();
-      $("td:contains('{% raw %}{{{% endraw %}'):contains('{% raw %}}}{% endraw %}')").html('{{ minus_icon }}');
+      $("td span:contains('{% raw %}{{{% endraw %}'):contains('{% raw %}}}{% endraw %}')").html('{{ minus_icon }}');
       
       $('td.gift').html('<span class="large--hide medium--hide text-liter-blue">{{ "Gift Codes" }}<br></span>'+$('td.gift').html());
                         
