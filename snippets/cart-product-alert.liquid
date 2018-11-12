@@ -3,11 +3,10 @@
 {% if cart.item_count > 0 %}
   {% assign cart_product_types = cart.items | map:"properties" | map: 'Product Type' | uniq | join:"," | replace:"&amp;","&" | split:"," %}
 
-  {% if customer_role == "Role:SS" and product_type == annual_apparel_tag and false %}
+  {% if customer_role == "Role:SS" and product_type == annual_apparel_tag %}
     {% unless cart_product_types contains annual_apparel_tag %}
       <div class="w3-red text-center w3-padding w3-margin-bottom">You cannot checkout this item with other non allowance {{ collection.title }} products.</div>
     {% endunless %}
-  {% comment %}  
   {% elsif customer_role != "Role:PM" and customer_role != "Role:SS" and product_type == annual_apparel_tag or product_type == seasonal_apparel_tag or product_type == field_tees_tag or product_type == mkt_gift_tag %}
     {% unless cart_product_types contains annual_apparel_tag or cart_product_types contains field_tees_tag or cart_product_types contains seasonal_apparel_tag or cart_product_types contains mkt_gift_tag %}
       <div class="w3-red text-center w3-padding w3-margin-bottom">You cannot checkout this item with other non allowance {{ collection.title }} products.</div>
@@ -16,7 +15,6 @@
     {% unless cart_product_types contains annual_apparel_tag or cart_product_types contains field_tees_tag or cart_product_types contains seasonal_apparel_tag %}
       <div class="w3-red text-center w3-padding w3-margin-bottom">You cannot checkout this item with other non allowance {{ collection.title }} products.</div>
     {% endunless %}
-  {% endcomment %}
   {% elsif product_type == client_gift_tag and cart_product_types contains client_gift_tag and cart_product_types.size == 1  %}
     <div class="w3-red text-center w3-padding w3-margin-bottom">You cannot checkout with more than one {{ collection.title }} product.</div>
   {% elsif product_type == yos_gift_tag %}
@@ -24,11 +22,9 @@
       <div class="w3-red text-center w3-padding w3-margin-bottom">You cannot checkout this item with other non {{ collection.title }} products.</div>
     {% endunless %}
   {% else %}
-    {% comment %}
     {% unless cart_product_types contains product_type or cart_product_type contains field_tees_tag or customer_role == "Role:SS" %}
       <div class="w3-red text-center w3-padding w3-margin-bottom">You cannot checkout this item with other non {{ collection.title }} / Allowance products.</div>
     {% endunless %}
-    {% endcomment %}
   {% endif %}
 
 {% else %}

@@ -26,20 +26,31 @@
     <button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small" onclick="addEmployeeInit();"><i class="fa fa-plus fa-lg"></i><span class="small--hide">&nbsp; Add Employee</span></button>
     <button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small w3-margin-right" onclick="getData_CSV('/apps/api/customer/get_empployees.csv?per_page=600&domain='+shop_domain);"><i class="fa fa-download fa-lg"></i><span class="small--hide">&nbsp; Export CSV</span></button>
     
-    <div class="large--inline-block" style="width:100%; max-width: 510px">
+    <div class="large--inline-block search-form" style="width:100%; max-width: 510px">
       <form action="" class="w3-margin-0" onsubmit="event.preventDefault(); updateState({ 'search': $('#search').val(), 'page': 1 });">
-        <input type="text" class="w3-small inline-block w3-margin-left w3-small-margin-0" style="height: auto;" id="search" placeholder="Search Employee by Name / Email">
+        <input type="text" class="w3-small inline-block w3-margin-left w3-small-margin-0" style="height: auto;" id="search" placeholder="Search Employee by Name / Email" onchange="$(this).parent().submit();">
         <button type="submit" class="btn btn--secondary w3-uppercase w3-small w3-margin-left w3-small-margin-0"><i class="fa fa-search fa-lg"></i><span class="small--hide">&nbsp; Search</span></button>
       </form>
     </div>
     
+    <div class="large--inline-block status-wrapper" style="width:100%;">
+    	<select id="status" class="status-select w3-small" onchange="updateState({ 'status': this.value, 'page': 1 });" style="height:auto;">
+          <option value="" disabled selected>Status</option>
+          <option value="">All</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+    </div>
+    
     <hr class="hr--small border-liter-blue" style="margin-bottom:0px;">
 
+    <div class="table-wrapper">
       <table id="employee-table" class="full responsive-table" style="display:none;">
         <thead class="small--hide medium-down--hide">
           <tr class="w3-medium">
             <th>{{ 'Name' }}</th>
             <th>{{ 'Role' }}</th>
+            <th>{{ 'Status' }}</th>
             <th>{{ "Company A" }}</th>
             <th>{{ "Seasonal & A" }}</th>
             <th>{{ "Brand MKT GFT" }}</th>
@@ -53,19 +64,21 @@
         <tbody>
           {% capture minus_icon %}<span class="null-placeholder">&nbsp;&nbsp;</span>{% endcapture %}
           <tr w3-repeat="employees" class="text-dark-blue w3-medium">
-            <td style="width:150px;" title="{% raw %}{{ email }}{% endraw %}"><span class="large--hide medium--hide text-liter-blue">{{ 'Name' }}<br></span>{% raw %}{{ name }}{% endraw %}</td>
-            <td style="width:150px;"><span class="large--hide medium--hide text-liter-blue">{{ 'Role' }}<br></span>{% raw %}{{ role_name }}{% endraw %}</td>
-            <td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ annual_apparel_tag }}<br></span>${% include "double-curly-open" %}{{ annual_apparel_tag }}{% include "double-curly-close" %}</td>
-            <td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ seasonal_apparel_tag }}<br></span>${% include "double-curly-open" %}{{ seasonal_apparel_tag | replace:"&", "and" }}{% include "double-curly-close" %}</td>
-            <td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ mkt_gift_tag }}<br></span>${% include "double-curly-open" %}{{ mkt_gift_tag }}{% include "double-curly-close" %}</td>
-            <td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ field_tees_tag }}<br></span>{% include "double-curly-open" %}{{ field_tees_tag }}{% include "double-curly-close" %}</td>
-            <td class="gift"><span class="large--hide medium--hide text-liter-blue">{{ 'Gift Codes' }}<br></span>{% raw %}{{ gift_codes }}{% endraw %}</td>
-            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Date of Hire' }}<br></span>{% raw %}{{ doh }}{% endraw %}</td>
-<!--             <td><span class="large--hide medium--hide text-liter-blue">{{ 'Manager' }}<br></span>{% raw %}{{ manager }}{% endraw %}</td> -->
-            <td class="td-full text-right small--text-left"><button type="button" id="{% raw %}{{ shopify_customer_id }}{% endraw %}" class="btn btn--secondary w3-uppercase w3-small" onclick="editEmployeeInit(this);"><i class="fa fa-pencil fa-lg"></i>&nbsp; Edit Employee</button></td>
+            <td class="td-name" title="{% raw %}{{ email }}{% endraw %}"><span class="large--hide medium--hide text-liter-blue">{{ 'Name' }}<br></span><span>{% raw %}{{ name }}{% endraw %}</span></td>
+            <td class="td-role_name"><span class="large--hide medium--hide text-liter-blue">{{ 'Role' }}<br></span>{% raw %}<span>{{ role_name }}{% endraw %}</span></td>
+            <td class="td-status"><span class="large--hide medium--hide text-liter-blue">{{ 'Status' }}<br></span><span>{% raw %}{{ status }}{% endraw %}</span></td>
+            <td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ annual_apparel_tag }}<br></span><span>${% include "double-curly-open" %}{{ annual_apparel_tag }}{% include "double-curly-close" %}</span></td>
+            <td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ seasonal_apparel_tag }}<br></span><span>${% include "double-curly-open" %}{{ seasonal_apparel_tag | replace:"&", "and" }}{% include "double-curly-close" %}</span></td>
+            <td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ mkt_gift_tag }}<br></span><span>${% include "double-curly-open" %}{{ mkt_gift_tag }}{% include "double-curly-close" %}</span></td>
+            <td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ field_tees_tag }}<br></span><span>{% include "double-curly-open" %}{{ field_tees_tag }}{% include "double-curly-close" %}</span></td>
+            <td class="gift"><span class="large--hide medium--hide text-liter-blue">{{ 'Gift Codes' }}<br></span><span>{% raw %}{{ gift_codes }}{% endraw %}</span></td>
+            <td><span class="large--hide medium--hide text-liter-blue">{{ 'Date of Hire' }}<br></span><span>{% raw %}{{ doh }}{% endraw %}</span></td>
+<!--             <td><span class="large--hide medium--hide text-liter-blue">{{ 'Manager' }}<br></span><span>{% raw %}{{ manager }}{% endraw %}</span></td> -->
+            <td class="td-full1 td-edit_employee"><button type="button" id="{% raw %}{{ shopify_customer_id }}{% endraw %}" class="btn btn--secondary w3-uppercase w3-small" onclick="editEmployeeInit(this);"><i class="fa fa-pencil fa-lg"></i>&nbsp; Edit Employee</button></td>
           </tr>
         </tbody>
       </table>
+    </div>
 
       <div id="table-style"><style>.date_desc_btn{ color: #ea8221 !important; }</style></div>
 
@@ -98,9 +111,12 @@
 
 <style>
   @media (max-width: 749px){
-    .responsive-table tr > td:not(:nth-last-of-type(1)) {
+    .responsive-table tr > td:not(:nth-last-of-type(1)):not(:nth-last-of-type(2)) {
         border: none;
         padding: 0px;
+    }
+    .responsive-table tr > td:nth-last-of-type(2) {
+        padding-bottom: 8px !important;
     }
     .td-full{
     	width: 100% !important;
@@ -117,7 +133,13 @@
   var doh = '';
   var manager = '';
   
-  var search = (query.search != undefined) ? (query.search = query.search.replace(' ', '+'), (query.search.indexOf('@') != -1) ? query.search.replace(' ', '+') : query.search ) : "";
+  var status = (query.status != undefined) ? query.status : "";
+  
+//   var search = (query.search != undefined) ? (query.search = query.search.replace(' ', '+'), ((query.search.indexOf('@') != -1) ? query.search.replace(' ', '+') : query.search )) : "";
+  
+  var search = (query.search != undefined) ? query.search : "";
+  
+  //search = "";
   
   var page = (query.page != undefined) ? query.page : "1";
   var per_page = (query.per_page != undefined) ? query.per_page : localStorage.per_page_{{ customer.id }} || "10";
@@ -207,7 +229,8 @@
   }
   
   function updateState(param){
-      if(param.search != undefined)data.search = param.search; else if(search.length != 0)data.search = search;
+      if(param.search != undefined)data.search = param.search; else if(Boolean(search))data.search = search;
+      if(param.status != undefined)data.status = param.status; else if(Boolean(status))data.status = status;
       if(param.page != undefined)data.page = param.page; else if(page.length != 0)data.page = page;
       if(param.per_page != undefined)data.per_page = param.per_page; else if(per_page.length != 0)data.per_page = per_page;
     
@@ -224,7 +247,8 @@
     
     page = data.page;
     per_page = data.per_page; $('#per_page option[value="'+data.per_page+'"]').prop('selected', 'selected');
-    search = data.search; $('#search').val(search);
+    if(data.search != undefined){search = data.search; $('#search').val(search);}
+    if(data.status != undefined){status = data.status; $('#status').val(status);}
     
     if(data.name != undefined){ name = data.name; if(data.name.length != 0)toggleOrderBtns('name', data.name); }
     if(data.role != undefined){ role = data.role; if(data.role.length != 0)toggleOrderBtns('role', data.role); }

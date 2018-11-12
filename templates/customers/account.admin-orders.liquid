@@ -18,10 +18,32 @@
 
 <div class="grid account-wrapper">
 
-  <div class="grid-item two-thirds medium-down--one-whole w3-padding-right">
+  <div class="grid-item two-thirds1 five-sixths medium-down--one-whole w3-padding-right">
     <h6 class="w3-medium w3-bold text-dark-blue w3-uppercase" style="display: inline-block;">{{ 'All Orders' }}</h6>
     
     <button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small" onclick="getData_CSV('/apps/product-tracking-analytics/get_orders.csv?domain='+shop_domain);"><i class="fa fa-download fa-lg"></i><span class="small--hide">&nbsp; Export CSV</span></button>
+
+    <div class="grid1" style="margin-top: 20px"> 
+      <div class="grid-item one-half medium-down--one-whole w3-row filter_form width-100-percent_at_1094" style="position: relative; padding-left: 0;">
+        <form action="" class="w3-margin-0" onsubmit="event.preventDefault(); ApplyDate(); $('.reset-btn2').show();" onreset="updateState({ start_date: '', end_date: '', page: '1' }); $('.reset-btn2').hide();">
+          <input type="text" id="start-date" class="w3-small start_date w3-col l3 m3 s4 inline-block datepicker" style="height: auto;" readonly="" name="start_date" required="" placeholder="Start Date">
+          <div class="w3-col l3 m3 s4 inline-block w3-margin-right w3-small-margin-0" style1="position: relative;">
+            <input type="text" id="end-date" class="w3-small end_date datepicker w3-margin-left" style="height: auto;" readonly="" name="end_date" required="" placeholder="End Date">
+          </div>
+          <div class="w3-col l5 m5 s4 inline-block w3-margin-right w3-small-margin-0" style1="position: relative;">
+            <button type="submit" class="btn btn--secondary w3-uppercase w3-small w3-margin-left w3-small-margin-01" style="display: inline-block;" title="Apply Date Filter"><i class="fa fa-filter fa-lg"></i><span class="small--hide">&nbsp; Filter</span></button>
+            <button type="reset" class="w3-btn w3-transparent w3-text-black w3-padding-0 w3-small reset-btn2 w3-margin-left" title="Clear Date filter" style="display: none; position: absolute1; right: 0px; top:0px; box-shadow: none;"><span class="fa fa-times1 fa-lg w3-xlarge" style="vertical-align: -25%; font-weight: 900;">×</span><span class="small--hide">&nbsp; CLEAR</span></button>
+          </div>
+        </form>
+      </div>
+      <div class="grid-item one-half medium-down--one-whole w3-row search_form w3-small-padding-0 width-100-percent_at_1094 text-right small--text-left" style1="width:100%; max-width: 510px">
+        <form action="" class="w3-margin-0" onsubmit="event.preventDefault(); updateState({ 'search': $('#search').val(), 'page': 1 });">
+          <button type="submit" class="btn btn--secondary w3-uppercase w3-small w3-margin-left w3-small-margin-01 w3-right"><i class="fa fa-search fa-lg"></i><span class="small--hide">&nbsp; Search</span></button>
+          <input type="text" class="w3-small inline-block w3-margin-left w3-small-margin-0 w3-col w3-right m7 s8" style="height: auto;" id="search" placeholder="Search Orders by # / Customer Name / Project #" title="Search Orders by # / Customer Name / Project #" onchange="$(this).parent().submit();">
+        </form>
+      </div>
+   </div>
+    
     
     <hr class="hr--small border-liter-blue" style="margin-bottom:0px;">
 
@@ -30,10 +52,11 @@
         <thead class="small--hide medium-down--hide">
           <tr class="w3-medium">
             <th>{{ 'customer.orders.order_number' | t }}</th>
-            <th>{{ 'customer.orders.date' | t }} &nbsp;<i class="fa fa-caret-down"></i></th>
+            <th><span class="th-span">{{ 'customer.orders.date' | t }}</span><div class="btn-group printModeExclude"><button type="button" class="date_asc_btn" title="Sort by Ascending" onclick="updateState({sort_date: 'asc', page: '1'});"><i class="fa fa-caret-up"></i></button><button type="button" class="date_desc_btn" title="Sort by Descending" onclick="updateState({sort_date: 'desc', page: '1'});"><i class="fa fa-caret-down"></i></button></div></th>
             <th>{{ 'Order By' }}</th>
             <th>{{ 'Project Number' }}</th>
             <th>{{ 'customer.orders.fulfillment_status' | t }}</th>
+            <th>{{ "Freight" }}</th>
             <th>{{ 'customer.orders.total' | t }}</th>
           </tr>
         </thead>
@@ -47,13 +70,14 @@
 <!--             <td><span class="large--hide medium--hide text-liter-blue">{{ 'Gift Code' }}<br></span>{% raw %}{{ gift_code }}{% endraw %}</td> -->
             <td style="width:200px;"><span class="large--hide medium--hide text-liter-blue">{{ 'Project Number' }}<br></span>{% raw %}{{ note }}{% endraw %}</td>
             <td class="text_{% raw %}{{ fulfillment_status }}{% endraw %}"><span class="large--hide medium--hide text-liter-blue">{{ 'customer.orders.fulfillment_status' | t }}<br></span>{% raw %}{{ fulfillment_status }}{% endraw %}</td>
+            <td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ 'Frieght' }}<br></span>{% raw %}${{ total_shipment_price }}{% endraw %}</td>
             <td class="w3-bold"><span class="large--hide medium--hide text-liter-blue">{{ 'customer.orders.total' | t }}<br></span>{% raw %}${{ total_price }}{% endraw %}</td>
           </tr>
           
         </tbody>
       </table>
 
-      <div id="table-style"><style>.date_desc_btn{ color: #ea8221 !important; }</style></div>
+      <div id="table-style"><style>.date_desc_btn{ color: #2273ba !important; }</style></div>
 
       <br>
       <div class="grid one-whole per_pageContainer pagination pagination-custom w3-pagination" style="display:none;">
@@ -78,7 +102,7 @@
     
   </div>
 
-  <div class="grid-item one-third medium-down--one-whole">
+  <div class="grid-item one-third1 one-sixth medium-down--one-whole">
     <h6 class="w3-medium w3-bold text-dark-blue w3-uppercase">{{ 'customer.account.details' | t }}</h6>
     
     <hr class="hr--small border-liter-blue">
@@ -137,10 +161,15 @@
   var doh = '';
   var manager = '';
   
+  var search = (query.search != undefined) ? (query.search = query.search.replace(' ', '+'), (query.search.indexOf('@') != -1) ? query.search.replace(' ', '+') : query.search ) : "";
+  
+  var start_date = (query.start_date != undefined) ? query.start_date : "";
+  var end_date = (query.end_date != undefined) ? query.end_date : ""; //{{'now' | date: '%m/%d/%Y'}}";
+  
   var page = (query.page != undefined) ? query.page : "1";
   var per_page = (query.per_page != undefined) ? query.per_page : localStorage.per_page_{{ customer.id }} || "10";
   
-  var sort_name = '';
+  var sort_date = (query.sort_date != undefined) ? query.sort_date : "";;
   var sort_role = '';
   var sort_doh = '';
   var sort_manager = '';
@@ -175,15 +204,17 @@
       });
   }
   
+  dateInit();
+  
   function ApplyDate() {
       var start_date = $("#start-date").val();
       var end_date = $("#end-date").val();
       start_unix = getUnix(start_date, 0);
       end_unix = getUnix(end_date, 1);
       if (start_date === "" || end_date === "") {
-          alert("Please select start and end dates.");
+          show_message4("Please select start and end dates.", false);
       } else if(start_unix >= end_unix){
-          alert("Start date must be smaller than End date.");
+          show_message4("Start date must be smaller than End date.", false);
       } else {
           updateState({ start_date: start_date, end_date: end_date, page: '1' });
       }
@@ -211,6 +242,7 @@
   
   function toggleOrderBtns(btn , data){ console.log('called-for:', data)
     switch(btn){
+      case 'date': if(data == 'asc') $('#table-style').html('<style>.date_asc_btn{ color: #2273ba !important; }</style>'); else $('#table-style').html('<style>.date_desc_btn{ color: #2273ba !important; }</style>'); console.log('called-for:', btn); break;
       case 'name': if(data == 'asc') $('#table-style').html('<style>.name_asc_btn{ color: #ea8221 !important; }</style>'); else $('#table-style').html('<style>.name_desc_btn{ color: #ea8221 !important; }</style>'); console.log('called-for:', btn); break;
       case 'role': if(data == 'asc') $('#table-style').html('<style>.role_asc_btn{ color: #ea8221 !important; }</style>'); else $('#table-style').html('<style>.role_desc_btn{ color: #ea8221 !important; }</style>'); console.log('called-for:', btn); break;
       case 'doh': if(data == 'asc') $('#table-style').html('<style>.doh_asc_btn{ color: #ea8221 !important; }</style>'); else $('#table-style').html('<style>.doh_desc_btn{ color: #ea8221 !important; }</style>'); console.log('called-for:', btn); break;
@@ -219,6 +251,10 @@
   }
   
   function updateState(param){
+      if(param.search != undefined)data.search = param.search; else if(search.length != 0)data.search = search;
+      if(param.start_date != undefined){data.start_date = param.start_date; }else if(start_date.length != 0){ data.start_date = start_date; }
+      if(param.end_date != undefined){data.end_date = param.end_date; }else if(end_date.length != 0){ data.end_date = end_date; }
+    
       if(param.page != undefined)data.page = param.page; else if(page.length != 0)data.page = page;
       if(param.per_page != undefined)data.per_page = param.per_page; else if(per_page.length != 0)data.per_page = per_page;
     
@@ -226,6 +262,8 @@
       if(param.role != undefined)data.role = param.role; else if(role.length != 0)data.role = role;
       if(param.doh != undefined)data.doh = param.doh; else if(doh.length != 0)data.doh = doh;
       if(param.manager != undefined)data.manager = param.manager; else if(manager.length != 0)data.manager = sort_total;
+    
+      if(param.sort_date != undefined)data.sort_date = param.sort_date; else if(sort_date.length != 0)data.sort_date = sort_date;
     
       fetchOrder(data);     
       
@@ -241,6 +279,12 @@
     if(data.doh != undefined){ doh = data.doh; if(data.doh.length != 0)toggleOrderBtns('doh', data.doh); }
     if(data.manager != undefined){ manager = data.manager; if(data.manager.length != 0)toggleOrderBtns('manager', data.manager); }
     
+    if(data.search != undefined){ search = data.search; $('#search').val(data.search); (data.search.length) ? $('.reset-btn').show() : $('.reset-btn').hide(); }
+    if(data.start_date != undefined){ start_date = data.start_date; $('#start-date').val(data.start_date); (data.start_date.length) ? $('.reset-btn2').show() : $('.reset-btn2').hide(); }
+    if(data.end_date != undefined){ end_date = data.end_date; $('#end-date').val(data.end_date); }
+    
+    if(data.sort_date != undefined){ sort_date = data.sort_date; toggleOrderBtns('date', data.sort_date); }
+    
     data = removeEmpty(data);  
     History.pushState({ url: document.location.href }, document.title, '?view={{ template.suffix }}&' + $.param(data) );
     
@@ -254,7 +298,7 @@
     
     {% comment %} dataSetup(test_data); defreez();  {% endcomment %}  
       $.ajax({
-        url: "/apps/product-tracking-analytics/get_orders.json",
+        url: "/apps/product-tracking-analytics/search_btr_orders.json",
         type:'GET',
         data: data2,
         dataType: 'json',
@@ -340,3 +384,9 @@
 </script>
 
 {% include "common_code_lib", def_data_csv: true %}
+
+<style>
+  .ui-datepicker {
+  	z-index: 3 !important;
+  }
+</style>

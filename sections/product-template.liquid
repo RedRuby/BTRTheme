@@ -190,7 +190,7 @@
         {% endfor %}
       {% endif %}
 
-      {% if section.settings.product_quantity_enable and is_client_gift != true  and customer_role != "Role:VP" %}
+      {% if section.settings.product_quantity_enable and is_client_gift != true %}
           <div class="w3-margin-top margin-bottom">
           <label for="quantity" class="quantity-selector quantity-selector-{{ section.id }}">{{ 'products.product.quantity' | t }}</label>
           <input type="number" id="quantity" name="quantity" value="1" min="1" class="quantity-selector" >
@@ -271,20 +271,34 @@
       
       		{% assign sizes = 'SM,MD,LG,XL,2X,3X' | split:',' %}
             {% assign product_option1 = product.variants | map:'option1' %}
-          
+      
+<!--             <script>console.log('{{ product.variants | json }}');</script>
+            <script>console.log("{{ product.variants | map:"option1" | join: ", " }}");</script>
+            <script>console.log("{{ product.variants | map:"id" | join: ", " }}");</script> -->
+      		
               
             <div class="size-selector-wrapper w3-opacity-25 w3-margin-top">
               <label style="display:inline-block; margin:0;" for="">Select Quantities Per Size</label> <small style="display:none; inline-block; color: {{ dark-accent | color_modify: 'alpha', 0.5 }};">MD,LG and XL are available in 12 piece packs.2X and 3X are available in 6 piece packs.</small>
               <div class="grid">
                 {% assign variant_ids = product.variants | map:'id' %}
-                {% assign index = 0 %}
+                
+                
+                
                 {% for size in sizes %}
+                
+                	{% for option in product_option1 %}
+                      {% if option == size %}
+                        {% assign index = forloop.index0 %}
+                      {% endif %}
+                    {% endfor %}
+                
                     {% if product_option1 contains size and product.variants[index].available %}
                         <div class="grid-item large--one-quarter medium--one-half small--one-third w3-margin-top">
                           <label for="size-{{ size }}">{{ size }}</label> {% comment %}| replace:'SM','S' | replace:'MD','M' | replace:'LG','L' | replace:'2X','XXL' | replace:'3X','XXXL'{% endcomment %}
-                          <input type="number" id="size-{{ size }}" variant_id="{{ variant_ids[index] }}{% assign index = index | plus: 1 %}" disabled class="size-selector" min="0" value="0"/>
+                          <input type="number" id="size-{{ size }}" variant_id="{{ variant_ids[index] }}" disabled class="size-selector" min="0" value="0"/>
+<!--                           <script>console.log("{{ size }} {{ variant_ids[index] }} {{ index }}");</script> -->
                           {% comment %}
-                          <select id="size-{{ size }}" variant_id="{{ variant_ids[index] }}{% assign index = index | plus: 1 %}" disabled class="size-selector">
+                          <select id="size-{{ size }}" variant_id="{{ variant_ids[index] }}" disabled class="size-selector">
                             <option value="0" selected>0</option>
                             {% for i in (1..1) %}
                               {% if size contains '2X' or size contains '3X' %}
@@ -296,9 +310,7 @@
                           </select>
                           {% endcomment %}
                         </div>
-                    {% elsif product.variants[index].available == false %}
-                      {% assign index = index | plus: 1 %}
-                    {% endif %}
+                	{% endif %}
                 {% endfor %}
 
                 <div class="grid-item large--one-half small--one-whole w3-margin-top">
@@ -532,9 +544,8 @@
           var result_this_type = cart_json.items.filter(function( obj ) {
             if(obj.properties != undefined) return obj.properties['Product Type'] == '{{ product_type }}';
           });
-          
-          {% comment %}                                                   
-          {% if customer_role == 'Role:SS' %}                                                                                                      
+                                                             
+          {% if customer_role == 'Role:SS' %}                                                   	                                                 
           if('{{ product_type }}' == '{{ annual_apparel_tag }}'){
             var result_not_this_type = cart_json.items.filter(function( obj ) {
               if(obj.properties != undefined) return obj.properties['Product Type'] != '{{ annual_apparel_tag }}';
@@ -550,18 +561,14 @@
               if(obj.properties != undefined) return obj.properties['Product Type'] != '{{ annual_apparel_tag }}' && obj.properties['Product Type'] != '{{ seasonal_apparel_tag }}' && obj.properties['Product Type'] != '{{ field_tees_tag }}' && obj.properties['Product Type'] != '{{ mkt_gift_tag }}';
             });
           }
-          {% elsif customer_role == 'Role:PM' %}                                                                                                     
+          {% elsif customer_role == 'Role:PM' %}                                                   	                                                 
           if('{{ product_type }}' == '{{ annual_apparel_tag }}' || '{{ product_type }}' == '{{ seasonal_apparel_tag }}' || '{{ product_type }}' == '{{ field_tees_tag }}'){
             var result_not_this_type = cart_json.items.filter(function( obj ) {
               if(obj.properties != undefined) return obj.properties['Product Type'] != '{{ annual_apparel_tag }}' && obj.properties['Product Type'] != '{{ seasonal_apparel_tag }}' && obj.properties['Product Type'] != '{{ field_tees_tag }}';
             });
           }
           {% endif %}
-
-          else 
-          {% endcomment %}
-
-          if('{{ product_type }}' == '{{ client_gift_tag }}' && {% if employee_has_no_client_gift %}true{% else %}false{% endif %}){
+          else if('{{ product_type }}' == '{{ client_gift_tag }}' && {% if employee_has_no_client_gift %}true{% else %}false{% endif %}){
             var result_not_this_type = msg = "You don't have any Client Gift !";  
             redirect_to = "/";
           }                                        
@@ -580,12 +587,9 @@
             });                                      
           }
           else{
-            {% comment %}
             var result_not_this_type = cart_json.items.filter(function( obj ) {
               if(obj.properties != undefined) return obj.properties['Product Type'] != '{{ product_type }}' && obj.properties['Product Type'] != '{{ field_tees_tag }}';
-            });     
-            {% endcomment %}       
-            var result_not_this_type = 0;                         
+            });                                      
           }
           console.log(result_not_this_type); 
   //         defreez();

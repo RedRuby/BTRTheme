@@ -66,7 +66,7 @@
         <div class="grid-item large--five-twelfths medium--two-thirds push--medium--one-third">
           <div class="grid">
             <div class="grid-item one-half medium-down--one-third text-right">
-              <input type="number" name="updates[]" id="updates_{{ item.key }}" data-id="{{ item.key }}" value="{{ item.quantity }}" min="0" {% if item.properties['Product Type'] == field_tees_tag1 or item.properties['Product Type'] == client_gift_tag or customer_role == "Role:VP" %}class="line-qty w3-opacity {{ 'prod_' | append: item.product.id }}" disabled readonly{% else %}class="line-qty"{% endif %} autocomplete="off" data-line="{{ forloop.index }}">
+              <input type="number" name="updates[]" id="updates_{{ item.key }}" data-id="{{ item.key }}" value="{{ item.quantity }}" min="0" {% if item.properties['Product Type'] == field_tees_tag1 or item.properties['Product Type'] == client_gift_tag %}class="line-qty w3-opacity {{ 'prod_' | append: item.product.id }}" disabled readonly{% else %}class="line-qty"{% endif %} autocomplete="off" data-line="{{ forloop.index }}">
             </div>
 
             <div class="grid-item one-third medium-down--one-third medium-down--text-left text-right">
@@ -125,12 +125,12 @@
           <p class="cart-subtotal__note"><em>{{ 'cart.general.taxes_extra' | t }}</em></p>
           
           {% assign cart_product_types = cart.items | map:"properties" | map: 'Product Type' | uniq | join:"," | replace:"&amp;","&" | split:"," %}
-          
+
           {% assign cart_product_titles = cart.items | map:"title" | uniq | join:"," %}
           
           {% assign FieldTees_allowance = customer.metafields.allowance[FieldTees_key] | default: 0 | plus: 0 %}
           
-          <select name="attributes[pay_by]" {% if cart_product_types contains field_tees_tag and cart_product_types.size == 1 and FieldTees_allowance > 0 %}class="w3-right pay_by_selector hide"{% else %}class="w3-right pay_by_selector" required="required"{% endif %} {% if cart_product_titles contains "Executive" or cart_product_types contains field_tees_tag or cart_product_types contains yos_gift_tag or cart_product_types contains client_gift_tag or cart_product_types contains employee_reward_tag %}onchange="if(this.value == 'GCC-6873743420'){ show_message4('Only {% if customer_role == 'Role:VP' %}Non-Executive Polo {% endif %}<b>Company Attire</b> and <b>Seasonal & Accessories</b> can be purcased with Gift Card.',false); this.value = '';}"{% endif %} >
+          <select name="attributes[pay_by]" {% if cart_product_types contains field_tees_tag and cart_product_types.size == 1 and FieldTees_allowance > 0 %}class="w3-right pay_by_selector hide"{% else %}class="w3-right pay_by_selector" required="required"{% endif %} {% if cart_product_titles contains "Executive" or cart_product_types contains field_tees_tag or cart_product_types contains yos_gift_tag or cart_product_types contains client_gift_tag or cart_product_types contains employee_reward_tag %}onchange="if(this.value == 'GC-6873743420'){ show_message4('Only {% if customer_role == 'Role:VP' %}Non-Executive Polo {% endif %}<b>Company Attire</b> and <b>Seasonal & Accessories</b> can be purcased with Gift Card.',false); this.value = '';}"{% endif %} >
             <option value="" selected disabled>Select Payment Method</option>
             {% if cart_product_types contains field_tees_tag and cart_product_types.size == 1 and FieldTees_allowance > 0 %}
               <option value="Allowance-9326755900" selected>Pay By Allowance</option>
@@ -143,7 +143,7 @@
             {% elsif cart_product_types contains employee_reward_tag %}
               <option value="EMPLOYEEREWARD-6873743420">Pay By EMPLOYEE REWARDS CODE</option>
             {% elsif cart_product_types contains annual_apparel_tag or cart_product_types contains seasonal_apparel_tag or cart_product_types contains mkt_gift_tag %}
-              <option value="GCC-6873743420">Pay By Gift Card</option>
+              <option value="GC-6873743420">Pay By Gift Card</option>
               {% assign annual_allowance = customer.metafields.allowance[annual_key] | default: 0 | plus: 0 %}
               {% assign seasonal_allowance = customer.metafields.allowance[seasonal_key] | default: 0 | plus: 0 %}
               {% assign mktGift_allowance = customer.metafields.allowance[mktGift_key] | default: 0 | plus: 0 %}

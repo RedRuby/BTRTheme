@@ -87,7 +87,7 @@
                 </div>
               </div>
             </td>
-            <td class="text-right">${% raw %}{{ shipping_charge }}{% endraw %}</td>
+            <td class="text-right">${% raw %}{{ total_shipment_price }}{% endraw %}</td>
           </tr>
         </tbody>
 
@@ -332,11 +332,12 @@
 
       if(data.order.shipping_charge != null ){ $('#shippingPrice').show(); }
     
-      if(data.order.shipping_address.length > 0 && typeof data.order.shipping_address == "string"){
+      if(data.order.shipping_address != null && typeof data.order.shipping_address == "string"){
       	$("#shipping_address .name").after(("<br>"+data.order.shipping_address).replace(/,/g,",<br>")).show();
       }
+    	
     
-      if(data.order.billing_address.length > 0 && typeof data.order.billing_address == "string"){
+      if(data.order.billing_address != null && typeof data.order.billing_address == "string"){
       	$("#billing_address .h5.name").after(data.order.billing_address.replace(/,/g,",<br>")).show();
       }
 

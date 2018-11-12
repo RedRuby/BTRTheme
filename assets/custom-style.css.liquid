@@ -5,6 +5,10 @@ body {
     padding-top: 0px;
 }
 
+body, html{
+	overflow-x: hidden;
+}
+
 .wrapper{
 	max-width:100%;
 }
@@ -401,6 +405,12 @@ h1, .h1, #shopify-product-reviews .spr-header-title{
         transition: all 600ms cubic-bezier(0.47, 0.5, 0, 0.95);
     } */
 }
+
+@media (max-width: 1094px){
+	.width-100-percent_at_1094{ width: 100% !important; position: relative; padding-left: 0px !important;}
+    .width-100-percent_at_1094 .w3-small-margin-0{ margin-left: 0px !important; }
+}
+
 @media (min-width: 750px){
     .width-45-percent{ width: 45%; position: relative; }
     .width-55-percent{ width: 55%; position: relative; }
@@ -414,6 +424,19 @@ h1, .h1, #shopify-product-reviews .spr-header-title{
     .product-photo-container:hover{ padding: 0px !important; }
 
     .large--inline-block{ display: inline-block !important; }
+  
+    .status-wrapper{ max-width: 150px; }
+  
+    .td-date{ width: 100px; padding-right: 10px !important; }
+    .td-product_name{ width: 250px; padding-right: 10px !important; }
+    .td-allowance_name{ width: 200px; padding-right: 10px !important; }
+    .td-credit, .td-debit{ width: 80px; padding-right: 20px !important; text-align: right; }
+  
+    .td-name, .td-role_name, .td-status{ width: 150px; }
+    .td-edit_employee{ text-align: right; }
+  
+    table.responsive-table { min-width: 1144px; }
+    div.table-wrapper {overflow: auto;}
 }
 @media (max-width: 749px){
   .show-nav .nav-bar{
@@ -473,8 +496,16 @@ h1, .h1, #shopify-product-reviews .spr-header-title{
   .small--inline-block{ display: inline-block !important; }
 
   .w3-small-margin-0{ margin: 0 !important; }
+  
+  .w3-small-padding-0{ padding: 0 !important; }
 
-  #search{ max-width: calc(100% - 59px - 10px) !important; margin-top: 20px !important; margin-right: 5px !important; }
+  .search-form #search{ max-width: calc(100% - 59px - 10px) !important; margin-top: 20px !important; margin-right: 5px !important; }
+  
+  .search_form #search{ max-width: calc(100% - 30px) !important; margin-right: 5px !important; }
+  
+  .search_form { margin-bottom: 20px !important;}
+  
+  #status{ margin-top: 20px; width: 100%; }
 }
 
 @media (max-width: 768px && min-width: 481px){
@@ -671,6 +702,48 @@ select{ margin: 0 0 20px; }
     max-width: 100% !important;
     white-space:normal;
 }
+
+/* ______________ */
+
+.btn-group button, .cross-btn {
+    background-color: transparent !important; /* Green background */
+    border: 1px solid transparent !important; /* Green border */
+  	outline: none !important;
+  	font-size:19px !important;
+    color: grey; /* White text */
+    padding: 2px; /* Some padding */
+    cursor: pointer; /* Pointer/hand icon */
+    width: 15px !important; /* Set a width if needed */
+  	height: 15px !important;
+    display: block; /* Make the buttons appear below each other */
+  	position: relative;
+  	line-height:1 !important;
+/*   	vertical-align:middle; */
+}
+
+@-moz-document url-prefix() { 
+  .btn-group button, .cross-btn {
+     bottom:5px;
+  }
+}
+
+.btn-group, .cross-btn { margin:0px 8px;display:inline-block; }
+
+.cross-btn {  height:10px;}
+/* .btn-group { line-height:1; } */
+
+.btn-group button:not(:last-child) {
+    border-bottom: none; /* Prevent double borders */
+}
+
+/* Add a background color on hover */
+.btn-group button:hover, .cross-btn:hover, .cross-btn.active {
+    color: {{ dark-accent }} !important;
+}
+
+.th-span{ position:relative; bottom:10px; }
+
+/* ______________ */
 
 input.emp-search::-webkit-input-placeholder  {
   color:transparent;
