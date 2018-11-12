@@ -16,7 +16,7 @@ if(location.href.indexOf("/checkouts") != -1 && location.href.indexOf("/thank_yo
   {% if cart.attributes.pay_by == blank and cart.item_count > 0 %}
   	location.assign("/cart");
   {% else %}
-    {% unless cart.attributes.pay_by contains 'GC' %}
+    {% unless cart.attributes.pay_by contains 'GCC' %}
       {% if cart.total_discount > 0 %}
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open( "GET", "https://" + window.location.hostname + "/discount/" + discount, false ); // false for synchronous request
@@ -28,7 +28,7 @@ if(location.href.indexOf("/checkouts") != -1 && location.href.indexOf("/thank_yo
     {% endunless %}
   {% endif %}
 
-  {% if cart.attributes.pay_by contains 'GC' and cart_product_titles contains "Executive" or cart_product_types contains field_tees_tag or cart_product_types contains yos_gift_tag or cart_product_types contains client_gift_tag or cart_product_types contains employee_reward_tag %}
+  {% if cart.attributes.pay_by contains 'GCC' and cart_product_titles contains "Executive" or cart_product_types contains field_tees_tag or cart_product_types contains yos_gift_tag or cart_product_types contains client_gift_tag or cart_product_types contains employee_reward_tag %}
     alert('Only {% if customer_role == 'Role:VP' %}Non-Executive Polo {% endif %}Company Attire and Seasonal & Accessories can be purcased with Gift Card.');
     location.assign("/cart");
   {% endif %}

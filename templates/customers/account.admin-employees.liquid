@@ -28,7 +28,7 @@
     
     <div class="large--inline-block" style="width:100%; max-width: 510px">
       <form action="" class="w3-margin-0" onsubmit="event.preventDefault(); updateState({ 'search': $('#search').val(), 'page': 1 });">
-        <input type="text" class="w3-small inline-block w3-margin-left w3-small-margin-0" style="height: auto;" id="search" placeholder="Search Employee by Name / Email">
+        <input type="text" class="w3-small inline-block w3-margin-left w3-small-margin-0" style="height: auto;" id="search" placeholder="Search Employee by Name / Email" onchange="$(this).parent().submit();">
         <button type="submit" class="btn btn--secondary w3-uppercase w3-small w3-margin-left w3-small-margin-0"><i class="fa fa-search fa-lg"></i><span class="small--hide">&nbsp; Search</span></button>
       </form>
     </div>
@@ -207,7 +207,7 @@
   }
   
   function updateState(param){
-      if(param.search != undefined)data.search = param.search; else if(search.length != 0)data.search = search;
+      if(param.search != undefined)data.search = param.search; else if(Boolean(search))data.search = search;
       if(param.page != undefined)data.page = param.page; else if(page.length != 0)data.page = page;
       if(param.per_page != undefined)data.per_page = param.per_page; else if(per_page.length != 0)data.per_page = per_page;
     

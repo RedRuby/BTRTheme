@@ -40,7 +40,7 @@
 		{% assign send_to_rout = '/account' %}
 	{% endif %}
 
-	{% if customer.tags contains 'disabled' and page.handle != 'employee-account-deactivated' %}
+	{% if customer.tags contains 'inactive' and page.handle != 'employee-account-deactivated' %}
 		{% assign send_to_rout = '/pages/employee-account-deactivated' %}
     {% endif %}
 {% endunless %}

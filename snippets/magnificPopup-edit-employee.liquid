@@ -241,10 +241,10 @@
     if(confirm('Click "OK" to confirm your action !') == true){
       	freez();
       
-      	if($(link).attr("status") == "enabled")
-          data2 = { email: $(link).attr("email"), status: "disabled" };
+      	if($(link).attr("status") == "active")
+          data2 = { email: $(link).attr("email"), status: "inactive" };
       	else
-          data2 = { email: $(link).attr("email"), status: "enabled" };
+          data2 = { email: $(link).attr("email"), status: "active" };
       
       	console.log(data2);
       	$.ajax({
