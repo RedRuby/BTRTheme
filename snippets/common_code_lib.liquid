@@ -1,8 +1,8 @@
 {% if def_data_csv %}
-  <a id="exportPsudoLink" href="" target="stealthFrame" class="visually-hidden"></a>
-    <iframe name="stealthFrame" class="visually-hidden" onload="setTimeout(function(){ defreez(); }, 15000);"></iframe>
-  <script>
-    function getData_CSV(url){ console.log(url);
+	<a id="exportPsudoLink" href="" target="stealthFrame" class="visually-hidden"></a>
+    <iframe name="stealthFrame" class="visually-hidden" onload="setTimeout(function(){ defreez(); }, 10000);"></iframe>
+	<script>
+		function getData_CSV(url){ console.log(url);
           {% comment %}{% endcomment %}
           freez();
           $.ajax({
@@ -14,8 +14,12 @@
                 console.log(xhr);
                 if(xhr.status == 404 || xhr.status == 406)
                   show_message4('Error in exporting or no report available.',false);
+                else if(5 == parseInt(xhr.status/100))
+                  show_message4('Server error occured.',false);
+                else if(xhr.status == 200)
+                  defreez();
               },
-              timeout: 5000,
+              timeout: 10000,
               success: function(){ defreez(); }
           });
           $('#exportPsudoLink').attr('href', url)[0].click();
@@ -26,7 +30,7 @@
 {% endif %}
 
 {% if def_admin_nav %}
-  {%- include "get-url-param" -%}
+	{%- include "get-url-param" -%}
 
     <div class="wrapper text-center admin-tab" style="background-color: #428ecb; padding:8px; position:absolute; left:0; right:0;">
       <a href="{%- assign current_link = '/account?view=admin-orders' -%}{{ current_link }}"><small class="w3-medium w3-text-white {% unless pageUrl contains current_link %}w3-opacity w3-hover-opacity-off{% endunless %} w3-padding-left w3-padding-right"><span class="small--hide {% if pageUrl contains current_link %}w3-bold{% endif %}">Orders</span><i class="fa fa-shopping-cart {% if pageUrl contains current_link %}fa-2x{% else %}fa-lg{% endif %} large--hide medium--hide" {% unless pageUrl contains current_link %}style="position:relative; bottom:5px;"{% endunless %}></i></small></a>
@@ -62,7 +66,7 @@
 {% endif %}
 
 {% if def_required_fallback %}
-  (function ($) {
+	(function ($) {
 
         // check for "required" input support with modernizr
         if (Modernizr.input.required) {

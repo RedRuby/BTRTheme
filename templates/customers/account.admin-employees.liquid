@@ -393,10 +393,17 @@
             
             $('.emp-status-update-link').attr({'email': data.email||'','status': data.status||''});
             
-            if(data.status == "disabled")
+            if(data.status == "inactive"){
               $('.emp-status-update-link u').text("Activate Employee");
-            else
+              if($('.employee-inactive-msg').length == 0){
+                $('.employee-edit-form .mfp-content input, .employee-edit-form .mfp-content textarea, .employee-edit-form .mfp-content button:not(.mfp-close)').prop('disabled', 'disabled').addClass('inactive-disabled');
+                $('.employee-edit-form .mfp-content button:contains("Submit")').parent().prepend('<span class="w3-text-red employee-inactive-msg">Employee is inactive<br></span>');
+              }
+            }else{
               $('.emp-status-update-link u').text("Deactivate Employee");
+              $('.inactive-disabled:not(:contains("Submit"))').removeAttr('disabled').removeClass('inactive-disabled');
+              $('.employee-inactive-msg').remove();
+            }
             
             $('#update_first_name').val(data.first_name||'');
             $('#update_last_name').val(data.last_name||'');

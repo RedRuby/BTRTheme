@@ -27,7 +27,7 @@
             </div>
             <div class="grid-item large--one-half small--one-whole w3-margin-bottom">
               <label for="update_role_name" class="w3-bold text-dark-blue" >Employee Role</label>
-              <select id="update_role_name" name="update_role_name" required="required" disabled1 onchange="contentChanged();" >
+              <select id="update_role_name" name="update_role_name" required="required" disabled onchange="contentChanged();" >
                 <option value="" selected disabled>Select</option>
                   {% for role in non_admin_role_names %}
                     <option value="{{ non_admin_roles[forloop.index0] | split:":" | last }}">{{ role }}</option>
@@ -50,7 +50,7 @@
                 <header class="section-header">
                   <h1 class="w3-medium w3-bold text-dark-blue w3-uppercase section-header--left" style="padding-left1:30px;">{{ 'Add Allowance(s)' }}</h1>
                   <div class="section-header--right small--text-right" style="padding-left:30px;">
-                    <a href="#" class="btn btn--secondary w3-small" onclick="addAllowanceRow();"><i class="fa fa-plus fa-lg"></i>&nbsp; {{ 'Add Allowance Row' }}</a>
+                    <button type="button" class="btn btn--secondary w3-small allowance-add-button" onclick="addAllowanceRow();"><i class="fa fa-plus fa-lg"></i>&nbsp; {{ 'Add Allowance Row' }}</button>
                   </div>
                 </header>
 
