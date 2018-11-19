@@ -27,7 +27,7 @@
             </div>
             <div class="grid-item large--one-half small--one-whole w3-margin-bottom">
               <label for="update_role_name" class="w3-bold text-dark-blue" >Employee Role</label>
-              <select id="update_role_name" name="update_role_name" required="required" disabled onchange="contentChanged();" >
+              <select id="update_role_name" name="update_role_name" required="required" disabled1 onchange="contentChanged();" >
                 <option value="" selected disabled>Select</option>
                   {% for role in non_admin_role_names %}
                     <option value="{{ non_admin_roles[forloop.index0] | split:":" | last }}">{{ role }}</option>

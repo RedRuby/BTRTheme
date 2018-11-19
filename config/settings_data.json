@@ -160,8 +160,8 @@
         "type": "banner",
         "settings": {
           "title": "Shop Field Shirts",
-          "image": "shopify:\/\/shop_images\/B59324854743B5B7D79F39AC765257813C662E2D4B14A90E5E_pimgpsh_fullsize_distr.jpg",
-          "image1": "shopify:\/\/shop_images\/24A91730788F6AC77130F6AC06712A96733923B634CAD2252D_pimgpsh_fullsize_distr.jpg",
+          "image": "",
+          "image1": "",
           "link": "shopify:\/\/collections\/field-shirts",
           "btnLabel": "ORDER NOW"
         }
