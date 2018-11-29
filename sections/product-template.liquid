@@ -1,3 +1,5 @@
+{% assign current_variant = product.selected_or_first_available_variant %}
+
 <div id="ProductSection" data-section-id="{{ section.id }}" data-section-type="product-template" data-zoom-toggle="zoom-in" data-zoom-enabled="{{ section.settings.product_image_zoom_enable }}" data-related-enabled="{{ section.settings.product_related_enable }}" data-social-sharing="{{ section.settings.social_sharing }}" data-show-compare-at-price="{{ section.settings.product_show_compare_at_price }}" data-stock="{{ section.settings.product_quantity_message }}" data-incoming-transfer="{{ section.settings.product_incoming_message }}" data-ajax-cart-method="{{ settings.ajax_cart_method }}">
 
 {% case section.settings.add_to_cart_button_size %}
@@ -165,7 +167,7 @@
           {% for variant in product.variants %}
             {% if variant.available %}
 
-              <option {% if variant == product.selected_or_first_available_variant and product.selected_variant %} selected="selected" {% endif %} data-sku="{{ variant.sku }}" value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money_with_currency }}</option>
+              <option {% if variant == current_variant and product.selected_variant %} selected="selected" {% endif %} data-sku="{{ variant.sku }}" value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money_with_currency }}</option>
 
             {% else %}
               <option disabled="disabled">
@@ -192,8 +194,20 @@
 
       {% if section.settings.product_quantity_enable and is_client_gift != true %}
           <div class="w3-margin-top margin-bottom">
-          <label for="quantity" class="quantity-selector quantity-selector-{{ section.id }}">{{ 'products.product.quantity' | t }}</label>
-          <input type="number" id="quantity" name="quantity" value="1" min="1" class="quantity-selector" >
+            <div class="qty-lable-wrapper">
+              <label for="quantity" class="quantity-selector quantity-selector-{{ section.id }}">{{ 'products.product.quantity' | t }}</label>
+              {% if current_variant.inventory_management == "shopify" and current_variant.inventory_policy == "deny" and current_variant.inventory_quantity > 0 %}
+                {% if product.variants.size == 1 or product.selected_variant != blank %}
+                  <small class="w3-right inventory-wrapper">{{ current_variant.inventory_quantity }} Available</small>
+                  {% assign max_qty = true %}
+              	{% else %}
+                  <small class="w3-right inventory-wrapper" style="display: none;">{{ current_variant.inventory_quantity }} Available</small>
+              	{% endif %}
+              {% else %}
+              	<small class="w3-right inventory-wrapper" style="display: none;">{{ current_variant.inventory_quantity }} Available</small>
+              {% endif %}
+            </div>
+            <input type="number" id="quantity" name="quantity" value="1" min="1" {% if max_qty %}max="{{ current_variant.inventory_quantity }}" oninput="if(Number(this.value) > Number(this.max)){ this.value = this.max; show_message4('We currently have {{ current_variant.inventory_quantity }} in stock.', false, null, 2000);}"{% endif %} class="quantity-selector" >
           </div>
         {% endif %}
           
@@ -294,8 +308,16 @@
                 
                     {% if product_option1 contains size and product.variants[index].available %}
                         <div class="grid-item large--one-quarter medium--one-half small--one-third w3-margin-top">
-                          <label for="size-{{ size }}">{{ size }}</label> {% comment %}| replace:'SM','S' | replace:'MD','M' | replace:'LG','L' | replace:'2X','XXL' | replace:'3X','XXXL'{% endcomment %}
-                          <input type="number" id="size-{{ size }}" variant_id="{{ variant_ids[index] }}" disabled class="size-selector" min="0" value="0"/>
+                          <div class="qty-lable-wrapper">
+                            <label for="size-{{ size }}">{{ size }}</label> {% comment %}| replace:'SM','S' | replace:'MD','M' | replace:'LG','L' | replace:'2X','XXL' | replace:'3X','XXXL'{% endcomment %}
+                            {% if current_variant.inventory_management == "shopify" and current_variant.inventory_policy == "deny" and current_variant.inventory_quantity > 0 %}
+                              <small class="w3-right inventory-wrapper">{{ product.variants[index].inventory_quantity }} Available</small>
+                              {% assign max_qty = true %}
+                            {% else %}
+                              <small class="w3-right inventory-wrapper" style="display: none;">{{ product.variants[index].inventory_quantity }} Available</small>
+                            {% endif %}
+                          </div>
+                          <input type="number" id="size-{{ size }}" variant_id="{{ variant_ids[index] }}" disabled class="size-selector" min="0" value="0" {% if max_qty %}max="{{ product.variants[index].inventory_quantity }}" oninput="if(Number(this.value) > Number(this.max)){ this.value = this.max; show_message4('We currently have {{ product.variants[index].inventory_quantity }} in stock.', false, null, 2000);}"{% endif %} />
 <!--                           <script>console.log("{{ size }} {{ variant_ids[index] }} {{ index }}");</script> -->
                           {% comment %}
                           <select id="size-{{ size }}" variant_id="{{ variant_ids[index] }}" disabled class="size-selector">
@@ -391,7 +413,29 @@
 
 {% include "hide-zero-inventory-variant" %}
 
-<script>
+<script>  
+  
+  {% if is_field_tees != true and product.selected_variant.id == blank and product.variants.size > 1 %}
+  	var empty_variant = true;
+  {% else %}
+  	var empty_variant = false;
+  {% endif %}
+  
+  var variant_json = [
+        {% for variant in product.variants %}
+          {% capture variant_inventory %}
+            ,
+              "id": {{ variant.id | json }},
+              "inventory_policy": {{ variant.inventory_policy | json }},
+              "inventory_management": {{ variant.inventory_management | json }},
+              "inventory_quantity": {{ variant.inventory_quantity | json }}
+          {% endcapture %}
+          {
+            {{ variant_inventory | remove_first: ',' | strip }}
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ];
+  
   
   $(window).load(function(){
     {% if is_field_tees %}
@@ -399,7 +443,8 @@
     {% endif %}
     
     {% if is_field_tees != true and product.selected_variant.id == blank and product.variants.size > 1 %}
-    $('.single-option-selector').prepend('<option value="" selected="selected" disabled="disabled">Select Size</option>').prop('required','required');
+      empty_variant = false;
+      $('.single-option-selector').prepend('<option value="" selected="selected" disabled="disabled">Select Size</option>').prop('required','required');
     {% endif %}
   });
   
@@ -508,6 +553,7 @@
                     properties: {
                       'Product Type': '{{ product_type }}',
                       '__collection': '{{ collection.handle }}',
+//                       'No# of Laborers': $('input[name="properties[Number of labourers]"]').val()
   //                     'Field Tees Category': '{{ product.title }}'
                     }
           };
@@ -517,7 +563,7 @@
             url: '/cart/add.js', 
             data: data,
             async: false
-          });
+          }, function(resp){ console.log(resp); });
         }
 
       }).promise().done(function(){ location.assign('/cart'); });

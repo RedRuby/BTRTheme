@@ -109,12 +109,12 @@
         });
   }
   
-  function show_message4(message,type,mssg2){
+  function show_message4(message,type,mssg2,timeout){
   	$.blockUI({ 
       message: '<div class="growlUI-added" style="z-index:2043;"><span style="font-size:14px;" class="flash-messg" onclick="$(this).hide();">'+message+'</span style="font-size:14px;"></div>', 
             fadeIn: 700, 
             fadeOut: 700, 
-            timeout: 30000, 
+            timeout: (timeout)?timeout:30000, 
             showOverlay: false, 
             css: { 
 //                 maxWidth: '350px',
