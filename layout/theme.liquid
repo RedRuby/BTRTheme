@@ -150,8 +150,6 @@
 </head>
 
 <body id="{{ page_title | handle }}" class="{% if customer %}customer-logged-in {% endif %}template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}" >
-  {% include 'shipping-alert-banner' %}
-  
   {% section 'header' %}
   
   {% include 'notify-UI' %}
