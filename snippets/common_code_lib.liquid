@@ -20,7 +20,10 @@
                   defreez();
               },
               timeout: 10000,
-              success: function(){ defreez(); }
+              success: function(){ defreez(); },
+              complete: function () {
+                setTimeout(function(){ defreez(); },500);
+              }
           });
           $('#exportPsudoLink').attr('href', url)[0].click();
           
