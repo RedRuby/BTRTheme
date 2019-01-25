@@ -9,7 +9,7 @@
           <p class="text-center w3-bold text-dark-blue" style="position:relative; font-size:30px;">Edit Employee<a style="font-size:16px !important; position:absolute; right:0; font-weight:normal;" class="text-liter-blue w3-right w3-small-center w3-margin-top emp-status-update-link" onclick="ChangeCustomerState(this);"><u>Deactivate Employee</u></a></p>
           <span class=""><br></span>
           <div class="grid w3-margin-top">
-          	<div class="grid-item large--one-half small--one-whole">
+            <div class="grid-item large--one-half small--one-whole">
               <label for="update_first_name" class="w3-bold text-dark-blue" >Employee First Name</label>
               <input id="update_first_name" type="text" name="update_first_name" required="required" placeholder="" onchange="contentChanged();"/>
             </div>
@@ -96,7 +96,7 @@
           </div>
         </form>
       </div>
-      <button title="Close (Esc)" onclick="updateModal();" type="button" class="mfp-close">×</button>
+      <button title="Close (Esc)" onclick="updateModal();" type="button" class="mfp-close">&times;</button>
 
     </div>
     <div class="mfp-preloader w3-center center-block" style="display:initial; z-index:2000 !important;"><i class="fa fa-refresh fa-2x text-lite-blue w3-spin "></i></div>
@@ -120,7 +120,7 @@
   
   $(document).ready(function(){
      dateInit();
-  	 mfpHTML = $('#EmployeeEditModal').html();
+     mfpHTML = $('#EmployeeEditModal').html();
      allowance_template = $('.allowance-form-template').clone();
      $('.allowance-form-template').remove();
 //      FormValidationPolyfill.addForm('EmployeeEditModal_form'); 
@@ -181,14 +181,14 @@
     e.preventDefault();
     e.stopPropagation();
     
-  	data2 = {
-          cid		 : $('#EmployeeEditModal form').attr('employee_id'),
+    data2 = {
+          cid    : $('#EmployeeEditModal form').attr('employee_id'),
           first_name : $('#EmployeeEditModal [name="update_first_name"]').val(),
           last_name  : $('#EmployeeEditModal [name="update_last_name"]').val(),
           email      : employee_data.email,
-          role_name	 : $('#EmployeeEditModal [name="update_role_name"]').val(),
-          doh 		 : $('#EmployeeEditModal [name="update_doh"]').val(),
-          report_to	 : $('#EmployeeEditModal [name="update_report_to"]').val(),
+          role_name  : $('#EmployeeEditModal [name="update_role_name"]').val(),
+          doh      : $('#EmployeeEditModal [name="update_doh"]').val(),
+          report_to  : $('#EmployeeEditModal [name="update_report_to"]').val(),
           admin_id   : "{{ customer.id }}"
     };
     
@@ -239,15 +239,15 @@
   
   function ChangeCustomerState(link){
     if(confirm('Click "OK" to confirm your action !') == true){
-      	freez();
+        freez();
       
-      	if($(link).attr("status") == "active")
+        if($(link).attr("status") == "active")
           data2 = { email: $(link).attr("email"), status: "inactive" };
-      	else
+        else
           data2 = { email: $(link).attr("email"), status: "active" };
       
-      	console.log(data2);
-      	$.ajax({
+        console.log(data2);
+        $.ajax({
         url: "/apps/api/customer/deactivate_customer.json",
         type:'POST',
         data: JSON.stringify(data2),

@@ -2434,6 +2434,31 @@ theme.Product = (function() {
               this.settings.selectors.$variantQuantity.addClass('is-visible');
             }
           }
+          
+          var current_variant = variant_json.filter(function( obj ) {
+              return obj.id == variant.id;
+          })[0];
+          
+          try{
+            qty = document.getElementById("quantity");
+            inventory_wrapper = document.getElementsByClassName('inventory-wrapper')[0];
+            if (current_variant.inventory_management == "shopify" && current_variant.inventory_policy == "deny") { 
+              if (current_variant.inventory_quantity < Number(qty.value)) {
+                  show_message4('We currently have '+ current_variant.inventory_quantity +' in stock.', false, null, 2000);
+                  qty.value = current_variant.inventory_quantity;
+              }
+              if(!empty_variant){ 
+                inventory_wrapper.innerHTML = current_variant.inventory_quantity + " Available";
+                inventory_wrapper.style.display = "block";
+                qty.setAttribute("max", current_variant.inventory_quantity);
+                qty.setAttribute("oninput", "if(Number(this.value) > Number(this.max)){ this.value = this.max; show_message4('We currently have "+ current_variant.inventory_quantity +" in stock.', false, null, 2000);}");
+              }
+            }else{
+              inventory_wrapper.style.display = "none";
+              qty.removeAttribute("max");
+              qty.removeAttribute("oninput");
+            }
+          } catch(e){ console.log(e); }
 
           // Show next ship date if quantity <= 0 and stock is incoming
           if (variant.inventory_quantity <= 0 && variant.incoming != null ) {

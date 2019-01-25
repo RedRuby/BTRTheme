@@ -45,7 +45,7 @@
     "share_pinterest": true,
     "superscript_decimals": true,
     "checkout_header_image": "",
-    "checkout_logo_image": "shopify:\/\/shop_images\/BBMK_Contracting_LogoNormal.png",
+    "checkout_logo_image": "shopify:\/\/shop_images\/Blue-Team-Shop_Logo.png",
     "checkout_logo_position": "left",
     "checkout_logo_size": "small",
     "checkout_body_background_image": "",
@@ -64,7 +64,7 @@
         "type": "header",
         "settings": {
           "menu": "main-menu",
-          "logo": "shopify:\/\/shop_images\/BBMK_Contracting_LogoNormal.png",
+          "logo": "shopify:\/\/shop_images\/Blue-Team-Shop_Logo.png",
           "logo_max_width": "146",
           "show_announcement": false,
           "announcement_text": "Announce something here",
@@ -290,6 +290,146 @@
               "info_title": "Measurement Guidelines",
               "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
             }
+          },
+          "1544162898999": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Royal Short Sleeve Dry Blend T-Shirt",
+              "sizes": "Size:MD,LG,XL,2XL,3XL",
+              "body_rows": "Chest:38-40,42-44,46-48,50-52,54-56",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1544163093173": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Light Blue Short Sleeve Dry Blend T-Shirt",
+              "sizes": "Size:MD,LG,XL,2XL,3XL",
+              "body_rows": "Chest:38-40,42-44,46-48,50-52,54-56",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1544163451605": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Red Short Sleeve Dry Blend T-Shirt",
+              "sizes": "Size:MD,LG,XL,2XL,3XL",
+              "body_rows": "Chest:38-40,42-44,46-48,50-52,54-56",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1544163619888": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Graphite Heather Short Sleeve",
+              "sizes": "Size:MD,LG,XL,2XL,3XL",
+              "body_rows": "Chest:38-40,42-44,46-48,50-52,54-56",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1544163772242": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Heavy Cotton Long Sleeve T-Shirt",
+              "sizes": "Size:MD,LG,XL,2XL,3XL",
+              "body_rows": "Chest:38-40,41-43,44-46,47-49,50-53",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1544184021953": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Thermal Insulated Jacket",
+              "sizes": "Size:MD,LG,XL,2XL,3XL",
+              "body_rows": "Chest:39-41,42-44,46-48,50-52,54-56\nWaist:32-34,35-37,38-41,42-45,46-50\nHip:38-40,41-43,44-46,47-49,51-53\nNeck:15 3\/4,16 1\/2,17 1\/2,18 1\/2,19 1\/2\nSleeve Length:34,35,36,36 1\/2,37\nInseam:32,32 1\/2,33,33 1\/2,33 1\/2",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1544184572404": {
+            "type": "size_charts",
+            "settings": {
+              "title": "1\/4 Zip Pullover",
+              "sizes": "Size:MD,LG,XL,2XL,3XL",
+              "body_rows": "Chest:39-41,42-44,46-48,50-52,54-56\nWaist:32-34,35-37,38-41,42-45,46-50\nHip:38-40,41-43,44-46,47-49,51-53\nNeck:15 3\/4,16 1\/2,17 1\/2,18 1\/2,19 1\/2\nSleeve Length:34,35,36,36 1\/2,37\nInseam:32,32 1\/2,33,33 1\/2,33 1\/2",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1544184980617": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Sweater Fleece Jacket",
+              "sizes": "Size:MD,LG,XL,2XL,3XL",
+              "body_rows": "Chest:39-41,42-44,46-48,50-52,54-56\nWaist:32-34,35-37,38-41,42-45,46-50\nHip:38-40,41-43,44-46,47-49,51-53\nNeck:15 3\/4,16 1\/2,17 1\/2,18 1\/2,19 1\/2\nSleeve Length:34,35,36,36 1\/2,37\nInseam:32,32 1\/2,33,33 1\/2,33 1\/2",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1544185180782": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Soft Shell Jacket",
+              "sizes": "Size:MD,LG,XL,2XL,3XL",
+              "body_rows": "Chest:39-41,42-44,46-48,50-52,54-56\nWaist:32-34,35-37,38-41,42-45,46-50\nHip:38-40,41-43,44-46,47-49,51-53\nNeck:15 3\/4,16 1\/2,17 1\/2,18 1\/2,19 1\/2\nSleeve Length:34,35,36,36 1\/2,37\nInseam:32,32 1\/2,33,33 1\/2,33 1\/2",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1544185378434": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Micro Fleece Jacket",
+              "sizes": "Size:MD,LG,XL,2XL,3XL",
+              "body_rows": "Chest:38-40,41-43,44-46,47-49,50-53",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1544185569263": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Ladies Eperformance Polo",
+              "sizes": "Size:SM,MD,LG,XL,2XL",
+              "body_rows": "Chest:33-35,36-38,39-42,43-45,46-49\nBody Width:18.5,19.5,21,22.5,24\nFull Body Length:24.5,25.25,26,26.75,27.5\nSleeve Length:15.5,16,16.63,17.25,17.88",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1544189537706": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Ladies NIke Long Sleeve Polo",
+              "sizes": "Size:SM,MD,LG,XL,2X",
+              "body_rows": "Bust:17 5\/7,19,20 1\/2,22 4\/9,24 2\/5\nSleeve Length: 31 8\/9, 32 2\/7,32 3\/4,33 3\/7,34\nBody Length At Back:24 3\/5,25,25 4\/5,26 4\/7,27 1\/3",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1544190129696": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Ladies Short Sleeve Port Authority Shirt",
+              "sizes": "Size:SM,MD,LG,XL,2X",
+              "body_rows": "Size:4\/6,8\/10,12\/14,16\/18,20\/22\nBust:35-36,37-38,39-41,42-44,45-47",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
+          },
+          "1544190466946": {
+            "type": "size_charts",
+            "settings": {
+              "title": "Ladies Long Sleeve Port Authority Shirt",
+              "sizes": "Size:SM,MD,LG,XL,2XL",
+              "body_rows": "Bust:19,20,21 1\/2,23,24 1\/2\nBody Length At Back:26 1\/2,27,27 1\/2,28,28 1\/2\nSleeve Length From Center Back:31 1\/2,32,32 5\/8,33 1\/4,33 7\/8",
+              "info_title": "Measurement Guidelines",
+              "info_content": "Chest:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nSleeve Length:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nNeck Circumference:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            }
           }
         },
         "block_order": [
@@ -303,7 +443,21 @@
           "1533284712044",
           "1533288246718",
           "1533288611856",
-          "1533290215110"
+          "1533290215110",
+          "1544162898999",
+          "1544163093173",
+          "1544163451605",
+          "1544163619888",
+          "1544163772242",
+          "1544184021953",
+          "1544184572404",
+          "1544184980617",
+          "1544185180782",
+          "1544185378434",
+          "1544185569263",
+          "1544189537706",
+          "1544190129696",
+          "1544190466946"
         ],
         "settings": {
           "product_image_zoom_enable": false,

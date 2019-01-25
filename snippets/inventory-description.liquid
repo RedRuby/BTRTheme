@@ -1,0 +1,15 @@
+<div id="variant-inventory" class="text-center page-width" style="">
+  {% for variant in product.variants %}
+  	{% if variant.option1 == "Default" %}
+  		{% assign product_variant = variant %} {% break %}
+  	{% endif %}
+  {% endfor %}
+  {% unless product_variant %}
+      {% assign product_variant = product.variants.first %} {% break %}
+  {% endunless %}
+  
+  {% if product_variant.inventory_management == "shopify" and product_variant.inventory_quantity > 0 %}
+    <b>We currently have <u>{{ product_variant.inventory_quantity }}</u> in stock.<b>
+  	<br><br>
+  {% endif %}
+</div>

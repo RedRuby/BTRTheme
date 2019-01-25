@@ -204,13 +204,26 @@ main{
   	font-weight: normal !important;
 }
 
-.btn:not(.btn--secondary), input:not([type="checkbox"]), select, textarea{
+.btn:not(.btn--secondary), input:not([type="checkbox"]), select, textarea, .qty-lable-wrapper{
 	max-width: 350px !important;
   	width: 100%;
   	height: 60px;
   	border-radius: 5px;
   	padding-left:15px;
   	padding-right:15px;
+}
+
+.qty-lable-wrapper{
+	padding: 0 !important;
+  	height: auto !important;
+}
+
+.qty-lable-wrapper label{
+	display: inline-block;
+}
+
+.inventory-wrapper{
+	line-height: 25px;
 }
 
 .btn:not(.btn--secondary):disabled{
@@ -565,7 +578,7 @@ h1, .h1, #shopify-product-reviews .spr-header-title{
     display: table-cell;
     vertical-align: middle;
   }
-  .btn:not(.btn--secondary), input:not([type="checkbox"]), select, textarea {
+  .btn:not(.btn--secondary), input:not([type="checkbox"]), select, textarea, .qty-lable-wrapper {
     max-width: 100% !important;
   }
   .w3-small-center{ position: relative !important; }
