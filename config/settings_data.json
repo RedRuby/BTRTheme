@@ -25,7 +25,7 @@
     "type_navigation_transform": false,
     "type_button_size": "16px",
     "type_button_transform": true,
-    "favicon": "shopify:\/\/shop_images\/BBMK_LOGO_fab.png",
+    "favicon": "shopify:\/\/shop_images\/BBMK_Contracting_Logo-fab.png",
     "cart_notes_enable": true,
     "ajax_cart_method": "page",
     "share_image": "",
@@ -45,7 +45,7 @@
     "share_pinterest": true,
     "superscript_decimals": true,
     "checkout_header_image": "",
-    "checkout_logo_image": "shopify:\/\/shop_images\/BBMK_Contracting_LogoNormal.png",
+    "checkout_logo_image": "shopify:\/\/shop_images\/Blue-Team-Shop_Logo.png",
     "checkout_logo_position": "left",
     "checkout_logo_size": "small",
     "checkout_body_background_image": "",
@@ -64,7 +64,7 @@
         "type": "header",
         "settings": {
           "menu": "main-menu",
-          "logo": "shopify:\/\/shop_images\/BBMK_Contracting_LogoNormal.png",
+          "logo": "shopify:\/\/shop_images\/Blue-Team-Shop_Logo.png",
           "logo_max_width": "146",
           "show_announcement": false,
           "announcement_text": "Announce something here",
@@ -160,8 +160,8 @@
         "type": "banner",
         "settings": {
           "title": "Shop Field Shirts",
-          "image": "",
-          "image1": "",
+          "image": "shopify:\/\/shop_images\/Home-banner.png",
+          "image1": "shopify:\/\/shop_images\/Home-banner_m.png",
           "link": "shopify:\/\/collections\/field-shirts",
           "btnLabel": "ORDER NOW"
         }
