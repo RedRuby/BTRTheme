@@ -1,4 +1,11 @@
-{% assign limit = section.settings.grid | times: section.settings.rows %}
+{% if collection.handle == "years-of-service-awards" and current_tags.first == blank %}
+  {% assign collection_yos_master = true %}
+  {% assign collection_products = collection.products | sort: 'type' %}
+  {% assign limit = 200 %}
+{% else %}
+  {% assign collection_products = collection.products %}
+  {% assign limit = section.settings.grid | times: section.settings.rows %}
+{% endif %}
 
 {% paginate collection.products by limit %}
 
@@ -6,6 +13,8 @@
 {% if collection.all_tags.size > 0 and section.settings.enable_sidebar %}
   {% assign has_sidebar = true %}
 {% endif %}
+
+{% comment %}<script>console.log("menu:{{ linklists['main-menu'].links[3].title }}");</script>{% endcomment %}
 
 <div class="grid grid-border collection-wrapper">
 
@@ -37,7 +46,15 @@
       </div>
     {% else %}
     <header class="section-header">
-      <h1 class="section-header--title section-header text-center h1 text-dark-blue w3-margin-bottom">{% if current_tags %}{{ current_tags.first | replace: '-',' ' }}{% else %}{{ collection.title }}{% endif %}</h1>
+      {% include "definitions", def_tag: true %}
+      {% if current_tags.first contains yos_gift_tag %}
+        {% assign collection_title = current_tags.first | remove: yos_gift_tag | plus: 0 %}
+        {% capture collection_title %}{{ collection_title | append: "-Year Award" }}{{ collection.products.count | pluralize: '', 's' }}{% endcapture %}
+      {% else %}
+        {% assign collection_title = current_tags.first | replace: '-',' ' %}
+      {% endif %}
+
+      <h1 class="section-header--title section-header text-center h1 text-dark-blue w3-margin-bottom">{% if current_tags %}{{ collection_title }}{% else %}{{ collection.title }}{% endif %}</h1>
       
       {% comment %}
       <div class="section-header--right">
@@ -49,7 +66,7 @@
     </header>
     {% endif %}
 
-    <div class="grid-uniform">
+    <div class="grid-uniform{% if collection_yos_master %}1{% endif %}">
     {% case section.settings.grid %}
       {% when '2' %}
         {%- assign grid_item_width = 'medium--one-half large--one-half' -%}
@@ -73,7 +90,7 @@
         {%- assign height = '125' -%}
       {% endcase %}
 
-      {% for product in collection.products %}{%- comment %}<locksmith:8cda>{% endcomment -%}{%- include 'locksmith-variables', locksmith_scope: 'subject', locksmith_subject: product, locksmith_subject_parent: collection %}{% if locksmith_transparent %}{% else %}{% continue %}{% endif -%}{%- comment %}</locksmith:8cda>{% endcomment -%}{% include 'easylockdown_filter_collection' with product %}
+      {% for product in collection_products limit:limit offset:paginate.current_offset %}{%- comment %}<locksmith:8cda>{% endcomment -%}{%- include 'locksmith-variables', locksmith_scope: 'subject', locksmith_subject: product, locksmith_subject_parent: collection %}{% if locksmith_transparent %}{% else %}{% continue %}{% endif -%}{%- comment %}</locksmith:8cda>{% endcomment -%}{% include 'easylockdown_filter_collection' with product %}
         {% comment %}
         {% if has_sidebar %}
           {% assign grid_item_width = 'large--one-quarter medium--one-third small--one-half' %}
@@ -81,7 +98,40 @@
           {% assign grid_item_width = 'large--one-fifth medium--one-third small--one-half' %}
         {% endif %}
         {% endcomment %}
-        {% include 'product-grid-item' with grid_item_width %}
+        {% if collection_yos_master %}
+
+          {% if product.type != old_type %}
+            {% assign tier_title = product.type | remove: yos_gift_tag | plus: 0 %}
+            {% assign yos_handle = product.type | downcase %}
+            {% capture tier_title %}{{ tier_title | append: "-Year Award" }}{{ collections[yos_handle].products.count | pluralize: '', 's' }}{% endcapture %}
+            <div class="grid-uniform">
+              <div class="grid-item">
+                <hr style="border-color: transparent; {% if old_type == blank %} margin: 0;{% endif %}">
+                <h4><b>{{ tier_title }}</b></h4>
+                <hr style="margin-top: 0">
+              </div>
+            </div>
+            <div class="grid-uniform">
+            {% comment %}
+            <div class="grid-item {{ grid_item_width }}"></div>
+            <div class="grid-item {{ grid_item_width }}"></div>
+            <div class="grid-item {{ grid_item_width }}"></div>
+            {% endcomment %}
+          {% endif %}
+
+          {% assign old_type = product.type %}
+
+          {% include 'product-grid-item' with grid_item_width %}
+
+          {% assign forloop_index = paginate.current_offset | plus: forloop.index %}
+
+          {% if collection_products[forloop_index].type != product.type %}
+            </div>
+          {% endif %}
+        {% else %}
+          {% include 'product-grid-item' with grid_item_width %}
+        {% endif %}
+
 
       {% else %}
 

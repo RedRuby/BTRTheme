@@ -1,5 +1,6 @@
 {%- assign allowance_balance = customer.metafields.allowance[product_type] | default: '0' -%}
 
+{% capture cart_product_alert %}
 {% if cart.item_count > 0 %}
   {% assign cart_product_types = cart.items | map:"properties" | map: 'Product Type' | uniq | join:"," | replace:"&amp;","&" | split:"," %}
 
@@ -15,6 +16,8 @@
     {% unless cart_product_types contains annual_apparel_tag or cart_product_types contains field_tees_tag or cart_product_types contains seasonal_apparel_tag %}
       <div class="w3-red text-center w3-padding w3-margin-bottom">You cannot checkout this item with other non allowance {{ collection.title }} products.</div>
     {% endunless %}
+  {% elsif product_type == yos_gift_tag and cart_product_types contains yos_gift_tag and cart_product_types.size == 1  %}
+    <div class="w3-red text-center w3-padding w3-margin-bottom">You cannot checkout with more than one {{ collection.title }} product.</div>
   {% elsif product_type == client_gift_tag and cart_product_types contains client_gift_tag and cart_product_types.size == 1  %}
     <div class="w3-red text-center w3-padding w3-margin-bottom">You cannot checkout with more than one {{ collection.title }} product.</div>
   {% elsif product_type == yos_gift_tag %}
@@ -43,4 +46,11 @@
   {% elsif product_type == yos_gift_tag and employee_has_no_yos_gift %}
     <div class="w3-red text-center w3-padding w3-margin-bottom">You don't have any Year of Service Gift !</div>
   {% endif %}
+{% endif %}
+{% endcapture %}
+
+{{ cart_product_alert }}
+
+{% if cart_product_alert contains "w3-red" %}
+  <script>window.atc_disabled = true;</script>
 {% endif %}

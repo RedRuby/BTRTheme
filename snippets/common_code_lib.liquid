@@ -143,11 +143,13 @@
           data: { 'id': '{{ customer.id }}', 'token': $token },
           success: function(data){
             console.log(data);
-            if(data.status == "200"){
+            {% comment %}
+            if(data.status != undefined && data.status == "200"){
               console.log(data); 
             }else{
               console.log(data);
             }
+            {% endcomment %}
 
           },
 

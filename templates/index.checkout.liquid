@@ -4,19 +4,26 @@
 
 {% assign cart_product_types = cart.items | map:"properties" | map: 'Product Type' | uniq %}
 
-
+{% assign debugging = true %}
 
 {% comment %}<script>cart.attributes.pay_by contains "CC" or cart.attributes.pay_by contains "Allowance"{% endcomment %}
+$ = window.Checkout.$; console.log('checkout loaded');
+
+if($('.reduction-code').last().text().indexOf('YOSGIFT') > -1){
+  setInterval(function(){
+    $('.order-summary__small-text').hide();
+    $('li.reduction-code').css({"whiteSpace": "nowrap", "maxWidth": "93px", "overflow": "hidden"});
+  }, 10);
+}
 
 if(location.href.indexOf("/checkouts") != -1 && location.href.indexOf("/thank_you") == -1){
-  $ = window.Checkout.$; console.log('checkout loaded');
   
-  var defClear="", state = null;
+  var defClear="", state = null; 
   
   {% if cart.attributes.pay_by == blank and cart.item_count > 0 %}
   	location.assign("/cart");
   {% else %}
-    {% unless cart.attributes.pay_by contains 'GC' %}
+    {% unless cart.attributes.pay_by contains 'GC' or cart.attributes.pay_by contains 'GIFT' %}
       {% if cart.total_discount > 0 %}
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open( "GET", "https://" + window.location.hostname + "/discount/" + discount, false ); // false for synchronous request
@@ -54,18 +61,18 @@ if(location.href.indexOf("/checkouts") != -1 && location.href.indexOf("/thank_yo
   
   function setPayment(){
     if($('[name="checkout[payment_gateway]"][id]').not('#checkout_payment_gateway_{{ gateway_code }}').is(":visible")){
-      $('#checkout_payment_gateway_{{ gateway_code }}')[0].click();
+      try{ $('#checkout_payment_gateway_{{ gateway_code }}').get(0).click(); } catch(e){ console.log(e); }
       $('[name="checkout[payment_gateway]"][id]').not('#checkout_payment_gateway_{{ gateway_code }}').parent().parent().hide();
     }                                                  	
   }
   
-  {% comment %}
+  {% comment %}{% endcomment %}
   if($('.main .step[data-step="shipping_method"]').length > 0){ console.log('payment method loaded');
     defClear = setInterval( function(){ setShipping(); }, 500);                                                 
-  }
-  {% endcomment %}
+  }else 
   
-  else if($('.main .step[data-step="payment_method"]').length > 0){ console.log('payment method loaded');
+  
+  if($('.main .step[data-step="payment_method"]').length > 0){ console.log('payment method loaded');
     setPayment();
   
                                                     

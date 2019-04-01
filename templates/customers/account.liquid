@@ -10,7 +10,7 @@
     
     <h6 class="w3-medium w3-bold text-dark-blue w3-uppercase" style="display: inline-block;">{{ 'customer.orders.title' | t }}</h6>
     
-    <button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small" onclick="getData_CSV('/apps/product-tracking-analytics/get_orders.csv?domain={{ shop.permanent_domain }}'+'&shopify_customer_id={{- customer.id -}}');"><i class="fa fa-download fa-lg"></i><span class="small--hide">&nbsp; Export CSV</span></button>
+    <button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small" onclick="getData_CSV('/apps/product-tracking-analytics/get_orders.csv?domain={{ shop.permanent_domain }}'+'&shopify_customer_id={{- customer.id -}}&admin=false');"><i class="fa fa-download fa-lg"></i><span class="small--hide">&nbsp; Export CSV</span></button>
     
     <a href="/account?view=my-transactions"><button type="button" class="btn btn--secondary w3-uppercase w3-right w3-small w3-margin-right"><i class="fa fa-exchange fa-lg"></i><span class="small--hide">&nbsp; {{ 'My Transactions' }}</span></button></a>
     
@@ -158,19 +158,19 @@
         <ul>
            {% for field in customer.metafields['gift.YOSGIFT'] %}
             {% if forloop.first %}<b>Year of Service Awards</b>{% endif %}
-            <li>{{ field | first }}: <b>{{ field | last }}</b></li>
+            <li><u><a href="/collections/years-of-service-awards/{{ field | first | downcase }}">{{ field | first }}</u></a>{% comment %}: <b>{{ field | last }}</b>{% endcomment %}</li>
            {% endfor %}
         </ul>
         <ul>
            {% for field in customer.metafields['gift.CLIENTGIFT'] %}
             {% if forloop.first %}<b>Client Gifts</b>{% endif %}
-            <li>{{ field | first }}: <b>{{ field | last }}</b></li>
+            <li><a href="#">{{ field | first }}</a>{% comment %}: <b>{{ field | last }}</b>{% endcomment %}</li>
            {% endfor %}
         </ul>
         <ul>
            {% for field in customer.metafields['gift.EMPLOYEEREWARD'] %}
             {% if forloop.first %}<b>Employee Rewards</b>{% endif %}
-            <li>{{ field | first }}: <b>{{ field | last }}</b></li>
+            <li><a href="#">{{ field | first }}</a>{% comment %}: <b>{{ field | last }}</b>{% endcomment %}</li>
            {% endfor %}
         </ul>
       </div>
