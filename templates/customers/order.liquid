@@ -90,22 +90,26 @@
             {% endif %}
           </td>
           <td>{{ line_item.sku }}</td>
-          <td>{{ line_item.price | money }}</td>
+          <td>{% if order.discounts.first.code contains 'YOSGIFT' %}$0.00{% else %}{{ line_item.price | money }}{% endif %}</td>
           <td class="text-center">{{ line_item.quantity }}</td>
-          <td class="text-right">{{ line_item.quantity | times: line_item.price | money }}</td>
+          <td class="text-right">
+            {% if order.discounts.first.code contains 'YOSGIFT' %}$0.00{% else %}{{ line_item.quantity | times: line_item.price | money }}{% endif %}
+          </td>
         </tr>
         {% endfor %}
       </tbody>
       <tfoot>
         <tr>
           <td colspan="4">{{ 'customer.order.subtotal' | t }}:</td>
-          <td class="text-right">{{ order.subtotal_price | money }}</td>
+          <td class="text-right">
+            {% if order.discounts.first.code contains 'YOSGIFT' %}$0.00{% else %}{{ order.subtotal_price | money }}{% endif %}
+          </td>
         </tr>
 
         {% for discount in order.discounts %}
           <tr class="order_summary discount">
             <td colspan="4">{{ discount.code }} {{ 'customer.order.discount' | t }}:</td>
-            <td class="text-right">{{ discount.savings | money }}</td>
+            <td class="text-right">{% unless order.discounts.first.code contains 'YOSGIFT' %}{{ discount.savings | money }}{% endunless %}</td>
           </tr>
         {% endfor %}
 

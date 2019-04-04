@@ -1,3 +1,5 @@
+{% assign current_menu = section.settings.menu %}
+
 <ul class="site-nav" id="AccessibleNav">
   {% unless linklists[section.settings.menu].links.first.url == '/' %}
   <li class="large--hide">
@@ -82,7 +84,11 @@
                   data-meganav-type="child"
                   {% if childlink.active %}aria-current="page"{% endif %}
                   tabindex="-1">
-                    {{ childlink.title | escape }}
+                    {% if childlink.url contains '/YOSGIFT' and childlink.type == 'collection_link' %}
+                      {% assign yos_handle = childlink.url | split: '/' | last | downcase %}
+                      {% assign award = collections[yos_handle].products.count | pluralize: 'Award', 'Awards' %}
+                    {% endif %}
+                    {{ childlink.title | escape | replace: 'Awards', award }}
                 </a>
               </li>
             {% endif %}

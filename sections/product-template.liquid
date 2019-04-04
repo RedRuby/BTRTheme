@@ -115,7 +115,7 @@
       <meta itemprop="priceCurrency" content="{{ shop.currency }}">
       <meta itemprop="price" content="{{ variant.price | divided_by: 100.00 }}">
 
-      <ul class="inline-list product-meta {% if section.settings.hide_field_tees_price and is_field_tees %}hide{% endif %}">
+      <ul class="inline-list product-meta {% if section.settings.hide_field_tees_price and is_field_tees %}hide{% endif %} {% if is_yos_gift == true %}hide{% endif %}">
         <li>
           <span id="productPrice-{{ section.id }}" class="h1" style="font-weight:normal; color: {{ '#0b3457' | color_modify: 'alpha', 0.5 }};">
             {% comment %}{% include 'price' with variant.price %}{% endcomment %}
@@ -124,7 +124,7 @@
         </li>
         {% if product.compare_at_price_max > product.price and section.settings.product_show_saved_amount %}
         <li>
-          <span id="comparePrice-{{ section.id }}" class="sale-tag large">
+          <span id="comparePrice-{{ section.id }}" class="sale-tag large {% if is_yos_gift == true %}hide{% endif %}">
             {% assign compare_price = variant.compare_at_price %}
             {% assign product_price = variant.price %}
             {% include 'price-sale' %}
@@ -192,7 +192,7 @@
         {% endfor %}
       {% endif %}
 
-      {% if section.settings.product_quantity_enable and is_client_gift != true %}
+      {% if section.settings.product_quantity_enable and is_client_gift != true and is_yos_gift != true %}
           <div class="w3-margin-top margin-bottom">
             <div class="qty-lable-wrapper">
               <label for="quantity" class="quantity-selector quantity-selector-{{ section.id }}">{{ 'products.product.quantity' | t }}</label>
@@ -344,10 +344,23 @@
           <br>
         {% endif %}
 
+        {% if is_yos_gift %}
+          {% comment %}
+          {% capture yos_prod_tag %}YOSGIFT{{ product.collections | sort: 'title' | map: 'title' | join: ',' | split: ' ' | first }}{% endcapture %}
+          {% endcomment %}
+          {% assign yos_prod_tag = product.type %}
+          <script>console.log("{{ yos_prod_tag }}");</script>
+        {% endif %}
+
+        {% if product.tags contains 'Customizable' %}
+          <label for="">Name Here <span style="color: #d0021b;">*</span></label>
+          <input type="text" name="properties[Name Here]" placeholder="Name Here" maxlength="18" required="required"/>
+        {% endif %}
+
         <div class="payment-buttons payment-buttons--{{ section.settings.add_to_cart_button_size }} field_tees_{{ is_field_tees }}">
-          <button type="submit" name="add" {% if is_field_tees %}disabled{% endif %} id="addToCart-{{ section.id }}" class="{{ btn_class }} btn--add-to-cart{% if section.settings.enable_payment_button %} btn--secondary-accent{% endif %}">
+          <button type="submit" name="add" {% if is_field_tees %}disabled{% endif %} {% unless customer.tags contains yos_prod_tag and cart.item_count == 0 %}disabled{% endunless %} id="addToCart-{{ section.id }}" class="{{ btn_class }} btn--add-to-cart{% if section.settings.enable_payment_button %} btn--secondary-accent{% endif %}">
             {% comment %}<span class="icon icon-cart"></span>{% endcomment %}
-            <span id="addToCartText-{{ section.id }}">{{ 'products.product.add_to_cart' | t }}</span>
+            <span id="addToCartText-{{ section.id }}">{% if is_yos_gift == true %}"Redeem"{% else %}{{ 'products.product.add_to_cart' | t }}{% endif %}</span>
           </button>
 
           {% if section.settings.enable_payment_button %}
@@ -420,7 +433,19 @@
   {% else %}
     var empty_variant = false;
   {% endif %}
-  
+
+  {% if is_yos_gift %}
+    window.is_yos_gift = true; 
+    {% unless customer.tags contains yos_prod_tag and customer.tags contains yos_gift_tag and customer.metafields['gift.YOSGIFT'][yos_prod_tag] and cart.item_count == 0 %}
+      window.atc_disabled = true;
+    {% else %} 
+      console.log('applying discount');
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open( "GET", "https://" + window.location.hostname + "/discount/{{ product.type }}", false ); // false for synchronous request
+      xmlHttp.send( null );
+    {% endunless %}
+  {% endif %}
+   
   var variant_json = [
         {% for variant in product.variants %}
           {% capture variant_inventory %}
@@ -629,7 +654,7 @@
           } 
           else if('{{ product_type }}' == '{{ yos_gift_tag }}'){
             var result_not_this_type = cart_json.items.filter(function( obj ) {
-              if(obj.properties != undefined) return obj.properties['Product Type'] != '{{ product_type }}';
+              if(obj.properties != undefined) return obj.properties['Product Type'] != '{{ product_type }}' || obj.properties['Product Type'] == '{{ yos_gift_tag }}';
             });                                      
           }
           else{
