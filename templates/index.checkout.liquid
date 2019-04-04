@@ -62,10 +62,10 @@ if(location.href.indexOf("/checkouts") != -1 && location.href.indexOf("/thank_yo
   {% comment %}
   if($('.main .step[data-step="shipping_method"]').length > 0){ console.log('payment method loaded');
     defClear = setInterval( function(){ setShipping(); }, 500);                                                 
-  }
+  }else 
   {% endcomment %}
   
-  else if($('.main .step[data-step="payment_method"]').length > 0){ console.log('payment method loaded');
+  if($('.main .step[data-step="payment_method"]').length > 0){ console.log('payment method loaded');
     setPayment();
   
                                                     

@@ -2416,7 +2416,12 @@ theme.Product = (function() {
         if (variant.available) {
           // We have a valid product variant, so enable the submit button
           this.settings.selectors.$addToCart.removeClass('disabled').prop('disabled', false);
-          this.settings.selectors.$addToCartText.html({{ 'products.product.add_to_cart' | t | json }});
+          if(Boolean(window.atc_disabled))
+            this.settings.selectors.$addToCart.addClass('disabled').prop('disabled', true);
+          if(Boolean(window.is_yos_gift)){
+            this.settings.selectors.$addToCartText.html("Redeem");
+          }else
+            this.settings.selectors.$addToCartText.html({{ 'products.product.add_to_cart' | t | json }});
           $(this.settings.selectors.$shopifyPaymentButton, this.$container).show();
 
           this.settings.selectors.$variantQuantity.removeClass('is-visible');
