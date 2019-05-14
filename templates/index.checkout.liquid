@@ -16,6 +16,10 @@ if($('.reduction-code').last().text().indexOf('YOSGIFT') > -1){
   }, 10);
 }
 
+setInterval(function(){
+  $('.radio__label__accessory .content-box__emphasis, .order-summary__emphasis[data-checkout-total-shipping-target="0"], [data-product-type^="YOSGIFT"] .product__price .order-summary__emphasis, .review-block__content .emphasis, [data-payment-subform="free"] .content-box p strong').text("On Us");
+}, 10);
+
 if(location.href.indexOf("/checkouts") != -1 && location.href.indexOf("/thank_you") == -1){
   
   var defClear="", state = null; 

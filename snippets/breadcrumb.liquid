@@ -20,7 +20,7 @@
         {% if is_yos_gift %}
           {% assign product_type = product.type | remove: yos_gift_tag | plus: 0 %}
           {% assign yos_handle = product.type | downcase %}
-          {% capture product_type %}{{ product_type | append: "-Year Award" }}{{ collections[yos_handle].products.count | pluralize: '', 's' }}{% endcapture %}
+          {% capture product_type %}{{ product_type | append: "-Year Honor" }}{{ collections[yos_handle].products.count | pluralize: '', 's' }}{% endcapture %}
         {% else %}
           {% assign product_type = product.type %}
         {% endif %}
@@ -59,7 +59,7 @@
         <span>
           {% if tag contains yos_gift_tag %}
             {% assign btag = tag | remove: yos_gift_tag | plus: 0 %}
-            {% capture btag %}{{ btag | append: "-Year Award" }}{{ collection.products.count | pluralize: '', 's' }}{% endcapture %}
+            {% capture btag %}{{ btag | append: "-Year Honor" }}{{ collection.products.count | pluralize: '', 's' }}{% endcapture %}
           {% else %}
             {% assign btag = tag | replace: '-',' ' %}
           {% endif %}
