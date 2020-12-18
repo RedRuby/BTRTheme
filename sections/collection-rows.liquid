@@ -1,4 +1,4 @@
-<hr>
+{% comment %}<hr>{% endcomment %}
 <div id="collection-rows--{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="collection-row-section">
 {% assign featured_row = section.settings.home_featured_row %}
 {% assign row_limit_setting = section.settings.grid %}
@@ -27,13 +27,13 @@
 
 {%- assign product_limit = section.settings.grid | times: section.settings.rows -%}
 {% assign header_title = collections[featured_row].title %}
-{%- assign more_link = collections[featured_row].url -%}
+{% comment %}{%- assign more_link = collections[featured_row].url -%}{% endcomment %}
 
 {% if collections[featured_row].all_products_count != 0 and section.settings.home_featured_row != blank %}
 
   {% if section.settings.title != blank %}
     <div class="section-header">
-      <p class="h1{% if more_link %} section-header--left{% endif %}">{{ section.settings.title | escape }}</p>
+      <p class="h1 {% if more_link %} section-header--left{% else %}text-center{% endif %}">{{ section.settings.title | escape }}</p>
       {% if more_link %}
         <div class="section-header--right">
           {% assign header_title = header_title | downcase %}
@@ -45,9 +45,11 @@
 
   <div class="grid-uniform row-negative-bottom">
     {% for product in collections[featured_row].products limit: product_limit %}
-      {%- comment %}<locksmith:b861>{% endcomment -%}
-        {%- include 'locksmith-variables', locksmith_scope: 'subject', locksmith_subject: product, locksmith_subject_parent: collections[featured_row] %}{% if locksmith_transparent %}{% else %}{% continue %}{% endif -%}
-      {%- comment %}</locksmith:b861>{% endcomment -%}
+      
+      {% comment %}{%- comment %}<locksmith:7c65>{% endcomment -%}
+        {%- capture var %}{% render 'locksmith-variables', scope: 'subject', subject: product, subject_parent: collections[featured_row], variable: 'transparent' %}{% endcapture %}{% if var == "true" %}{% else %}{% continue %}{% endif -%}
+      {%- comment %}</locksmith:7c65>{% endcomment -%}{% endcomment %}
+    
       {% assign current_collection = collections[featured_row] %}
         {% include 'product-grid-item' %}
     {% endfor %}
@@ -79,7 +81,7 @@
 {% schema %}
   {
     "name": "Featured collection",
-    "class": "clearfix",
+    "class": "collection-list-section clearfix",
     "settings": [
       {
         "type": "text",

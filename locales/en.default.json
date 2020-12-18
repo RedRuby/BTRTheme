@@ -3,6 +3,8 @@
     "month_day_year": "%b %d, %Y"
   },
   "general": {
+    "covid19_alert": "Due to the currently COVID-19 Pandemic, any orders that are expedited to ship Next Day Air are not 100% guaranteed to deliver next day. If you have an order that is needed to deliver the next day please submit your order before 1pm Est in order for the shipment to leave the same day. Lapine’s customer service team will be in touch to communicate any delays that occur via UPS during this time.",
+    "laundry_bag_reminder_html": "As a reminder when ordering BlueTeam Field Shirts do not forget to order the <a href='/collections/field-shirts/products/mesh-laundry-bag' target='_blank'><span style='border-bottom: 1px solid #fff; padding-bottom: 2px;'>laundry bag</span>.</a>",
     "meta": {
       "tags": "Tagged \"{{ tags }}\"",
       "page": "Page {{ page }}"

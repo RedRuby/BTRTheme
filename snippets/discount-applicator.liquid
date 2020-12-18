@@ -19,4 +19,14 @@
     	xmlHttp.send( null );
     }
     
+    {% if cart.item_count == 0 %}
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+              console.log('attributes set');
+         }
+        };
+        xmlHttp.open( "POST", "https://" + window.location.hostname + "/cart?attributes[no_laundry_bag_confirmation]=", false ); // false for synchronous request
+        xmlHttp.send( null );
+    {% endif %}
   </script>

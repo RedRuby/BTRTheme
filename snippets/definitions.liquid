@@ -18,6 +18,10 @@
   {% if product_tags contains field_tees_tag %}
       {% assign is_field_tees = true %}  
       {% assign product_type = field_tees_tag %}
+      {%- if product.handle contains 'bag' -%}
+        {%- assign is_field_tees = false -%}
+        {%- assign is_field_tees_bag = 'field_tees_bag' -%}
+      {%- endif -%}
   {% elsif product_tags contains yos_gift_tag %}
       {% assign is_yos_gift = true %}  
       {% assign product_type = yos_gift_tag %}

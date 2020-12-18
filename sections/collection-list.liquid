@@ -1,14 +1,16 @@
 <div data-section-id="{{ section.id }}" data-section-type="collections-list-template">
-  {% comment %}
-  <hr>
+  {% comment %}<hr>{% endcomment %}
+  {% if section.settings.title %}
   <div class="section-header">
-    <h2 class="h1  section-header--left">{{ 'homepage.featured_collections.heading' | t }}</h2>
-    <div class="section-header--right">
+    <h2 class="h1  section-header--left1 text-center" style="margin-bottom: 0;">{% if section.settings.title %}{{ section.settings.title }}{% else %}{{ 'homepage.featured_collections.heading' | t }}{% endif %}</h2>
+    {% comment %}<div class="section-header--right">
       <a href="/collections">{{ 'homepage.featured_collections.more_categories' | t }} &rsaquo;</a>
-    </div>
+    </div>{% endcomment %}
   </div>
-  {% endcomment %}
+  {% else %}
   <br>
+  {% endif %}
+
   <div class="grid-uniform text-center">
 
     {%- assign index = 0 -%}
@@ -99,18 +101,11 @@
     "name": "Collection list",
     "class": "collection-list-section",
     "max_blocks": 6,
-    "presets": [
+    "settings": [
       {
-        "name": "Collection list",
-        "category": "Collections",
-        "blocks" : [
-          {
-            "type": "collection"
-          },
-          {
-            "type": "collection"
-          }
-        ]
+        "type": "text",
+        "id": "title",
+        "label": "Label"
       }
     ],
     "blocks" : [
@@ -124,12 +119,37 @@
             "label": "Collection"
           },
           {
+            "id": "product",
+            "type": "product",
+            "label": "Product"
+          },
+          {
+            "id": "image_alt",
+            "type": "image_picker",
+            "label": "Alternate Image",
+            "info": "This will override default image"
+          },
+          {
             "type": "checkbox",
             "id": "coming_soon",
             "label": "Collection Comming Soon",
             "default": true
           }
           
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Collection list",
+        "category": "Collections",
+        "blocks" : [
+          {
+            "type": "collection"
+          },
+          {
+            "type": "collection"
+          }
         ]
       }
     ]

@@ -1,3 +1,24 @@
+{%- if collection.handle == "field-shirts" -%}
+  <div class="bg-dark-blue w3-text-white text-center w3-padding w3-margin-bottom1 w3-card-2 covid_shipping_alert" style1="position: absolute; left: 0; right: 0;" style="position: fixed; width: 100%; left: 0; bottom: 0; z-index: 10000000; margin: 0;">{{ 'general.covid19_alert' | t }}</div>
+  <script>
+    $(document).ready(function(){
+      footerAddMargin();
+    });
+
+    $(window).resize(function(){
+      footerAddMargin();
+    });
+
+    function footerAddMargin() {
+      $('footer.site-footer').css('margin-bottom', $('.covid_shipping_alert').height()+'px');
+    }
+  </script>
+  {% comment %}{% assign cart_product_handles = cart.items | map:"product" | map: 'handle' | uniq %}
+  {%- unless cart_product_handles contains 'mesh-laundry-bag' -%}
+    {%- render 'quick-view-popup' -%}
+  {%- endunless -%}{% endcomment %}
+{%- endif -%}
+
 {% assign current_variant = product.selected_or_first_available_variant %}
 
 <div id="ProductSection" data-section-id="{{ section.id }}" data-section-type="product-template" data-zoom-toggle="zoom-in" data-zoom-enabled="{{ section.settings.product_image_zoom_enable }}" data-related-enabled="{{ section.settings.product_related_enable }}" data-social-sharing="{{ section.settings.social_sharing }}" data-show-compare-at-price="{{ section.settings.product_show_compare_at_price }}" data-stock="{{ section.settings.product_quantity_message }}" data-incoming-transfer="{{ section.settings.product_incoming_message }}" data-ajax-cart-method="{{ settings.ajax_cart_method }}">
@@ -115,7 +136,7 @@
       <meta itemprop="priceCurrency" content="{{ shop.currency }}">
       <meta itemprop="price" content="{{ variant.price | divided_by: 100.00 }}">
 
-      <ul class="inline-list product-meta {% if section.settings.hide_field_tees_price and is_field_tees %}hide{% endif %} {% if is_yos_gift == true %}hide{% endif %}">
+      <ul class="inline-list product-meta {% if section.settings.hide_field_tees_price and is_field_tees %}hide{% endif %} {% if is_yos_gift == true or is_field_tees_bag %}hide{% endif %}">
         <li>
           <span id="productPrice-{{ section.id }}" class="h1" style="font-weight:normal; color: {{ '#0b3457' | color_modify: 'alpha', 0.5 }};">
             {% comment %}{% include 'price' with variant.price %}{% endcomment %}
@@ -241,7 +262,11 @@
       	<input type="hidden" name="properties[__collection]" value="{{ collection.handle }}" />
       
       	<input type="hidden" name="properties[Product Type]" value="{{ product_type }}" />
-      
+        
+        {%- if is_field_tees_bag -%}
+        <input type="hidden" name="properties[__type]" value="{{ is_field_tees_bag }}" />
+        {%- endif -%}
+
       	{% if is_field_tees %}
       
       		{% if customer.metafields.allowance[FieldTees_key] %}
@@ -286,9 +311,9 @@
       		{% assign sizes = 'SM,MD,LG,XL,2X,3X' | split:',' %}
             {% assign product_option1 = product.variants | map:'option1' %}
       
-<!--             <script>console.log('{{ product.variants | json }}');</script>
+            {% comment %}<script>console.log('{{ product.variants | json }}');</script>
             <script>console.log("{{ product.variants | map:"option1" | join: ", " }}");</script>
-            <script>console.log("{{ product.variants | map:"id" | join: ", " }}");</script> -->
+            <script>console.log("{{ product.variants | map:"id" | join: ", " }}");</script>{% endcomment %}
       		
               
             <div class="size-selector-wrapper w3-opacity-25 w3-margin-top">
@@ -318,7 +343,7 @@
                             {% endif %}
                           </div>
                           <input type="number" id="size-{{ size }}" variant_id="{{ variant_ids[index] }}" disabled class="size-selector" min="0" value="0" {% if max_qty %}max="{{ product.variants[index].inventory_quantity }}" oninput="if(Number(this.value) > Number(this.max)){ this.value = this.max; show_message4('We currently have {{ product.variants[index].inventory_quantity }} in stock.', false, null, 2000);}"{% endif %} />
-<!--                           <script>console.log("{{ size }} {{ variant_ids[index] }} {{ index }}");</script> -->
+                          {% comment %}<script>console.log("{{ size }} {{ variant_ids[index] }} {{ index }}");</script>{% endcomment %}
                           {% comment %}
                           <select id="size-{{ size }}" variant_id="{{ variant_ids[index] }}" disabled class="size-selector">
                             <option value="0" selected>0</option>
@@ -342,6 +367,18 @@
               </div>
             </div>
       		<br>
+
+          <div class="grid">
+            <div class="grid-item one--whole">
+              {%- if collection.handle == "field-shirts" and customer_role != "Role:SS" -%}
+                {%- unless cart_product_handles contains 'mesh-laundry-bag' -%}
+                <div class="bg-dark-blue w3-text-white text-center w3-padding w3-margin-bottom" style1="position: absolute; left: 0; right: 0;">{{ 'general.laundry_bag_reminder_html' | t }}</div>
+                <br>
+                {%- endunless -%}
+              {%- endif -%}
+            </div>
+          </div>
+
         {% endif %}
 
         {% if is_yos_gift %}
@@ -360,7 +397,7 @@
         <div class="payment-buttons payment-buttons--{{ section.settings.add_to_cart_button_size }} field_tees_{{ is_field_tees }}">
           <button type="submit" name="add" {% if is_field_tees %}disabled{% endif %} {% unless customer.tags contains yos_prod_tag and cart.item_count == 0 %}disabled{% endunless %} id="addToCart-{{ section.id }}" class="{{ btn_class }} btn--add-to-cart{% if section.settings.enable_payment_button %} btn--secondary-accent{% endif %}">
             {% comment %}<span class="icon icon-cart"></span>{% endcomment %}
-            <span id="addToCartText-{{ section.id }}">{% if is_yos_gift == true %}"Redeem"{% else %}{{ 'products.product.add_to_cart' | t }}{% endif %}</span>
+            <span id="addToCartText-{{ section.id }}">{% if is_yos_gift == true %}Redeem{% else %}{{ 'products.product.add_to_cart' | t }}{% endif %}</span>
           </button>
 
           {% if section.settings.enable_payment_button %}
@@ -563,35 +600,44 @@
   $('.size-selector').on('change', countMatch);
   
   function addFieldTee(form){
-//     event.preventDefault();
-//     event.stopPropagation();
+    freez();
+    var redirect_to = '/cart';
+    // event.preventDefault();
+    // event.stopPropagation();
     $('button[type="submit"][name="add"]').prop('disabled', 'disabled').css('cursor','wait');
     
     total = $('.size-selector').map( function() { return Number(this.value); }).get().reduce(function(a,b){ return a+b; }, 0);
     
     if(total > 0){
+      data = {items: []};
       $('.size-selector').each(function(index, el){
         if(el.value > 0){
-          data = {
-                    quantity: el.value,
-                    id: el.getAttribute('variant_id'),
-                    properties: {
-                      'Product Type': '{{ product_type }}',
-                      '__collection': '{{ collection.handle }}',
-//                       'No# of Laborers': $('input[name="properties[Number of labourers]"]').val()
-  //                     'Field Tees Category': '{{ product.title }}'
-                    }
-          };
-
+          data.items.push({
+            quantity: el.value,
+            id: el.getAttribute('variant_id'),
+            properties: {
+              'Product Type': '{{ product_type }}',
+              '__collection': '{{ collection.handle }}',
+                    //   'No# of Laborers': $('input[name="properties[Number of labourers]"]').val()
+                    // 'Field Tees Category': '{{ product.title }}'
+            }
+          });
+        }
+      }).promise().done(function(){
           $.ajax({
             type: 'POST',
             url: '/cart/add.js', 
             data: data,
             async: false
           }, function(resp){ console.log(resp); });
-        }
-
-      }).promise().done(function(){ location.assign('/cart'); });
+      }).promise().done(function(){ 
+          {%- unless cart_product_handles contains 'mesh-laundry-bag' -%}
+            // quickViewShow();
+            location.assign(redirect_to);
+          {%- else -%}
+            location.assign(redirect_to);
+          {%- endunless -%}
+       });
     }else{ 
        $('#error_msg').html('<small>Selected Qty is 0 !</small>').next().addClass('error');
     }
@@ -601,8 +647,8 @@
   {% else %}
   
   function validateProduct(form){
-//   	event.preventDefault();
-//     event.stopPropagation();
+  	// event.preventDefault();
+   //  event.stopPropagation();
     var redirect_to = '/cart';
     
     if({% if product.variants > 1 %}true{% else %}$('.single-option-selector').val(){% endif %}){
@@ -668,12 +714,35 @@
           if(result_not_this_type.length > 0){
               alert(msg);
           }else{
+              {% capture add_product_block %}
               $.ajax({
                 type: 'POST',
                 url: '/cart/add.js', 
                 data: $(form).serializeArray(),
                 async: false
               });
+              {% endcapture %}
+
+              {% if product_type == yos_gift_tag and employee_has_no_yos_gift != true %}
+                {% capture letter_handle %}btr-{{ product.type | remove: yos_gift_tag | plus: 0 }}yearletter{% endcapture %}
+                $.ajax({
+                  type: 'POST',
+                  url: '/cart/add.js', 
+                  data: {
+                    quantity: 1,
+                    id: {{ all_products[letter_handle].first_available_variant.id }},
+                    properties: {
+                      "Product Type": "YOSGIFTLETTER"
+                    }
+                  },
+                  async: false,
+                  complete: function(data){
+                    {{ add_product_block }}
+                  }
+                });
+              {% else %}
+                {{ add_product_block }}
+              {% endif %}
           }
       }).promise().done(function(){ location.assign(redirect_to); });
     }else{

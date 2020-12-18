@@ -27,7 +27,7 @@
             </div>
             <div class="grid-item large--one-half small--one-whole w3-margin-bottom">
               <label for="update_role_name" class="w3-bold text-dark-blue" >Employee Role</label>
-              <select id="update_role_name" name="update_role_name" required="required" disabled1 onchange="contentChanged();" >
+              <select id="update_role_name" name="update_role_name" required="required" disabled onchange="contentChanged();" >
                 <option value="" selected disabled>Select</option>
                   {% for role in non_admin_role_names %}
                     <option value="{{ non_admin_roles[forloop.index0] | split:":" | last }}">{{ role }}</option>
@@ -96,7 +96,7 @@
           </div>
         </form>
       </div>
-      <button title="Close (Esc)" onclick="updateModal();" type="button" class="mfp-close">×</button>
+      <button title="Close (Esc)" onclick="updateModal();" type="button" class="mfp-close">&times;</button>
 
     </div>
     <div class="mfp-preloader w3-center center-block" style="display:initial; z-index:2000 !important;"><i class="fa fa-refresh fa-2x text-lite-blue w3-spin "></i></div>

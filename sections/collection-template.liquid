@@ -14,6 +14,8 @@
   {% assign has_sidebar = true %}
 {% endif %}
 
+{% include "definitions", def_role_find: true %}
+
 {% comment %}<script>console.log("menu:{{ linklists['main-menu'].links[3].title }}");</script>{% endcomment %}
 
 <div class="grid grid-border collection-wrapper">
@@ -64,6 +66,12 @@
       </div>
       {% endcomment %}
     </header>
+
+    {%- if collection.handle == "field-shirts" and customer_role != "Role:SS" -%}
+      <div class="bg-dark-blue w3-text-white text-center w3-padding w3-margin-bottom" style="position: absolute; left: 0; right: 0;">**<span class="w3-margin-bottom w3-border-bottom w3-border-white w3-large">As a reminder when ordering BlueTeam Field Shirts do not forget to order the laundry bag.</span>**</div>
+      <div style="height: 80px;">&nbsp;</div>
+    {%- endif -%}
+
     {% endif %}
 
     <div class="grid-uniform{% if collection_yos_master %}1{% endif %}">

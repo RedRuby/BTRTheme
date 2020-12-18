@@ -72,7 +72,7 @@
           {% if customer_role and non_admin_roles contains customer_role %}
           <a href="/cart" class="header-cart-btn cart-toggle" style="display: inline-block;" title="{{ 'layout.cart.cart' | t }}">
             <i class="fa fa-shopping-cart fa-2x"></i>
-            <span class="cart-count cart-badge--desktop {% if cart.item_count == 0 %}hidden-count{% endif %}">{{ cart.item_count }}</span>
+            <span class="cart-count cart-badge--desktop {% if cart.item_count == 0 %}hidden-count{% endif %}">{%- if cart.items.first.properties["Product Type"] == "YOSGIFT" -%}1{%- else -%}{{ cart.item_count }}{%- endif -%}</span>
           </a>
           {% endif %}
         </div>

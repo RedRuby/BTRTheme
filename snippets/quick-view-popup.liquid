@@ -1,0 +1,133 @@
+<div class="quick-view">
+    <div class="mfp-bg mfp-fade mfp-ready" style="display:none; opacity:0.9; background-color:#0C3458;"></div>
+
+    <div class="mfp-wrap mfp-auto-cursor mfp-fade mfp-ready mfp-hide" tabindex="-1" style="overflow-x: hidden; overflow-y: auto;" style="display:none;">
+      <div class="mfp-container mfp-s-ready mfp-inline-holder">
+        <div class="mfp-content bounceIn animated w3-card-2 w3-margin-top w3-margin-bottom">
+          {%- assign quick_view_item = all_products['mesh-laundry-bag'] -%}
+          {%- assign product = quick_view_item -%}
+          {%- assign quick_view_item_first_variant = quick_view_item.variants.first -%}
+          <div id="quick-view" class="white-popup-block" style="display:none;">
+            <div class="grid">
+              <div class="grid-item large--five-twelfths1 width-45-percent">
+                <image src="{{ quick_view_item.featured_image.src | img_url: 'x500' }}" alt="{{ quick_view_item.alt }}" />
+              </div>
+              <div class="grid-item large--seven-twelfths1 width-55-percent">
+                <h1 class="h1 text-dark-blue w3-margin-0 w3-bold" itemprop="name">{{ product.title }}</h1>
+
+                {% if section.settings.product_vendor_enable %}
+                  <p class="product-meta" itemprop="brand">{{ product.vendor }}</p>
+                {% endif %}
+
+                {% form 'product', product, id: 'form_{{ quick_view_item.id }}' %}
+                  <select name="id" required class="visually-hidden">
+                    {% comment %}<option value="" disabled="disabled" selected>Select Size</option>{% endcomment %}
+                    {% for variant in quick_view_item.variants %}
+                      {% if variant.available %}
+
+                        <option {% if variant == current_variant and product.selected_variant %} selected="selected" {% endif %} data-sku="{{ variant.sku }}" value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money_with_currency }}</option>
+
+                      {% else %}
+                        <option disabled="disabled">
+                          {{ variant.title }} - {{ 'products.product.sold_out' | t }}
+                        </option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+
+                  {% if section.settings.product_quantity_enable and is_client_gift != true and is_yos_gift != true %}
+                    <div class="w3-margin-top margin-bottom">
+                      <div class="qty-lable-wrapper">
+                        <label for="quantity" class="quantity-selector quantity-selector-{{ section.id }}">{{ 'products.product.quantity' | t }}</label>
+                        {% if quick_view_item_first_variant.inventory_management == "shopify" and quick_view_item_first_variant.inventory_policy == "deny" and quick_view_item_first_variant.inventory_quantity > 0 %}
+                          {% if product.variants.size == 1 or product.selected_variant != blank %}
+                            <small class="w3-right inventory-wrapper">{{ quick_view_item_first_variant.inventory_quantity }} Available</small>
+                            {% assign max_qty = true %}
+                          {% else %}
+                            <small class="w3-right inventory-wrapper" style="display: none;">{{ quick_view_item_first_variant.inventory_quantity }} Available</small>
+                          {% endif %}
+                        {% else %}
+                          <small class="w3-right inventory-wrapper" style="display: none;">{{ quick_view_item_first_variant.inventory_quantity }} Available</small>
+                        {% endif %}
+                      </div>
+                      <input type="number" id="quantity" name="quantity" value="1" min="1" {% if max_qty %}max="{{ quick_view_item_first_variant.inventory_quantity }}" oninput="if(Number(this.value) > Number(this.max)){ this.value = this.max; show_message4('We currently have {{ quick_view_item_first_variant.inventory_quantity }} in stock.', false, null, 2000);}"{% endif %} class="quantity-selector" >
+                    </div>
+                  {% endif %}
+
+                  <input type="hidden" name="properties[__collection]" value="{{ collection.handle }}" />
+          
+                  <input type="hidden" name="properties[Product Type]" value="{{ product_type }}" />
+
+                  {%- if is_field_tees_bag -%}
+                  <input type="hidden" name="properties[__type]" value="{{ is_field_tees_bag }}" />
+                  {%- endif -%}
+
+                  <input id="return_to" name="return_to" value="/cart" type="hidden">
+
+                  <div class="payment-buttons payment-buttons--{{ section.settings.add_to_cart_button_size | default: 'large' }}">  <br><br>
+                    <button type="submit" class="btn btn--wide btn--add-to-cart">
+                      {% comment %}<span class="icon icon-cart"></span>{% endcomment %}
+                      <span id="addToCartText-{{ section.id }}">{% if is_yos_gift == true %}Redeem{% else %}{{ 'products.product.add_to_cart' | t }}{% endif %}</span>
+                    </button>
+                    <br>
+                    <button type="button" class="btn btn--wide btn--secondary-accent" onclick="quickViewHide();">
+                      <span>Skip</span>
+                    </button>
+
+                    {% if section.settings.enable_payment_button %}
+                      {{ form | payment_button }}
+                    {% endif %}
+                  </div>
+                {% endform %} 
+              </div>
+            </div>
+          </div>
+          <button title="Close (Esc)" onclick="quickViewHide();" type="button" class="mfp-close">×</button>
+
+        </div>
+        <div class="mfp-preloader w3-center center-block" style="display:initial; z-index:2000 !important;"><i class="fa fa-refresh fa-2x text-lite-blue w3-spin "></i></div>
+      </div>
+
+    </div>
+</div>
+
+<style>
+  .quick-view .mfp-content{
+    width:95% !important; 
+    min-height:521px;
+    background:white; 
+    padding:40px 20px 20px !important; 
+    max-width:750px;
+    min-width:300px;
+    position:relative;
+    border-radius:5px;
+  }
+  
+  @media (max-width: 749px){
+  	.quick-view .mfp-content{
+      width:100% !important; 
+      height:auto;
+      padding:20px !important; 
+      {% comment %}min-height:516px;{% endcomment %}
+    }
+    .quick-view .mfp-container{
+      height:auto;
+    }
+  }
+</style>
+
+<script>
+  function quickViewShow(){
+    defreez();
+    $('html').css('overflow','hidden');
+    $('.quick-view').find('.mfp-bg, .mfp-wrap').show().removeClass('mfp-hide');
+    $('.quick-view .mfp-preloader').hide(); $('#quick-view, .quick-view .mfp-content').show().removeClass('mfp-hide');
+  }
+  
+  function quickViewHide(){
+    $('html').css('overflow','auto');
+    $('.quick-view').find('.mfp-bg, .mfp-wrap, #quick-view, .mfp-content').hide().addClass('mfp-hide');
+    $('.quick-view').find('.mfp-preloader').show();
+    // location.assign("/cart");
+  }
+</script>

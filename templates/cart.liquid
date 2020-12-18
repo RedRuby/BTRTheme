@@ -8,8 +8,47 @@
 
   {% assign FieldTees_allowance = customer.metafields.allowance[FieldTees_key] | default: 0 | plus: 0 %}
 
-  {% if cart_product_types contains yos_gift_tag and cart_product_types.size == 1 %}
+  {% if cart_product_types contains yos_gift_tag and cart_product_types.size == 2 %}
     {% assign cart_has_yos = true %}
+  {% endif %}
+
+  {% if cart_product_types contains field_tees_tag %}
+    {% assign cart_has_ft = true %}
+  {% endif %}
+
+  {% assign cart_product_handles = cart.items | map:"product" | map: 'handle' | uniq %}
+
+  {%- if cart_product_handles contains 'mesh-laundry-bag' -%}
+    {% assign cart_has_bag = true %}
+  {% else %}
+    <script> 
+        $(document).ready(function(){
+          InvalidMsg(document.querySelector('[name="attributes[no_laundry_bag_confirmation]"]'));
+          $('[name="attributes[no_laundry_bag_confirmation]"]').change(function() {
+            InvalidMsg(this);  
+          });
+        });
+        function InvalidMsg(input) { 
+  
+            if (!input.checked) { 
+                input.setCustomValidity('Please check box if you do not need a laundry bag.'); 
+                console.log(1);
+            } else { 
+                input.setCustomValidity(''); 
+                console.log(2);
+            } 
+  
+            return true; 
+        } 
+    </script>
+    {% if cart.attributes.no_laundry_bag_confirmation == blank %}
+      {%- render 'quick-view-popup' -%}
+      <script>
+        $(document).ready(function(){
+          quickViewShow();
+        });
+      </script>
+    {% endif %}
   {% endif %}
 
   <form id="cart__form" action="/cart" method="post" class="cart-form" novalidate1 onsubmit="if(window.checkout_submit) validateCartItems(event, true);">
@@ -17,6 +56,7 @@
     <h1 class="h2 w3-bold text-dark-blue">{{ 'cart.general.title' | t }}</h1>
 
     {% for item in cart.items %}
+    {% if item.properties["Product Type"] == "YOSGIFTLETTER" %}{% continue %}{% endif %}
     <div class="cart-row" data-line="{{ forloop.index }}">
       <div class="grid">
         
@@ -100,7 +140,7 @@
             </div>
 
             <div class="grid-item one-sixth medium-down--one-third text-right">
-              <a {% if item.properties['Product Type'] == field_tees_tag1 %}id="{{ 'prod_' | append: item.product.id }}"{% endif %} href="/cart/change?line={{ forloop.index }}&amp;quantity=0" data-line="{{ forloop.index }}" class="icon-fallback-text btn-secondary remove">
+              <a {% if item.properties['Product Type'] == field_tees_tag1 %}id="{{ 'prod_' | append: item.product.id }}"{% endif %} href="/cart/{%- if item.properties['Product Type'] == yos_gift_tag -%}clear{%- else -%}change?line={{ forloop.index }}&amp;quantity=0{%- endif -%}" data-line="{{ forloop.index }}" class="icon-fallback-text btn-secondary remove">
                 <span class="icon icon-x" aria-hidden="true"></span>
                 <span class="fallback-text">{{ 'cart.general.remove' | t }}</span>
               </a>
@@ -204,6 +244,13 @@
           {% endif %}
           
           <span class="w3-clear"><br></span>
+
+          {%- if cart_has_ft and cart_has_bag != true and customer_role != "Role:SS" -%} 
+            <div class="text-right w3-padding w3-margin-bottom" style1="position: absolute; left: 0; right: 0;">
+              {% comment %}<b>As a reminder when ordering BlueTeam Field Shirts do not forget to order the laundry bag.</b>{% endcomment %}
+              <label><input type="checkbox" required="required" name="attributes[no_laundry_bag_confirmation]" {% if cart.attributes.no_laundry_bag_confirmation %}checked{% endif %} id=""/>&nbsp;I don't want laundry bag for this order.</label>
+            </div>
+          {%- endif -%}
 
           <input type="submit" name="update" class="btn-secondary update-cart" value="{{ 'cart.general.update' | t }}" onclick="window.checkout_submit = false; $('.pay_by_selector, .line-qty').removeAttr('required disabled');">
 
@@ -321,7 +368,7 @@
           cart_json = JSON.stringify(data.responseJSON.items);
           qtyNewData = $('#cart__form [name="updates[]"]').serializeArray().map(function(x){ return x.value; }).join(',');
           var result_fieldTees_type = data.responseJSON.items.filter(function( obj ) {
-            if(obj.properties != undefined) return obj.properties['Product Type'] == '{{ field_tees_tag }}';
+            if(obj.properties != undefined) return obj.properties['Product Type'] == '{{ field_tees_tag }}' && obj.properties['__type'] != 'field_tees_bag';
           }).map(x => x.quantity);
         
           if(result_fieldTees_type.length > 0){

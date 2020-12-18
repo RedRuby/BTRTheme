@@ -6,18 +6,20 @@
   {% assign featured_collection_size = '540x' %}
 {% endunless %}
 
-{% if collections[featured].image %}
-  {% assign collection_image = collections[featured].image %}
+{% assign block_settings_product = all_products[block.settings.product] %}
+
+{% if block_settings_product != blank %}
+  {% assign collection_image = block.settings.image_alt | default: block_settings_product.featured_image %}
 {% else %}
-  {% assign collection_image = collections[featured].products.first.featured_image %}
+  {% assign collection_image = block.settings.image_alt | default: collections[featured].image | default: collections[featured].products.first.featured_image %}
 {% endif %}
 <div class="grid-item {{ featured_collection_width }}">
-  {% capture collection_title %}{{ collections[featured].title | escape }}{% endcapture %}
-  <a {% unless comingsoon %}href="{{ collections[featured].url }}" title="{{ 'collections.general.link_title' | t: title: collection_title }}" class="featured-box"{% else %}class="featured-box index-collect" style="opacity:1;"{% endunless %} >
+  {% capture collection_title %}{{ block_settings_product.title | default: collections[featured].title | escape }}{% endcapture %}
+  <a {% unless comingsoon %}href="{{ block_settings_product.url | default: collections[featured].url }}" title="{% if block_settings_product != blank %}View {{ block_settings_product.title }}{% else %}{{ 'collections.general.link_title' | t: title: collection_title }}{% endif %}" class="featured-box"{% else %}class="featured-box index-collect" style="opacity:1;"{% endunless %} >
     <div class="featured-box--inner">
       <div class="featured-box--image {% unless collection_image == blank %} vertical-middle{% endunless %}">
-        {% if featured != blank %}
-          {% if collections[featured].image or collections[featured].products.first.featured_image %}
+        {% if featured != blank or block_settings_product %}
+          {% if collection_image %}
             {%- assign image = collection_image -%}
             {%- assign max_width = width | plus: 0 -%}
             {%- assign max_height = height | plus: 0 -%}
